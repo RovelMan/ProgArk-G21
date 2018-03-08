@@ -31,6 +31,16 @@ www-test/
 /android/out/
 com_crashlytics_export_strings.xml
 
+build/
+desktop/
+gradle/
+build.gradle/
+gradle.properties/
+gradlew/
+gradlew.bat/
+local.properties/
+settings.gradle/
+
 ## Eclipse
 
 .classpath
