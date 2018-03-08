@@ -1,6 +1,5 @@
 ## Java
 
-*.class
 *.war
 *.ear
 hs_err_pid*
@@ -31,15 +30,24 @@ www-test/
 /android/out/
 com_crashlytics_export_strings.xml
 
-build/
 desktop/
 gradle/
-build.gradle/
-gradle.properties/
-gradlew/
-gradlew.bat/
-local.properties/
-settings.gradle/
+build.gradle
+gradle.properties
+gradlew
+gradlew.bat
+local.properties
+settings.gradle
+libs/
+res/
+src/
+AndroidManifest.xml
+ic_launcher-web.png
+proguard-rules.pro
+project.properties
+app/build/
+app/android/build/
+app/core/build/tmp/
 
 ## Eclipse
 
