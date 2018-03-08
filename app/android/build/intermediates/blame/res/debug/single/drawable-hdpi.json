@@ -1,5 +1,9 @@
 [
     {
+        "merged": "C:\\Users\\jotde\\OneDrive\\ProgArk-G21\\app\\android\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi\\ic_launcher.png",
+        "source": "C:\\Users\\jotde\\OneDrive\\ProgArk-G21\\app\\android\\res\\drawable-hdpi\\ic_launcher.png"
+    },
+    {
         "merged": "C:\\Users\\jotde\\OneDrive\\ProgArk-G21\\android\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi\\ic_launcher.png",
         "source": "C:\\Users\\jotde\\OneDrive\\ProgArk-G21\\android\\res\\drawable-hdpi\\ic_launcher.png"
     }
