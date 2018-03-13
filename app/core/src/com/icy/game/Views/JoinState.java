@@ -1,12 +1,11 @@
 package com.icy.game.Views;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
 /**
  * Created by jotde on 13.03.2018.
  */
 
-public class JoinState extends State {
+public class JoinState extends Screen {
+
     @Override
     public void handleInput() {
 
@@ -18,7 +17,32 @@ public class JoinState extends State {
     }
 
     @Override
-    public void render(SpriteBatch spriteBatch) {
+    public void show() {
+
+    }
+
+    @Override
+    public void render(float delta) {
+
+    }
+
+    @Override
+    public void resize(int width, int height) {
+
+    }
+
+    @Override
+    public void pause() {
+
+    }
+
+    @Override
+    public void resume() {
+
+    }
+
+    @Override
+    public void hide() {
 
     }
 
