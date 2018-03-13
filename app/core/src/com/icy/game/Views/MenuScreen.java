@@ -1,10 +1,16 @@
 package com.icy.game.Views;
 
+import com.icy.game.IcyGame;
+
 /**
  * Created by jotde on 13.03.2018.
  */
 
 public class MenuScreen extends Screen {
+
+    public MenuScreen(IcyGame game) {
+        super(game);
+    }
 
     @Override
     public void handleInput() {
