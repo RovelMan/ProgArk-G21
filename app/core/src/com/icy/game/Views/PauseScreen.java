@@ -4,7 +4,7 @@ package com.icy.game.Views;
  * Created by jotde on 13.03.2018.
  */
 
-public class TutorialState extends Screen {
+public class PauseScreen extends Screen {
 
     @Override
     public void handleInput() {

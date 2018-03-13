@@ -4,7 +4,7 @@ package com.icy.game.Views;
  * Created by jotde on 13.03.2018.
  */
 
-public class PlayState extends Screen {
+public class JoinScreen extends Screen {
 
     @Override
     public void handleInput() {
