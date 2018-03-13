@@ -1,5 +1,7 @@
 package com.icy.game.Views;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
 import com.icy.game.IcyGame;
 
 /**
@@ -14,12 +16,18 @@ public class PlayScreen extends Screen {
 
     @Override
     public void handleInput() {
-
+        if (Gdx.input.justTouched()) {
+            System.out.println("Play Screen touched");
+            game.setScreen(new MenuScreen(game));
+            dispose();
+        } else {
+            System.out.println("Play Screen not touched");
+        }
     }
 
     @Override
     public void update(float deltaTime) {
-
+        handleInput();
     }
 
     @Override
@@ -29,7 +37,10 @@ public class PlayScreen extends Screen {
 
     @Override
     public void render(float delta) {
+        Gdx.gl.glClearColor(1, 0, 1, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        update(delta);
     }
 
     @Override
