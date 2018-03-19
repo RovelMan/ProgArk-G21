@@ -12,8 +12,11 @@ import com.icy.game.IcyGame;
 
 public class MenuScreen extends Screen {
 
+    public Texture img;
+
     public MenuScreen(IcyGame game) {
         super(game);
+        img = new Texture("badlogic.jpg");
     }
 
     @Override
@@ -43,7 +46,7 @@ public class MenuScreen extends Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         game.batch.begin();
-        game.batch.draw(game.img, 100, 100);
+        game.batch.draw(img, 100, 100);
         game.batch.end();
 
 

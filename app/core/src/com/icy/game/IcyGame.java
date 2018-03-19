@@ -9,24 +9,24 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.icy.game.Views.MenuScreen;
 
 public class IcyGame extends Game {
+
+	//Change this to "true" to get same screen-size as an mobile device
+	public static final boolean USEDEBUG = true;
+	public static final String TITLE = "2IcyBoiis";
+	public static final int DEBUGHEIGHT = 840, DEBUGWIDTH = 560, FPS = 60;
+	public static int HEIGHT, WIDTH;
 	public SpriteBatch batch;
-	public Texture img;
 	
 	@Override
 	public void create () {
+		HEIGHT = Gdx.graphics.getHeight();
+		WIDTH = Gdx.graphics.getWidth();
 		batch = new SpriteBatch();
-		img = new Texture("badlogic.jpg");
 		this.setScreen(new MenuScreen(this));
 	}
 
 	@Override
 	public void render () {
-		//Gdx.gl.glClearColor(1, 1, 0, 1);
-		//Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		//batch.begin();
-		//batch.draw(img, 100, 100);
-		//batch.end();
-
 		super.render();
 	}
 	
