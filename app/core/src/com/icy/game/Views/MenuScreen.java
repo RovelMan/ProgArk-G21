@@ -22,11 +22,9 @@ public class MenuScreen extends Screen {
     @Override
     public void handleInput() {
         if (Gdx.input.justTouched()) {
-            System.out.println("Menu Screen touched");
+            game.connection.getSocket().emit("test", "heihei");
             game.setScreen(new PlayScreen(game));
             dispose();
-        } else {
-            System.out.println("Menu Screen not touched");
         }
     }
 

@@ -17,11 +17,8 @@ public class PlayScreen extends Screen {
     @Override
     public void handleInput() {
         if (Gdx.input.justTouched()) {
-            System.out.println("Play Screen touched");
             game.setScreen(new MenuScreen(game));
             dispose();
-        } else {
-            System.out.println("Play Screen not touched");
         }
     }
 
