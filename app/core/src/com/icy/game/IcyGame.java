@@ -28,7 +28,7 @@ public class IcyGame extends Game {
 		WIDTH = Gdx.graphics.getWidth();
 		batch = new SpriteBatch();
 		this.setScreen(new MenuScreen(this));
-		//connection = new Connection();
+		//connection = new Connection("http://localhost:8080");
 		//Socket socket = connection.getSocket();
 	}
 

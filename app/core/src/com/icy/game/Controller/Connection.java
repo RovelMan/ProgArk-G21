@@ -11,9 +11,9 @@ public class Connection {
 
     private Socket socket;
 
-    public Connection() {
+    public Connection(String address) {
         try {
-            socket = IO.socket("http://localhost:8080");
+            socket = IO.socket(address);
         } catch (Exception e) {
             System.out.println("Failed to connect..Error: " + e);
         }
