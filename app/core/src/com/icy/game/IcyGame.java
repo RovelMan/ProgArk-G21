@@ -6,7 +6,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.icy.game.Controller.Connection;
 import com.icy.game.Views.MenuScreen;
+import io.socket.client.Socket;
+import io.socket.client.IO;
 
 public class IcyGame extends Game {
 
@@ -16,6 +19,8 @@ public class IcyGame extends Game {
 	public static final int DEBUGHEIGHT = 840, DEBUGWIDTH = 560, FPS = 60;
 	public static int HEIGHT, WIDTH;
 	public SpriteBatch batch;
+
+	public Connection connection;
 	
 	@Override
 	public void create () {
@@ -23,6 +28,8 @@ public class IcyGame extends Game {
 		WIDTH = Gdx.graphics.getWidth();
 		batch = new SpriteBatch();
 		this.setScreen(new MenuScreen(this));
+		//connection = new Connection();
+		//Socket socket = connection.getSocket();
 	}
 
 	@Override
