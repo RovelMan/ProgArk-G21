@@ -10,7 +10,6 @@ socketio = SocketIO(app)
 @socketio.on('connect', namespace='/')
 def connect_success():
     emit('connectionResponse', {'data': 'Connected'})
-    print('heyho')
 
 
 @socketio.on('join')
@@ -29,9 +28,9 @@ def on_leave(data):
     send(username + ' has left the room.', room=room)
 
 
-@socketio.on('update')
+@socketio.on('test')
 def on_leave(data):
-    print('yo')
+    print('\nTest message received: ', data, '\n')
 
 
 if __name__ == '__main__':
