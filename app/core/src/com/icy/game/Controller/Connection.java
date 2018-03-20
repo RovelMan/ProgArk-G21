@@ -40,6 +40,27 @@ public class Connection {
         }
     }
 
+    public void createLobby(String username, String roomName) throws JSONException {
+        JSONObject game = new JSONObject();
+        game.put("username", username);
+        game.put("room", roomName);
+        game.put("level", "no level");
+        game.put("powerups", "no powerups");
+        socket.emit("create", game);
+        socket.on("create", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                JSONObject data = (JSONObject) args[1];
+                try {
+                    String text = data.getString("data");
+                    System.out.println("JSON: " + text);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
     public Socket getSocket() {
         return socket;
     }
