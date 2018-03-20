@@ -21,6 +21,7 @@ public class IcyGame extends Game {
 	public SpriteBatch batch;
 
 	public Connection connection;
+	private static final String URL = "http://localhost:7674";//"http://77.66.48.113:7676";
 	
 	@Override
 	public void create () {
@@ -28,8 +29,7 @@ public class IcyGame extends Game {
 		WIDTH = Gdx.graphics.getWidth();
 		batch = new SpriteBatch();
 		this.setScreen(new MenuScreen(this));
-		//connection = new Connection("http://localhost:8080");
-		//Socket socket = connection.getSocket();
+		connection = new Connection(URL);
 	}
 
 	@Override
