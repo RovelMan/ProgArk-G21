@@ -21,7 +21,7 @@ public class IcyGame extends Game {
 	public SpriteBatch batch;
 
 	public Connection connection;
-	private static final String URL = "http://77.66.48.113:7676";
+	private static final String URL = "http://localhost:7674";//"http://77.66.48.113:7676";
 	
 	@Override
 	public void create () {

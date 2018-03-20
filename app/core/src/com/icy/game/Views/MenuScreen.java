@@ -1,7 +1,6 @@
 package com.icy.game.Views;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -17,7 +16,8 @@ import com.icy.game.IcyGame;
 
 public class MenuScreen extends Screen {
 
-    private boolean join, create, settings, help;
+    //Keeps track of which button gets pressed
+    private boolean[] btnPressed = {false, false, false, false};
     private Stage stage;
 
     public MenuScreen(IcyGame game) {
@@ -26,39 +26,23 @@ public class MenuScreen extends Screen {
         Gdx.input.setInputProcessor(stage);
 
         Image joinBtn = new Image(new Texture("joinBtn.png"));
-        joinBtn.addListener(new InputListener(){
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                join = true;
-                return true;
-            }
-        });
-
         Image createBtn = new Image(new Texture("createBtn.png"));
-        createBtn.addListener(new InputListener(){
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                create = true;
-                return true;
-            }
-        });
         Image settingsBtn = new Image(new Texture("settingsBtn.png"));
-        settingsBtn.addListener(new InputListener(){
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                settings = true;
-                return true;
-            }
-        });
-
         Image helpBtn = new Image(new Texture("helpBtn.png"));
-        helpBtn.addListener(new InputListener(){
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                help = true;
-                return true;
-            }
-        });
+
+        //Buttons are easily added to this array
+        Image[] buttons = {joinBtn, createBtn, settingsBtn, helpBtn};
+
+        for (int i = 0; i < buttons.length; i++) {
+            final int j = i;
+            buttons[i].addListener(new InputListener() {
+                @Override
+                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                    btnPressed[j] = true;
+                    return true;
+                }
+            });
+        }
 
         Table table = new Table();
 
@@ -77,21 +61,20 @@ public class MenuScreen extends Screen {
 
     @Override
     public void handleInput() {
-        if (join) {
+        if (btnPressed[0]) {
             game.connection.getSocket().emit("test", "heihei");
-            //game.setScreen(new PlayScreen(game));
             System.out.println("Join button pressed");
             game.setScreen(new JoinScreen(game));
             dispose();
-        } else if (create) {
+        } else if (btnPressed[1]) {
             System.out.println("Create button pressed");
             game.setScreen(new CreateScreen(game));
             dispose();
-        } else if (settings) {
+        } else if (btnPressed[2]) {
             System.out.println("Settings button pressed");
             game.setScreen(new SettingsScreen(game));
             dispose();
-        } else if (help) {
+        } else if (btnPressed[3]) {
             System.out.println("Help button pressed");
             game.setScreen(new TutorialScreen(game));
             dispose();
