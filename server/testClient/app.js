@@ -1,6 +1,6 @@
 "use strict";
 
-var socket = io.connect('http://77.66.48.113:7676');
+var socket = io.connect('http://localhost:7676');
 
 socket.on('connect', function() {
   console.log('yay');

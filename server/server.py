@@ -1,10 +1,14 @@
-from flask import Flask
+from flask import Flask, request
 from flask_socketio import SocketIO, join_room, leave_room, emit
+import Player
+import Game
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '321sfsdf23'
 app.config['DEBUG'] = True
 socketio = SocketIO(app)
+
+games = {}
 
 
 @socketio.on('connect', namespace='/')
@@ -12,12 +16,26 @@ def connect_success():
     emit('connectionResponse', {'data': 'Connected'})
 
 
+@socketio.on('create')
+def create_lobby(data):
+    username = data['username']
+    room = data['room']
+    level = data['level']
+    power_ups = data['powerups']
+    join_room(room)
+    game = Game(room, username, level, power_ups)
+    games[room] = game
+    emit('pid', 0)
+
+
 @socketio.on('join')
 def on_join(data):
     username = data['username']
     room = data['room']
     join_room(room)
+    games[room].join(Player(username))
     send(username + ' has entered the room.', room=room)
+    emit('pid', 1)
 
 
 @socketio.on('leave')
@@ -29,8 +47,13 @@ def on_leave(data):
 
 
 @socketio.on('test')
-def on_leave(data):
-    print('\nTest message received: ', data, '\n')
+def test(data):
+    print('\nTest message received: ', data, "\n SID: ", request.sid)
+
+
+@socketio.on('pos')
+def pos(data):
+    games[data['room']].update(data['id'], data['pos'])
 
 
 if __name__ == '__main__':
