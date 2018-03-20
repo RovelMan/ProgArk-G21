@@ -16,8 +16,8 @@ public class MapObject {
     private Rectangle hitBox;
     public MapObject(){
         texture = new Texture("badlogic.jpg");
-        position = new Vector2(IcyGame.WIDTH/2,0);
-        hitBox = new Rectangle(0,0,IcyGame.WIDTH,texture.getHeight());
+        position = new Vector2(0,-IcyGame.HEIGHT/2);
+        hitBox = new Rectangle(position.x,position.y,IcyGame.WIDTH,texture.getHeight());
     }
 
     public Vector2 getPosition() {

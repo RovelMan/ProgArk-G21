@@ -21,7 +21,7 @@ public class Player {
     public Player(){
         texture = new Texture("badlogic.jpg");
         velocity = new Vector2(0,0);
-        position = new Vector2(IcyGame.WIDTH/2, IcyGame.HEIGHT/2);
+        position = new Vector2(IcyGame.WIDTH/2, IcyGame.HEIGHT);
         hitBox = new Rectangle(position.x,position.y,texture.getWidth(),texture.getHeight());
         gravity = -1500f;
         jumpForce = 900f;
@@ -51,7 +51,9 @@ public class Player {
         else{
             this.getVelocity().y += this.gravity * deltaTime;
         }
-        this.getVelocity().x = -Gdx.input.getAccelerometerX() * deltaTime * 20000;
+        if(!IcyGame.USEDEBUG){
+            this.getVelocity().x = -Gdx.input.getAccelerometerX() * deltaTime * 20000;
+        }
     }
 
     public void updatePosition(float deltaTime){
