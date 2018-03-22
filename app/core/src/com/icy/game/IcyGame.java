@@ -1,15 +1,10 @@
 package com.icy.game;
 
-import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.icy.game.Controller.Connection;
 import com.icy.game.Views.MenuScreen;
-import io.socket.client.Socket;
-import io.socket.client.IO;
 
 public class IcyGame extends Game {
 
@@ -21,7 +16,7 @@ public class IcyGame extends Game {
 	public SpriteBatch batch;
 
 	public Connection connection;
-	private static final String URL = "http://localhost:7674";//"http://77.66.48.113:7676";
+	private static final String URL = "http://localhost:7676";
 	
 	@Override
 	public void create () {

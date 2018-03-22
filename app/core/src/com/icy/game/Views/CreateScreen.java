@@ -12,9 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.utils.BaseDrawable;
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
-import com.icy.game.Controller.MyTextInputListener;
+import com.icy.game.Controller.Connection;
 import com.icy.game.IcyGame;
 
 /**
@@ -26,11 +24,13 @@ public class CreateScreen extends Screen {
     private TextField userInput, roomInput;
     private boolean[] btnPressed = {false, false};
     private Stage stage;
+    private Connection connection;
 
     public CreateScreen(IcyGame game) {
         super(game);
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
+        this.connection = game.connection;
 
         TextField.TextFieldStyle style = new TextField.TextFieldStyle();
         style.fontColor = Color.WHITE;
@@ -62,7 +62,6 @@ public class CreateScreen extends Screen {
         }
 
         Table table = new Table();
-
         table.center();
         table.setFillParent(true);
         table.add(userInputTxt).expandX().padBottom(10);
@@ -84,10 +83,14 @@ public class CreateScreen extends Screen {
             game.setScreen(new MenuScreen(game));
             dispose();
         } else if (btnPressed[1]) {
-            System.out.println("Create button pressed");
-            System.out.println("Username: " + userInput.getText());
-            System.out.println("Room name: " + roomInput.getText());
-            game.setScreen(new PlayScreen(game));
+            try {
+                connection.createLobby(userInput.getText(), roomInput.getText());
+                System.out.println("Lobby created!");
+                System.out.println("PlayerId: " + connection.getPlayerId() + "\tUsername: " + userInput.getText() + "\tRoom: " + roomInput.getText());
+            } catch (Exception e) {
+                System.out.println("Could not create a game: " + e);
+            }
+            game.setScreen(new LobbyScreen(game, connection.getPlayerId(), userInput.getText(), roomInput.getText()));
             dispose();
         }
     }

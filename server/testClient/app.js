@@ -4,7 +4,7 @@ var socket = io.connect('http://localhost:7676');
 
 socket.on('connect', function() {
   console.log('yay');
-  socket.emit('update', 'pls');
+  socket.emit('test', 'heiheihei');
 });
 
 socket.on('pos', function(data){
