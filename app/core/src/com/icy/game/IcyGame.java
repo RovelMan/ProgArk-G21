@@ -9,9 +9,8 @@ import com.icy.game.Views.MenuScreen;
 public class IcyGame extends Game {
 
 	//Change this to "true" to get same screen-size as an mobile device
-	public static final boolean USEDEBUG = true;
+	public static final boolean USEDEBUG = false;
 	public static final String TITLE = "2IcyBoiis";
-	public static final int DEBUGHEIGHT = 840, DEBUGWIDTH = 560, FPS = 60;
 	public static int HEIGHT, WIDTH;
 	public SpriteBatch batch;
 
@@ -20,8 +19,8 @@ public class IcyGame extends Game {
 	
 	@Override
 	public void create () {
-		HEIGHT = Gdx.graphics.getHeight();
-		WIDTH = Gdx.graphics.getWidth();
+		HEIGHT = 800;
+		WIDTH = 450;
 		batch = new SpriteBatch();
 		this.setScreen(new MenuScreen(this));
 		connection = new Connection(URL);
