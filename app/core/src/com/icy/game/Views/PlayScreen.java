@@ -1,13 +1,9 @@
 package com.icy.game.Views;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.icy.game.IcyGame;
@@ -26,13 +22,13 @@ public class PlayScreen extends Screen {
     private Viewport viewport;
     PlayScreen(IcyGame game) {
         super(game);
-        player1 = new Player();
-        ground  = new MapObject();
+        player1 = new Player(0.3f,"badlogic.jpg");
+        ground  = new MapObject(0.3f, "badlogic.jpg");
         cam = new OrthographicCamera();
-        cam = new OrthographicCamera(IcyGame.WIDTH, IcyGame.HEIGHT * (9 / 16));
+        cam = new OrthographicCamera(IcyGame.WIDTH, IcyGame.HEIGHT);
         cam.position.set(cam.viewportWidth / 2f, cam.viewportHeight / 2f, 0);
         cam.update();
-        viewport = new FillViewport(IcyGame.WIDTH,IcyGame.HEIGHT,cam);
+        viewport = new FitViewport(IcyGame.WIDTH,IcyGame.HEIGHT,cam);
     }
 
     @Override
@@ -45,6 +41,7 @@ public class PlayScreen extends Screen {
 
         if (Gdx.input.justTouched()) {
             if(player1.getOnGround()){
+                System.out.println(player1.getPosition());
                 player1.getVelocity().y = player1.getJumpForce();
                 player1.setOnGround(false);
             }
@@ -55,6 +52,13 @@ public class PlayScreen extends Screen {
             }
             else if(Gdx.input.isKeyPressed(Input.Keys.A)){
                 player1.getVelocity().x = -500;
+            }
+            else if(Gdx.input.isKeyPressed(Input.Keys.SPACE) && player1.getOnGround()){
+                player1.getVelocity().y = player1.getJumpForce();
+                player1.setOnGround(false);
+            }
+            else{
+                player1.getVelocity().x = 0;
             }
 
         }
@@ -79,8 +83,8 @@ public class PlayScreen extends Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         game.batch.setProjectionMatrix(cam.combined);
         game.batch.begin();
-        game.batch.draw(player1.getTexture(),player1.getPosition().x,player1.getPosition().y);
-        game.batch.draw(ground.getTexture(),ground.getPosition().x,ground.getPosition().y);
+        game.batch.draw(player1.getTexture(),player1.getPosition().x,player1.getPosition().y,player1.getSize().x,player1.getSize().y);
+        game.batch.draw(ground.getTexture(),ground.getPosition().x,ground.getPosition().y,ground.getSize().x,ground.getSize().y);
         game.batch.end();
         update(delta);
     }

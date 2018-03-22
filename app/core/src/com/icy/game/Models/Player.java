@@ -5,27 +5,27 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.icy.game.IcyGame;
+import com.sun.org.apache.bcel.internal.generic.IXOR;
 
 /**
  * Created by havard on 13.03.18.
  */
 
-public class Player {
+public class Player extends TextureHolder {
     private Vector2 position;
     private Vector2 velocity;
-    private Texture texture;
     private Rectangle hitBox;
     private float gravity;
     private float jumpForce;
     private boolean onGround;
-    public Player(){
-        texture = new Texture("badlogic.jpg");
+    public Player(float scale, String path){
+        super(scale,path);
         velocity = new Vector2(0,0);
-        position = new Vector2(IcyGame.WIDTH/2, IcyGame.HEIGHT);
-        hitBox = new Rectangle(position.x,position.y,texture.getWidth(),texture.getHeight());
+        position = new Vector2(0, 0);
+        hitBox = new Rectangle(position.x,position.y,size.x,size.y);
         gravity = -1500f;
-        jumpForce = 900f;
-        onGround = true;
+        jumpForce = 1000f;
+        onGround = false;
     }
 
     public float getJumpForce() {
@@ -49,7 +49,7 @@ public class Player {
             this.getVelocity().y = 0;
         }
         else{
-            this.getVelocity().y += this.gravity * deltaTime;
+            this.getVelocity().y += this.gravity*deltaTime;
         }
         if(!IcyGame.USEDEBUG){
             this.getVelocity().x = -Gdx.input.getAccelerometerX() * deltaTime * 20000;
@@ -60,6 +60,12 @@ public class Player {
         this.getPosition().add(this.getVelocity().x * deltaTime,this.getVelocity().y * deltaTime);
         this.hitBox.setX(this.getPosition().x);
         this.hitBox.setY(this.getPosition().y);
+        if(this.getPosition().x < 0){
+            this.getPosition().x = 0;
+        }
+        else if(this.getPosition().x > IcyGame.WIDTH-this.getSize().x){
+            this.getPosition().x = IcyGame.WIDTH -this.getSize().x;
+        }
     }
 
     public Vector2 getPosition() {
@@ -73,9 +79,15 @@ public class Player {
     public void checkCollision(Rectangle otherHitbox) {
         if (this.hitBox.overlaps(otherHitbox)) {
             this.onGround = true;
+            this.position.y = otherHitbox.y+otherHitbox.height-2;
         }
         else{
             onGround = false;
         }
+    }
+
+    @Override
+    public Vector2 getSize() {
+        return size;
     }
 }
