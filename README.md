@@ -1,3 +1,3 @@
 # ProgArk-G21
 
-test
+Remember to run "npm install"

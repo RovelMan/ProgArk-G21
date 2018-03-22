@@ -1,5 +1,12 @@
 package com.icy.game.Views;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.icy.game.IcyGame;
 
 /**
@@ -8,18 +15,46 @@ import com.icy.game.IcyGame;
 
 public class LobbyScreen extends Screen {
 
-    public LobbyScreen(IcyGame game) {
+    private int playerId;
+    private String username;
+    private String room;
+
+    private Stage stage;
+
+    public LobbyScreen(IcyGame game, int playerId, String username, String room) {
         super(game);
+        this.playerId = playerId;
+        this.username = username;
+        this.room = room;
+        stage = new Stage();
+
+        Label lobbyTxt = new Label(String.format("Welcome to room: " + this.room), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        Label host = new Label(String.format("Host: " + this.username), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        Label info = new Label(String.format("Waiting for opponent..."), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+
+        Table table = new Table();
+        table.center();
+        table.setFillParent(true);
+        table.add(lobbyTxt).expandX().padBottom(10);
+        table.row();
+        table.add(host).expandX().padBottom(10);
+        table.row();
+        table.add(info).expandX().padBottom(10);
+        table.pack();
+        stage.addActor(table);
     }
 
     @Override
     public void handleInput() {
-
+        if (Gdx.input.justTouched()) {
+            //game.setScreen(new MenuScreen(game));
+            //dispose();
+        }
     }
 
     @Override
     public void update(float deltaTime) {
-
+        handleInput();
     }
 
     @Override
@@ -29,7 +64,10 @@ public class LobbyScreen extends Screen {
 
     @Override
     public void render(float delta) {
-
+        Gdx.gl.glClearColor(1, 0, 1, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        update(delta);
+        stage.draw();
     }
 
     @Override
