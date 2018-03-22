@@ -45,16 +45,15 @@ public class MenuScreen extends Screen {
         }
 
         Table table = new Table();
-
         table.center();
         table.setFillParent(true);
-        table.add(joinBtn).expandX().padBottom(10);
+        table.add(joinBtn).expandX().padBottom(10).size(IcyGame.WIDTH, IcyGame.HEIGHT/36);
         table.row();
-        table.add(createBtn).expandX().padBottom(10);
+        table.add(createBtn).fillX().padBottom(10).size(IcyGame.WIDTH, IcyGame.HEIGHT/36);
         table.row();
-        table.add(settingsBtn).expandX().padBottom(10);
+        table.add(settingsBtn).expandX().padBottom(10).size(IcyGame.WIDTH, IcyGame.HEIGHT/36);
         table.row();
-        table.add(helpBtn).expandX();
+        table.add(helpBtn).expandX().size(IcyGame.WIDTH, IcyGame.HEIGHT/36);
         table.pack();
         stage.addActor(table);
     }
@@ -62,9 +61,10 @@ public class MenuScreen extends Screen {
     @Override
     public void handleInput() {
         if (btnPressed[0]) {
-            game.connection.getSocket().emit("test", "heihei");
+            //game.connection.getSocket().emit("test", "heihei");
             System.out.println("Join button pressed");
-            game.setScreen(new JoinScreen(game));
+            //game.setScreen(new JoinScreen(game));
+            game.setScreen(new PlayScreen(game));
             dispose();
         } else if (btnPressed[1]) {
             System.out.println("Create button pressed");

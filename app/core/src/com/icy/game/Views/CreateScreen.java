@@ -64,14 +64,17 @@ public class CreateScreen extends Screen {
         Table table = new Table();
         table.center();
         table.setFillParent(true);
-        table.add(userInputTxt).expandX().padBottom(10);
-        table.add(userInput).expandX().padBottom(10);
+        table.add(userInputTxt).expandX().padBottom(10).size(IcyGame.WIDTH, IcyGame.HEIGHT/36);
         table.row();
-        table.add(roomInputTxt).expandX().padBottom(10);
-        table.add(roomInput).expandX().padBottom(20);
+        table.add(userInput).expandX().padBottom(10).size(IcyGame.WIDTH, IcyGame.HEIGHT/36);
         table.row();
-        table.add(backBtn).expandX().padBottom(10);
-        table.add(createBtn).expandX();
+        table.add(roomInputTxt).expandX().padBottom(10).size(IcyGame.WIDTH, IcyGame.HEIGHT/36);
+        table.row();
+        table.add(roomInput).expandX().padBottom(20).size(IcyGame.WIDTH, IcyGame.HEIGHT/36);
+        table.row();
+        table.add(createBtn).expandX().padBottom(10).size(IcyGame.WIDTH, IcyGame.HEIGHT/36);
+        table.row();
+        table.add(backBtn).expandX().size(IcyGame.WIDTH, IcyGame.HEIGHT/36);
         table.pack();
         stage.addActor(table);
     }

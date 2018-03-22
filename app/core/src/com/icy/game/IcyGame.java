@@ -19,8 +19,8 @@ public class IcyGame extends Game {
 	
 	@Override
 	public void create () {
-		HEIGHT = 800;
-		WIDTH = 450;
+		HEIGHT = 3200;
+		WIDTH = 448;
 		batch = new SpriteBatch();
 		this.setScreen(new MenuScreen(this));
 		connection = new Connection(URL);

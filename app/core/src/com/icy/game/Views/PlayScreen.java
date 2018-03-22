@@ -5,6 +5,9 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.icy.game.IcyGame;
@@ -22,16 +25,24 @@ public class PlayScreen extends Screen {
     private OrthographicCamera cam;
     private Viewport viewport;
     private Texture bg;
+
+    private TmxMapLoader mapLoader;
+    private TiledMap map;
+    private OrthogonalTiledMapRenderer renderer;
+
     PlayScreen(IcyGame game) {
         super(game);
         player1 = new Player(0.3f,"badlogic.jpg");
-        ground  = new MapObject(0.3f, "badlogic.jpg");
-        bg = new Texture("map5.png");
+        //ground  = new MapObject(0.3f, "badlogic.jpg");
+        //bg = new Texture("map5.png");
         cam = new OrthographicCamera();
-        cam = new OrthographicCamera(IcyGame.WIDTH, IcyGame.HEIGHT);
-        cam.position.set(cam.viewportWidth / 2f, cam.viewportHeight / 2f, 0);
-        cam.update();
-        viewport = new FitViewport(IcyGame.WIDTH,IcyGame.HEIGHT,cam);
+        viewport = new FitViewport(IcyGame.WIDTH,IcyGame.HEIGHT/4, cam);
+
+        mapLoader = new TmxMapLoader();
+        map = mapLoader.load("Map/Files/Files/new_map.tmx");
+        renderer = new OrthogonalTiledMapRenderer(map);
+
+        cam.position.set(viewport.getWorldWidth()/2, viewport.getWorldHeight()/2, 0);
     }
 
     @Override
@@ -71,9 +82,10 @@ public class PlayScreen extends Screen {
     public void update(float deltaTime) {
         player1.updateVelocity(deltaTime);
         player1.updatePosition(deltaTime);
-        player1.checkCollision(ground.getHitBox());
+        //player1.checkCollision(ground.getHitBox());
         cam.position.y += 1;
         cam.update();
+        renderer.setView(cam);
         handleInput();
     }
 
@@ -86,12 +98,14 @@ public class PlayScreen extends Screen {
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        renderer.render();
         game.batch.setProjectionMatrix(cam.combined);
         game.batch.begin();
-        game.batch.draw(bg,-60,0,bg.getWidth(),bg.getHeight());
+        //game.batch.draw(bg,-60,0,bg.getWidth(),bg.getHeight());
         game.batch.draw(player1.getTexture(),player1.getPosition().x,player1.getPosition().y,player1.getSize().x,player1.getSize().y);
-        game.batch.draw(ground.getTexture(),ground.getPosition().x,ground.getPosition().y,ground.getSize().x,ground.getSize().y);
+        //game.batch.draw(ground.getTexture(),ground.getPosition().x,ground.getPosition().y,ground.getSize().x,ground.getSize().y);
         game.batch.end();
+
         update(delta);
     }
 

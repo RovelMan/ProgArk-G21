@@ -21,7 +21,7 @@ public class Player extends TextureHolder {
     public Player(float scale, String path){
         super(scale,path);
         velocity = new Vector2(0,0);
-        position = new Vector2(0, 0);
+        position = new Vector2(0,40);
         hitBox = new Rectangle(position.x,position.y,size.x,size.y);
         gravity = -1500f;
         jumpForce = 1000f;
