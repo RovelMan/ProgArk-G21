@@ -1,5 +1,5 @@
 from flask_socketio import emit
-from player import Player
+from Player import Player
 
 class Game:
 

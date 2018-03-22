@@ -1,7 +1,7 @@
 from flask import Flask, request
 from flask_socketio import SocketIO, join_room, leave_room, emit, send
-from player import Player
-from game import Game
+from Player import Player
+from Game import Game
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '321sfsdf23'
