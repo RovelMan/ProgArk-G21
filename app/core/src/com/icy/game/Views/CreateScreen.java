@@ -62,7 +62,6 @@ public class CreateScreen extends Screen {
         }
 
         Table table = new Table();
-
         table.center();
         table.setFillParent(true);
         table.add(userInputTxt).expandX().padBottom(10);
@@ -84,15 +83,14 @@ public class CreateScreen extends Screen {
             game.setScreen(new MenuScreen(game));
             dispose();
         } else if (btnPressed[1]) {
-            System.out.println("Create button pressed");
-            System.out.println("Username: " + userInput.getText());
-            System.out.println("Room name: " + roomInput.getText());
             try {
                 connection.createLobby(userInput.getText(), roomInput.getText());
+                System.out.println("Lobby created!");
+                System.out.println("PlayerId: " + connection.getPlayerId() + "\tUsername: " + userInput.getText() + "\tRoom: " + roomInput.getText());
             } catch (Exception e) {
-                System.out.println("Could not create a game");
+                System.out.println("Could not create a game: " + e);
             }
-            game.setScreen(new PlayScreen(game));
+            game.setScreen(new LobbyScreen(game, connection.getPlayerId(), userInput.getText(), roomInput.getText()));
             dispose();
         }
     }

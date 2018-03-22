@@ -1,3 +1,6 @@
+from flask_socketio import emit
+from player import Player
+
 class Game:
 
     def __init__(self, name, playerOne, level, powerUps):
@@ -10,6 +13,6 @@ class Game:
         self.players.append(player)
 
     def update(self, player, pos):
-        players[player].update(pos)
-        p = 1 - player
+        self.players[player].update(pos)
+        pos = 1 - player
         emit('pos', pos)

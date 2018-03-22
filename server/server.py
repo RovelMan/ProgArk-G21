@@ -1,7 +1,7 @@
 from flask import Flask, request
-from flask_socketio import SocketIO, join_room, leave_room, emit
-import Player
-import Game
+from flask_socketio import SocketIO, join_room, leave_room, emit, send
+from player import Player
+from game import Game
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '321sfsdf23'
@@ -13,7 +13,7 @@ games = {}
 
 @socketio.on('connect', namespace='/')
 def connect_success():
-    emit('connectionResponse', {'data': 'Connected'})
+    emit('connectionResponse', {'data': 'Connected to server'})
 
 
 @socketio.on('create')
@@ -25,7 +25,8 @@ def create_lobby(data):
     join_room(room)
     game = Game(room, username, level, power_ups)
     games[room] = game
-    emit('pid', 0)
+    print("Room created on server:", username, room, level, power_ups)
+    emit('pid', {'data': 0})
 
 
 @socketio.on('join')
@@ -57,4 +58,4 @@ def pos(data):
 
 
 if __name__ == '__main__':
-    socketio.run(app, host="0.0.0.0", port="7676")
+    socketio.run(app, host="0.0.0.0", port=7676)
