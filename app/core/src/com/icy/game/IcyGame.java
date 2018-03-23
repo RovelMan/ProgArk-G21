@@ -1,25 +1,24 @@
 package com.icy.game;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.icy.game.Controller.Connection;
 import com.icy.game.Views.MenuScreen;
 
 public class IcyGame extends Game {
 
-	//Change this to "true" to get same screen-size as an mobile device
+	//Change this to "true" to use keyboard controls
 	public static final boolean USEDEBUG = false;
 	public static final String TITLE = "2IcyBoiis";
 	public static int HEIGHT, WIDTH;
 	public SpriteBatch batch;
-
 	public Connection connection;
 	private static final String URL = "http://localhost:7676";
 	
 	@Override
 	public void create () {
-		HEIGHT = 3200;
+		//world height is 3200
+		HEIGHT = 800;
 		WIDTH = 448;
 		batch = new SpriteBatch();
 		this.setScreen(new MenuScreen(this));
