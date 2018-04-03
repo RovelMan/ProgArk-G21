@@ -47,13 +47,13 @@ public class MenuScreen extends Screen {
         Table table = new Table();
         table.center();
         table.setFillParent(true);
-        table.add(joinBtn).expandX().padBottom(10).size(IcyGame.WIDTH, IcyGame.HEIGHT/36);
+        table.add(joinBtn).expandX().padBottom(10).size(IcyGame.WIDTH, IcyGame.HEIGHT/8);
         table.row();
-        table.add(createBtn).fillX().padBottom(10).size(IcyGame.WIDTH, IcyGame.HEIGHT/36);
+        table.add(createBtn).fillX().padBottom(10).size(IcyGame.WIDTH, IcyGame.HEIGHT/8);
         table.row();
-        table.add(settingsBtn).expandX().padBottom(10).size(IcyGame.WIDTH, IcyGame.HEIGHT/36);
+        table.add(settingsBtn).expandX().padBottom(10).size(IcyGame.WIDTH, IcyGame.HEIGHT/8);
         table.row();
-        table.add(helpBtn).expandX().size(IcyGame.WIDTH, IcyGame.HEIGHT/36);
+        table.add(helpBtn).expandX().size(IcyGame.WIDTH, IcyGame.HEIGHT/8);
         table.pack();
         stage.addActor(table);
     }

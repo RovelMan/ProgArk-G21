@@ -4,45 +4,48 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.icy.game.IcyGame;
-import com.icy.game.Models.MapObject;
 import com.icy.game.Models.Player;
 
-
-/**
- * Created by jotde on 13.03.2018.
- */
+import java.util.ArrayList;
 
 public class PlayScreen extends Screen {
     private Player player1;
-    private MapObject ground;
     private OrthographicCamera cam;
     private Viewport viewport;
-    private Texture bg;
+    private float timeElapsed;
 
-    private TmxMapLoader mapLoader;
-    private TiledMap map;
     private OrthogonalTiledMapRenderer renderer;
+    private ArrayList<Rectangle> platforms;
 
     PlayScreen(IcyGame game) {
         super(game);
-        player1 = new Player(0.3f,"badlogic.jpg");
-        //ground  = new MapObject(0.3f, "badlogic.jpg");
-        //bg = new Texture("map5.png");
+        player1 = new Player(new Vector2(0.07f,0.5f),"running_animation/running_animation.atlas");
         cam = new OrthographicCamera();
-        viewport = new FitViewport(IcyGame.WIDTH,IcyGame.HEIGHT/4, cam);
 
-        mapLoader = new TmxMapLoader();
-        map = mapLoader.load("Map/Files/Files/new_map.tmx");
+        //worldWidth and worldHeight is NOT the worlds width and height! They are just the size
+        //of your viewport...
+        viewport = new FitViewport(IcyGame.WIDTH,IcyGame.HEIGHT, cam);
+        cam.position.set(viewport.getWorldWidth()/2, viewport.getWorldHeight()/2, 0);
+
+        TmxMapLoader mapLoader = new TmxMapLoader();
+        TiledMap map = mapLoader.load("Map/Files/Files/new_map.tmx");
         renderer = new OrthogonalTiledMapRenderer(map);
 
-        cam.position.set(viewport.getWorldWidth()/2, viewport.getWorldHeight()/2, 0);
+        platforms = new ArrayList<Rectangle>();
+        for (MapObject object : map.getLayers().get(3).getObjects().getByType(RectangleMapObject.class)){
+            platforms.add(((RectangleMapObject)object).getRectangle());
+        }
     }
 
     @Override
@@ -53,60 +56,76 @@ public class PlayScreen extends Screen {
     @Override
     public void handleInput() {
 
-        if (Gdx.input.justTouched()) {
-            if(player1.getOnGround()){
-                System.out.println(player1.getPosition());
+        if(IcyGame.USEDEBUG){
+
+            if(Gdx.input.isKeyPressed(Input.Keys.D)){
+                player1.getVelocity().x = 500;
+                player1.setDirection(1);
+            }
+            else if(Gdx.input.isKeyPressed(Input.Keys.A)){
+                player1.getVelocity().x = -500;
+                player1.setDirection(-1);
+            }
+            else{
+                player1.getVelocity().x = 0;
+            }
+            if(Gdx.input.isKeyPressed(Input.Keys.SPACE) && player1.isOnGround()){
                 player1.getVelocity().y = player1.getJumpForce();
                 player1.setOnGround(false);
             }
-        }
 
-        if(Gdx.input.isKeyPressed(Input.Keys.D)){
-            player1.getVelocity().x = 500;
-        }
-        else if(Gdx.input.isKeyPressed(Input.Keys.A)){
-            player1.getVelocity().x = -500;
-        }
-        else if(Gdx.input.isKeyPressed(Input.Keys.SPACE) && player1.getOnGround()){
-            player1.getVelocity().y = player1.getJumpForce();
-            player1.setOnGround(false);
         }
         else{
-            player1.getVelocity().x = 0;
+            if (Gdx.input.justTouched()) {
+                if(player1.isOnGround()){
+                    player1.getVelocity().y = player1.getJumpForce();
+                    player1.setOnGround(false);
+                }
+            }
+            player1.getVelocity().x = -Gdx.input.getAccelerometerX() * 200;
         }
-
-
     }
 
     @Override
     public void update(float deltaTime) {
-        player1.updateVelocity(deltaTime);
+
+        handleInput();
+        player1.updateVelocity();
         player1.updatePosition(deltaTime);
-        //player1.checkCollision(ground.getHitBox());
-        cam.position.y += 1;
+        player1.checkPlatformCollision(platforms);
+        cam.position.y += 0.5;
         cam.update();
         renderer.setView(cam);
-        handleInput();
-    }
-
-    @Override
-    public void show() {
+        timeElapsed += deltaTime;
 
     }
 
     @Override
     public void render(float delta) {
+        update(delta);
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         renderer.render();
         game.batch.setProjectionMatrix(cam.combined);
         game.batch.begin();
-        //game.batch.draw(bg,-60,0,bg.getWidth(),bg.getHeight());
-        game.batch.draw(player1.getTexture(),player1.getPosition().x,player1.getPosition().y,player1.getSize().x,player1.getSize().y);
-        //game.batch.draw(ground.getTexture(),ground.getPosition().x,ground.getPosition().y,ground.getSize().x,ground.getSize().y);
+        TextureRegion frame = (TextureRegion) player1.getAnimation().getKeyFrame(timeElapsed,true);
+        boolean flip = (player1.getDirection() == -1);
+        game.batch.draw(
+                frame,
+                flip ?  player1.getPosition().x + player1.getSize().x :
+                        player1.getPosition().x,
+                        player1.getPosition().y,
+                flip ? -player1.getSize().x :
+                        player1.getSize().x,
+                        player1.getSize().y
+                );
         game.batch.end();
 
-        update(delta);
+    }
+
+    @Override
+    public void show() {
+
     }
 
     @Override
