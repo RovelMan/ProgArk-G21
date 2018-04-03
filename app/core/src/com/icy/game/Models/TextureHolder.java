@@ -1,22 +1,23 @@
 package com.icy.game.Models;
-
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.icy.game.IcyGame;
-
-/**
- * Created by havard on 22.03.18.
- */
 
 public abstract class TextureHolder {
     Vector2 size;
-    float scale;
-    Texture texture;
-    TextureHolder(float newScale,String path){
-        texture = new Texture(path);
-        scale = newScale;
-        size = new Vector2(IcyGame.WIDTH*scale,texture.getHeight()-(texture.getWidth()-IcyGame.WIDTH*scale));
+    Animation<TextureRegion> animation;
+
+    TextureHolder(Vector2 scale,String path){
+        TextureAtlas animationAtlas = new TextureAtlas(Gdx.files.internal(path));
+        animation = new Animation<TextureRegion>(0.2f, animationAtlas.getRegions());
+        float width = animationAtlas.getTextures().first().getWidth();
+        float height = animationAtlas.getTextures().first().getHeight();
+        size = new Vector2(width * scale.x, height * scale.y);
     }
 
     abstract public Vector2 getSize();
+
+    abstract public Animation getAnimation();
 }

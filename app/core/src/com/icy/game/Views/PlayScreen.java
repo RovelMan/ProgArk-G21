@@ -4,12 +4,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.icy.game.IcyGame;
@@ -17,24 +19,18 @@ import com.icy.game.Models.Player;
 
 import java.util.ArrayList;
 
-
-/**
- * Created by jotde on 13.03.2018.
- */
-
 public class PlayScreen extends Screen {
     private Player player1;
     private OrthographicCamera cam;
     private Viewport viewport;
+    private float timeElapsed;
 
-    private TmxMapLoader mapLoader;
-    private TiledMap map;
     private OrthogonalTiledMapRenderer renderer;
     private ArrayList<Rectangle> platforms;
 
     PlayScreen(IcyGame game) {
         super(game);
-        player1 = new Player(0.1f,"badlogic.jpg");
+        player1 = new Player(new Vector2(0.07f,0.5f),"running_animation/running_animation.atlas");
         cam = new OrthographicCamera();
 
         //worldWidth and worldHeight is NOT the worlds width and height! They are just the size
@@ -42,8 +38,8 @@ public class PlayScreen extends Screen {
         viewport = new FitViewport(IcyGame.WIDTH,IcyGame.HEIGHT, cam);
         cam.position.set(viewport.getWorldWidth()/2, viewport.getWorldHeight()/2, 0);
 
-        mapLoader = new TmxMapLoader();
-        map = mapLoader.load("Map/Files/Files/new_map.tmx");
+        TmxMapLoader mapLoader = new TmxMapLoader();
+        TiledMap map = mapLoader.load("Map/Files/Files/new_map.tmx");
         renderer = new OrthogonalTiledMapRenderer(map);
 
         platforms = new ArrayList<Rectangle>();
@@ -64,21 +60,24 @@ public class PlayScreen extends Screen {
 
             if(Gdx.input.isKeyPressed(Input.Keys.D)){
                 player1.getVelocity().x = 500;
+                player1.setDirection(1);
             }
             else if(Gdx.input.isKeyPressed(Input.Keys.A)){
                 player1.getVelocity().x = -500;
-            }
-            else if(Gdx.input.isKeyPressed(Input.Keys.SPACE) && player1.getOnGround()){
-                player1.getVelocity().y = player1.getJumpForce();
-                player1.setOnGround(false);
+                player1.setDirection(-1);
             }
             else{
                 player1.getVelocity().x = 0;
             }
+            if(Gdx.input.isKeyPressed(Input.Keys.SPACE) && player1.isOnGround()){
+                player1.getVelocity().y = player1.getJumpForce();
+                player1.setOnGround(false);
+            }
+
         }
         else{
             if (Gdx.input.justTouched()) {
-                if(player1.getOnGround()){
+                if(player1.isOnGround()){
                     player1.getVelocity().y = player1.getJumpForce();
                     player1.setOnGround(false);
                 }
@@ -97,6 +96,7 @@ public class PlayScreen extends Screen {
         cam.position.y += 0.5;
         cam.update();
         renderer.setView(cam);
+        timeElapsed += deltaTime;
 
     }
 
@@ -108,8 +108,19 @@ public class PlayScreen extends Screen {
         renderer.render();
         game.batch.setProjectionMatrix(cam.combined);
         game.batch.begin();
-        game.batch.draw(player1.getTexture(),player1.getPosition().x,player1.getPosition().y,player1.getSize().x,player1.getSize().y);
+        TextureRegion frame = (TextureRegion) player1.getAnimation().getKeyFrame(timeElapsed,true);
+        boolean flip = (player1.getDirection() == -1);
+        game.batch.draw(
+                frame,
+                flip ?  player1.getPosition().x + player1.getSize().x :
+                        player1.getPosition().x,
+                        player1.getPosition().y,
+                flip ? -player1.getSize().x :
+                        player1.getSize().x,
+                        player1.getSize().y
+                );
         game.batch.end();
+
     }
 
     @Override

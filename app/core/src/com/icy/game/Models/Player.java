@@ -1,15 +1,11 @@
 package com.icy.game.Models;
 
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.icy.game.IcyGame;
 
 import java.util.ArrayList;
-
-/**
- * Created by havard on 13.03.18.
- */
 
 public class Player extends TextureHolder {
     private Vector2 position;
@@ -19,7 +15,8 @@ public class Player extends TextureHolder {
     private float gravity;
     private float jumpForce;
     private boolean onGround;
-    public Player(float scale, String path){
+    private int direction;
+    public Player(Vector2 scale, String path){
         super(scale,path);
         velocity = new Vector2(0,0);
         position = new Vector2(0,40);
@@ -28,14 +25,23 @@ public class Player extends TextureHolder {
         jumpForce = 1000f;
         onGround = false;
         standingOnPlatform = null;
+        direction = 1;
     }
 
     public float getJumpForce() {
         return jumpForce;
     }
 
-    public boolean getOnGround(){
+    public boolean isOnGround(){
         return onGround;
+    }
+
+    public void setOnGround(boolean onGround) {
+        this.onGround = onGround;
+    }
+
+    public int getDirection() {
+        return direction;
     }
 
     public Vector2 getVelocity() {
@@ -46,12 +52,8 @@ public class Player extends TextureHolder {
         return position;
     }
 
-    public Texture getTexture() {
-        return texture;
-    }
-
-    public void setOnGround(boolean onGround) {
-        this.onGround = onGround;
+    public void setDirection(int direction) {
+        this.direction = direction;
     }
 
     public void updateVelocity(){
@@ -101,5 +103,10 @@ public class Player extends TextureHolder {
     @Override
     public Vector2 getSize() {
         return size;
+    }
+
+    @Override
+    public Animation getAnimation() {
+        return animation;
     }
 }
