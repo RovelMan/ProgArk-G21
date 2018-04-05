@@ -1,6 +1,7 @@
 from flask_socketio import emit
 from Player import Player
 
+
 class Game:
 
     def __init__(self, name, playerOne, level, powerUps):
