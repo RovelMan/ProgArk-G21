@@ -75,6 +75,12 @@ public class Player extends TextureHolder {
         else if(this.getPosition().x > IcyGame.WIDTH-this.getSize().x){
             this.getPosition().x = IcyGame.WIDTH -this.getSize().x;
         }
+        if(this.getVelocity().x < 0){
+            this.setDirection(-1);
+        }
+        else{
+            this.setDirection(1);
+        }
     }
 
     public void checkPlatformCollision(ArrayList<Rectangle> platforms) {
