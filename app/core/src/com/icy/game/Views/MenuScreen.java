@@ -70,8 +70,8 @@ public class MenuScreen extends Screen {
         if (btnPressed[0]) {
             //game.connection.getSocket().emit("test", "heihei");
             System.out.println("Join button pressed");
-            //game.setScreen(new JoinScreen(game));
-            game.setScreen(new PlayScreen(game));
+            game.setScreen(new JoinScreen(game));
+            //game.setScreen(new PlayScreen(game));
             dispose();
         } else if (btnPressed[1]) {
             System.out.println("Create button pressed");

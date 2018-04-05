@@ -44,13 +44,43 @@ public class Connection {
         game.put("level", "none");
         game.put("powerups", "none");
         socket.emit("create", game);
-        socket.on("pid", new Emitter.Listener() {
+        socket.on("createRes", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
                 JSONObject data = (JSONObject) args[0];
                 try {
-                    String text = data.getString("data");
-                    playerId = Integer.parseInt(text);
+                    playerId = Integer.parseInt(data.getString("pid"));
+                    System.out.println("created " + playerId + " " + data.getString("room"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        socket.on("opponentJoined", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                JSONObject data = (JSONObject) args[0];
+                try {
+                    String res = data.getString("data");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public void joinLobby(String username, String roomName) throws JSONException {
+        JSONObject game = new JSONObject();
+        game.put("username", username);
+        game.put("room", roomName);
+        socket.emit("join", game);
+        socket.on("joinRes", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                JSONObject data = (JSONObject) args[0];
+                try {
+                    playerId = Integer.parseInt(data.getString("pid"));
+                    System.out.println("joined " + playerId + " " + data.getString("room"));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
