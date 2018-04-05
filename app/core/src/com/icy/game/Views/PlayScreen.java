@@ -60,11 +60,9 @@ public class PlayScreen extends Screen {
 
             if(Gdx.input.isKeyPressed(Input.Keys.D)){
                 player1.getVelocity().x = 500;
-                player1.setDirection(1);
             }
             else if(Gdx.input.isKeyPressed(Input.Keys.A)){
                 player1.getVelocity().x = -500;
-                player1.setDirection(-1);
             }
             else{
                 player1.getVelocity().x = 0;
