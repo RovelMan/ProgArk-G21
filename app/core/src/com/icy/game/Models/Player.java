@@ -52,7 +52,7 @@ public class Player extends TextureHolder {
         return position;
     }
 
-    public void setDirection(int direction) {
+    private void setDirection(int direction) {
         this.direction = direction;
     }
 
@@ -81,6 +81,15 @@ public class Player extends TextureHolder {
         else{
             this.setDirection(1);
         }
+    }
+
+    public int checkCoinCollision(ArrayList<Rectangle> coins){
+        for (Rectangle coin : coins) {
+            if (this.hitBox.overlaps(coin)) {
+                return coins.indexOf(coin);
+            }
+        }
+        return -1;
     }
 
     public void checkPlatformCollision(ArrayList<Rectangle> platforms) {

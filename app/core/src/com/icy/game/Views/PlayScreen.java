@@ -27,6 +27,7 @@ public class PlayScreen extends Screen {
 
     private OrthogonalTiledMapRenderer renderer;
     private ArrayList<Rectangle> platforms;
+    private ArrayList<Rectangle> coins;
 
     PlayScreen(IcyGame game) {
         super(game);
@@ -39,12 +40,18 @@ public class PlayScreen extends Screen {
         cam.position.set(viewport.getWorldWidth()/2, viewport.getWorldHeight()/2, 0);
 
         TmxMapLoader mapLoader = new TmxMapLoader();
-        TiledMap map = mapLoader.load("Map/Files/Files/new_map.tmx");
+        TiledMap map = mapLoader.load("Map V2/new_map.tmx");
         renderer = new OrthogonalTiledMapRenderer(map);
 
         platforms = new ArrayList<Rectangle>();
-        for (MapObject object : map.getLayers().get(3).getObjects().getByType(RectangleMapObject.class)){
+        coins = new ArrayList<Rectangle>();
+
+        for (MapObject object : map.getLayers().get(6).getObjects().getByType(RectangleMapObject.class)){
             platforms.add(((RectangleMapObject)object).getRectangle());
+        }
+
+        for (MapObject object : map.getLayers().get(8).getObjects().getByType(RectangleMapObject.class)){
+            coins.add(((RectangleMapObject)object).getRectangle());
         }
     }
 
@@ -91,7 +98,12 @@ public class PlayScreen extends Screen {
         player1.updateVelocity();
         player1.updatePosition(deltaTime);
         player1.checkPlatformCollision(platforms);
-        cam.position.y += 0.5;
+        int remove = player1.checkCoinCollision(coins);
+        if(remove != -1){
+            System.out.println("hit coin");
+           coins.remove(remove);
+        }
+        //cam.position.y += 0.5;
         cam.update();
         renderer.setView(cam);
         timeElapsed += deltaTime;
