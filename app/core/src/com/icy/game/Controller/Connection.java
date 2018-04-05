@@ -15,6 +15,8 @@ public class Connection {
 
     private Socket socket;
     private int playerId;
+    private String roomHost;
+    private String room;
 
     public Connection(String address) {
         try {
@@ -50,18 +52,24 @@ public class Connection {
                 JSONObject data = (JSONObject) args[0];
                 try {
                     playerId = Integer.parseInt(data.getString("pid"));
-                    System.out.println("created " + playerId + " " + data.getString("room"));
+                    System.out.println("Lobby created! Your ID: " + playerId + "\tRoom name: " + data.getString("room"));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
         });
+
+    }
+
+    public void checkForOpponent() {
         socket.on("opponentJoined", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
                 JSONObject data = (JSONObject) args[0];
                 try {
                     String res = data.getString("data");
+                    System.out.println(res + " joined the lobby!");
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -69,7 +77,7 @@ public class Connection {
         });
     }
 
-    public void joinLobby(String username, String roomName) throws JSONException {
+    public void joinLobby(String username, final String roomName) throws JSONException {
         JSONObject game = new JSONObject();
         game.put("username", username);
         game.put("room", roomName);
@@ -80,7 +88,9 @@ public class Connection {
                 JSONObject data = (JSONObject) args[0];
                 try {
                     playerId = Integer.parseInt(data.getString("pid"));
-                    System.out.println("joined " + playerId + " " + data.getString("room"));
+                    roomHost = data.getString("host");
+                    room = data.getString("room");
+                    System.out.println("Lobby joined! Your ID: " + playerId + "\tRoom name: " + room + "\tHost: " + roomHost);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -94,6 +104,14 @@ public class Connection {
 
     public int getPlayerId() {
         return playerId;
+    }
+
+    public String getRoomHost() {
+        return roomHost;
+    }
+
+    public String getRoomName() {
+        return room;
     }
 
 }

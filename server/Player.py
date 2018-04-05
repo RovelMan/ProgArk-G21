@@ -6,3 +6,6 @@ class Player:
 
     def update(self, pos):
         self.pos = pos
+
+    def getUsername(self):
+        return self.username

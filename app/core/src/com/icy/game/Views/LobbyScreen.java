@@ -15,21 +15,20 @@ import com.icy.game.IcyGame;
 
 public class LobbyScreen extends Screen {
 
-    private int playerId;
-    private String username;
+    private String[] players = {null, null};
     private String room;
 
     private Stage stage;
 
-    public LobbyScreen(IcyGame game, int playerId, String username, String room) {
+    public LobbyScreen(IcyGame game, int playerId, String host, String room) {
         super(game);
-        this.playerId = playerId;
-        this.username = username;
+        this.players[playerId] = host;
+        System.out.println(playerId + " PLAYERS " + players[0] + " " + players[1]);
         this.room = room;
         stage = new Stage();
 
         Label lobbyTxt = new Label(String.format("Welcome to room: " + this.room), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-        Label host = new Label(String.format("Host: " + this.username), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        Label hostName = new Label(String.format("Host: " + this.players[0]), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
         Label info = new Label(String.format("Waiting for opponent..."), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
 
         Table table = new Table();
@@ -37,11 +36,16 @@ public class LobbyScreen extends Screen {
         table.setFillParent(true);
         table.add(lobbyTxt).expandX().padBottom(10);
         table.row();
-        table.add(host).expandX().padBottom(10);
+        table.add(hostName).expandX().padBottom(10);
         table.row();
         table.add(info).expandX().padBottom(10);
         table.pack();
         stage.addActor(table);
+    }
+
+    public void joinLobby(int playerId, String player) {
+        this.players[playerId] = player;
+        System.out.println("Player joined " + player);
     }
 
     @Override
@@ -50,6 +54,7 @@ public class LobbyScreen extends Screen {
             //game.setScreen(new MenuScreen(game));
             //dispose();
         }
+        game.connection.checkForOpponent();
     }
 
     @Override

@@ -88,12 +88,13 @@ public class JoinScreen extends Screen {
         } else if (btnPressed[1]) {
             try {
                 connection.joinLobby(userInput.getText(), roomInput.getText());
-                System.out.println("Lobby joined!");
-                System.out.println("PlayerId: " + connection.getPlayerId() + "\tUsername: " + userInput.getText() + "\tRoom: " + roomInput.getText());
             } catch (Exception e) {
                 System.out.println("Could not join a game: " + e);
             }
-            game.setScreen(new LobbyScreen(game, connection.getPlayerId(), userInput.getText(), roomInput.getText()));
+            LobbyScreen lobby = new LobbyScreen(game, 0, connection.getRoomHost(), connection.getRoomName());
+            System.out.println("Joined: " + connection.getRoomHost() + " " + connection.getRoomName());
+            lobby.joinLobby(connection.getPlayerId(), userInput.getText());
+            game.setScreen(lobby);
             dispose();
         }
     }

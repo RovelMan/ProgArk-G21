@@ -88,10 +88,8 @@ public class CreateScreen extends Screen {
         } else if (btnPressed[1]) {
             try {
                 connection.createLobby(userInput.getText(), roomInput.getText());
-                System.out.println("Lobby created!");
-                System.out.println("PlayerId: " + connection.getPlayerId() + "\tUsername: " + userInput.getText() + "\tRoom: " + roomInput.getText());
             } catch (Exception e) {
-                System.out.println("Could not create a game: " + e);
+                System.out.println("Could not create a lobby: " + e);
             }
             game.setScreen(new LobbyScreen(game, connection.getPlayerId(), userInput.getText(), roomInput.getText()));
             dispose();
