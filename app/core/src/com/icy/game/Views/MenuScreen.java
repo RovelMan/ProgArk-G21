@@ -54,13 +54,13 @@ public class MenuScreen extends Screen {
         Table table = new Table();
         table.center();
         table.setFillParent(true);
-        table.add(joinBtn).expandX().size(IcyGame.WIDTH, IcyGame.HEIGHT/15);
+        table.add(joinBtn).expandX().size(IcyGame.WIDTH, IcyGame.HEIGHT/5);
         table.row();
-        table.add(createBtn).expandX().size(IcyGame.WIDTH, IcyGame.HEIGHT/15);
+        table.add(createBtn).expandX().size(IcyGame.WIDTH, IcyGame.HEIGHT/5);
         table.row();
-        table.add(helpBtn).expandX().size(IcyGame.WIDTH, IcyGame.HEIGHT/15);
+        table.add(helpBtn).expandX().size(IcyGame.WIDTH, IcyGame.HEIGHT/5);
         table.row();
-        table.add(settingsBtn).expandX().size(IcyGame.WIDTH/3, IcyGame.HEIGHT/25);
+        table.add(settingsBtn).expandX().size(IcyGame.WIDTH/2, IcyGame.HEIGHT/5);
         table.pack();
         stage.addActor(table);
     }
@@ -83,7 +83,8 @@ public class MenuScreen extends Screen {
             dispose();
         } else if (btnPressed[3]) {
             System.out.println("Settings button pressed");
-            game.setScreen(new SettingsScreen(game));
+            //game.setScreen(new SettingsScreen(game));
+            game.setScreen(new PlayScreen(game));
             dispose();
         }
     }
@@ -104,7 +105,7 @@ public class MenuScreen extends Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         game.batch.begin();
-        game.batch.draw(background, 0, 0, round(IcyGame.WIDTH*4.28), round(IcyGame.HEIGHT/2.5));
+        game.batch.draw(background, 0, 0, round(IcyGame.WIDTH*1.75), round(IcyGame.HEIGHT*1.75));
         game.batch.end();
 
         update(delta);
