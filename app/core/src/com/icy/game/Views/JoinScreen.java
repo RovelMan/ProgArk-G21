@@ -32,12 +32,15 @@ public class JoinScreen extends Screen {
         Gdx.input.setInputProcessor(stage);
         this.connection = game.connection;
 
+        BitmapFont font = new BitmapFont();
+        font.getData().setScale(4);
+
         TextField.TextFieldStyle style = new TextField.TextFieldStyle();
         style.fontColor = Color.WHITE;
-        style.font = new BitmapFont();
-        Label userInputTxt = new Label(String.format("Username: "), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        style.font = font;
+        Label userInputTxt = new Label(String.format("Username: "), new Label.LabelStyle(font, Color.WHITE));
         userInput = new TextField("_", style);
-        Label roomInputTxt = new Label(String.format("Room name: "), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        Label roomInputTxt = new Label(String.format("Room name: "), new Label.LabelStyle(font, Color.WHITE));
         roomInput = new TextField("_", style);
 
         Image backBtn = new Image(new Texture("backBtn.png"));
@@ -88,10 +91,14 @@ public class JoinScreen extends Screen {
         } else if (btnPressed[1]) {
             try {
                 connection.joinLobby(userInput.getText(), roomInput.getText());
+                System.out.println("TEST_" + connection.getRoomName());
             } catch (Exception e) {
                 System.out.println("Could not join a game: " + e);
             }
-            LobbyScreen lobby = new LobbyScreen(game, 0, connection.getRoomHost(), connection.getRoomName());
+            while (connection.getRoomName() == null) {
+                System.out.println("Waiting for room name");
+            }
+            LobbyScreen lobby = new LobbyScreen(game, 0, connection.getRoomHost(), connection.getPlayerTwoUsername(), connection.getRoomName());
             System.out.println("Joined: " + connection.getRoomHost() + " " + connection.getRoomName());
             lobby.joinLobby(connection.getPlayerId(), userInput.getText());
             game.setScreen(lobby);

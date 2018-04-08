@@ -1,5 +1,7 @@
 package com.icy.game.Controller;
 
+import com.icy.game.Views.LobbyScreen;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -15,6 +17,7 @@ public class Connection {
 
     private Socket socket;
     private int playerId;
+    private String playerTwoUsername;
     private String roomHost;
     private String room;
 
@@ -52,6 +55,8 @@ public class Connection {
                 JSONObject data = (JSONObject) args[0];
                 try {
                     playerId = Integer.parseInt(data.getString("pid"));
+                    roomHost = data.getString("host");
+                    room = data.getString("room");
                     System.out.println("Lobby created! Your ID: " + playerId + "\tRoom name: " + data.getString("room"));
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -61,7 +66,7 @@ public class Connection {
 
     }
 
-    public void checkForOpponent() {
+    public void checkForOpponent(final LobbyScreen lobbyScreen) {
         socket.on("opponentJoined", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
@@ -69,7 +74,8 @@ public class Connection {
                 try {
                     String res = data.getString("data");
                     System.out.println(res + " joined the lobby!");
-
+                    playerTwoUsername = res;
+                    lobbyScreen.addPlayerTwo(playerTwoUsername);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -77,7 +83,7 @@ public class Connection {
         });
     }
 
-    public void joinLobby(String username, final String roomName) throws JSONException {
+    public void joinLobby(final String username, final String roomName) throws JSONException {
         JSONObject game = new JSONObject();
         game.put("username", username);
         game.put("room", roomName);
@@ -90,6 +96,7 @@ public class Connection {
                     playerId = Integer.parseInt(data.getString("pid"));
                     roomHost = data.getString("host");
                     room = data.getString("room");
+                    playerTwoUsername = data.getString("username");
                     System.out.println("Lobby joined! Your ID: " + playerId + "\tRoom name: " + room + "\tHost: " + roomHost);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -98,12 +105,22 @@ public class Connection {
         });
     }
 
+    public void leaveLobby(final String username, final String roomName) throws JSONException {
+        JSONObject game = new JSONObject();
+        game.put("username", username);
+        game.put("room", roomName);
+        socket.emit("leave", game);
+    }
     public Socket getSocket() {
         return socket;
     }
 
     public int getPlayerId() {
         return playerId;
+    }
+
+    public String getPlayerTwoUsername() {
+        return playerTwoUsername;
     }
 
     public String getRoomHost() {
