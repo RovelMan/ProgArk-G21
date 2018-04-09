@@ -62,4 +62,4 @@ def pos(data):
 
 
 if __name__ == '__main__':
-    socketio.run(app, host="10.22.42.140", port=7676)
+    socketio.run(app, host="0.0.0.0", port=7676)
