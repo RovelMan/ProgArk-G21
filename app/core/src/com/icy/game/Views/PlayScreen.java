@@ -5,9 +5,11 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
@@ -28,6 +30,7 @@ public class PlayScreen extends Screen {
     private OrthogonalTiledMapRenderer renderer;
     private ArrayList<Rectangle> platforms;
     private ArrayList<Rectangle> coins;
+    private TiledMapTileLayer coinTextures;
 
     PlayScreen(IcyGame game) {
         super(game);
@@ -45,6 +48,10 @@ public class PlayScreen extends Screen {
 
         platforms = new ArrayList<Rectangle>();
         coins = new ArrayList<Rectangle>();
+        coinTextures = (TiledMapTileLayer) map.getLayers().get(5);
+        for (MapLayer layer: map.getLayers()) {
+            System.out.println(layer.getName());
+        }
 
         for (MapObject object : map.getLayers().get(6).getObjects().getByType(RectangleMapObject.class)){
             platforms.add(((RectangleMapObject)object).getRectangle());
@@ -98,10 +105,13 @@ public class PlayScreen extends Screen {
         player1.updateVelocity();
         player1.updatePosition(deltaTime);
         player1.checkPlatformCollision(platforms);
-        int remove = player1.checkCoinCollision(coins);
-        if(remove != -1){
+        int removeID = player1.checkCoinCollision(coins);
+        if(removeID != -1){
             System.out.println("hit coin");
-           coins.remove(remove);
+            int x = Math.round(coins.get(removeID).getX()/32);
+            int y = Math.round(coins.get(removeID).getY()/32);
+            coinTextures.getCell(x,y).setTile(null);
+            coins.remove(removeID);
         }
         //cam.position.y += 0.5;
         cam.update();

@@ -22,7 +22,7 @@ public class Player extends TextureHolder {
         position = new Vector2(0,40);
         hitBox = new Rectangle(position.x,position.y,size.x,size.y);
         gravity = -100f;
-        jumpForce = 1000f;
+        jumpForce = 1500f;
         onGround = false;
         standingOnPlatform = null;
         direction = 1;
@@ -105,7 +105,7 @@ public class Player extends TextureHolder {
         }
         if (checkCollision){
             for (Rectangle platform : platforms) {
-                if(this.hitBox.overlaps(platform) && this.getVelocity().y < 0){
+                if(this.hitBox.overlaps(platform) && this.getVelocity().y < 0 && this.getPosition().y > platform.getY()){
                     this.onGround = true;
                     this.position.y = platform.y+platform.height-1;
                     this.standingOnPlatform = platform;
