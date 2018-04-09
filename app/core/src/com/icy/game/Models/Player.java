@@ -16,6 +16,7 @@ public class Player extends TextureHolder {
     private float jumpForce;
     private boolean onGround;
     private int direction;
+    private static final int MAXYVELOCITY = 800;
     public Player(Vector2 scale, String path){
         super(scale,path);
         velocity = new Vector2(0,0);
@@ -61,7 +62,10 @@ public class Player extends TextureHolder {
             this.getVelocity().y = 0;
         }
         else{
-            this.getVelocity().y += this.gravity;
+            if(this.getVelocity().y > - this.MAXYVELOCITY){
+                this.getVelocity().y += this.gravity;
+            }
+
         }
     }
 
