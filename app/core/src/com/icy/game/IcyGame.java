@@ -13,7 +13,7 @@ public class IcyGame extends Game {
 	public static int HEIGHT, WIDTH;
 	public SpriteBatch batch;
 	public Connection connection;
-	private static final String URL = "http://192.168.1.2:7676";
+	private static final String URL = "http://10.22.42.140:7676";
 	
 	@Override
 	public void create () {

@@ -28,11 +28,11 @@ public class LobbyScreen extends Screen {
     public LobbyScreen(IcyGame game, int playerId, String host, String playerTwo, String room) {
         super(game);
         this.playerId = playerId;
-        this.players[playerId] = host;
+        this.players[0] = host;
         if (playerTwo != null) {
             addPlayerTwo(playerTwo);
         }
-        System.out.println(playerId + " PLAYERS " + players[0] + " " + players[1]);
+        System.out.println(playerId + " PLAYERS IN ROOM " + players[0] + " " + players[1]);
         this.room = room;
 
         stage = new Stage();
@@ -88,7 +88,6 @@ public class LobbyScreen extends Screen {
 
     public void addPlayerTwo(String username) {
         this.players[1] = username;
-        updateLobby(username);
     }
 
     @Override
@@ -105,8 +104,6 @@ public class LobbyScreen extends Screen {
         if (this.players[1] == null) {
             game.connection.checkForOpponent(this);
             System.out.println("Players: " + players[0] + " " + players[1]);
-        } else {
-            //System.out.println("Players: " + players[0] + " " + players[1]);
         }
     }
 

@@ -58,7 +58,8 @@ def test(data):
 @socketio.on('pos')
 def pos(data):
     games[data['room']].update(data['id'], data['pos'])
+    emit('posRes', {'id': data['id'], 'pos': data['pos']})
 
 
 if __name__ == '__main__':
-    socketio.run(app, host="192.168.1.2", port=7676)
+    socketio.run(app, host="10.22.42.140", port=7676)

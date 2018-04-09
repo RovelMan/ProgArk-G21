@@ -39,9 +39,9 @@ public class JoinScreen extends Screen {
         style.fontColor = Color.WHITE;
         style.font = font;
         Label userInputTxt = new Label(String.format("Username: "), new Label.LabelStyle(font, Color.WHITE));
-        userInput = new TextField("_", style);
+        userInput = new TextField("Joiner", style);
         Label roomInputTxt = new Label(String.format("Room name: "), new Label.LabelStyle(font, Color.WHITE));
-        roomInput = new TextField("_", style);
+        roomInput = new TextField("DefaultRoom", style);
 
         Image backBtn = new Image(new Texture("backBtn.png"));
         Image createBtn = new Image(new Texture("joinBtn.png"));
@@ -91,16 +91,14 @@ public class JoinScreen extends Screen {
         } else if (btnPressed[1]) {
             try {
                 connection.joinLobby(userInput.getText(), roomInput.getText());
-                System.out.println("TEST_" + connection.getRoomName());
             } catch (Exception e) {
                 System.out.println("Could not join a game: " + e);
             }
             while (connection.getRoomName() == null) {
-                System.out.println("Waiting for room name");
+                System.out.println("Waiting for response");
             }
-            LobbyScreen lobby = new LobbyScreen(game, 0, connection.getRoomHost(), connection.getPlayerTwoUsername(), connection.getRoomName());
-            System.out.println("Joined: " + connection.getRoomHost() + " " + connection.getRoomName());
-            lobby.joinLobby(connection.getPlayerId(), userInput.getText());
+            LobbyScreen lobby = new LobbyScreen(game, connection.getPlayerId(), connection.getRoomHost(), connection.getPlayerTwoUsername(), connection.getRoomName());
+            lobby.joinLobby(connection.getPlayerId(), connection.getPlayerTwoUsername());
             game.setScreen(lobby);
             dispose();
         }
