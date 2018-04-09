@@ -15,10 +15,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.icy.game.Controller.Connection;
 import com.icy.game.IcyGame;
 
-/**
- * Created by jotde on 13.03.2018.
- */
-
 public class CreateScreen extends Screen {
 
     private TextField userInput, roomInput;
@@ -38,9 +34,9 @@ public class CreateScreen extends Screen {
         TextField.TextFieldStyle style = new TextField.TextFieldStyle();
         style.fontColor = Color.WHITE;
         style.font = font;
-        Label userInputTxt = new Label(String.format("Username: "), new Label.LabelStyle(font, Color.WHITE));
+        Label userInputTxt = new Label("Username: ", new Label.LabelStyle(font, Color.WHITE));
         userInput = new TextField("Creator", style);
-        Label roomInputTxt = new Label(String.format("Room name: "), new Label.LabelStyle(font, Color.WHITE));
+        Label roomInputTxt = new Label("Room name: ", new Label.LabelStyle(font, Color.WHITE));
         roomInput = new TextField("DefaultRoom", style);
 
         Image backBtn = new Image(new Texture("backBtn.png"));
@@ -96,7 +92,7 @@ public class CreateScreen extends Screen {
                 System.out.println("Could not create a lobby: " + e);
             }
             while (connection.getRoomName() == null) {
-                System.out.println("Waiting for response");
+                continue;
             }
             game.setScreen(new LobbyScreen(game, connection.getPlayerId(), connection.getRoomHost(), null, connection.getRoomName()));
             dispose();

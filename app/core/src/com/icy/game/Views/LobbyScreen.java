@@ -11,29 +11,23 @@ import com.icy.game.IcyGame;
 
 import org.json.JSONException;
 
-import javax.swing.SpringLayout;
-
-/**
- * Created by jotde on 13.03.2018.
- */
-
 public class LobbyScreen extends Screen {
 
-    private int playerId;
-    private String[] players = {null, null};
-    private String room;
+    private static int playerId;
+    private static String[] players = {null, null};
+    private static String room;
 
-    private Stage stage;
+    private static Stage stage;
 
-    public LobbyScreen(IcyGame game, int playerId, String host, String playerTwo, String room) {
+    public LobbyScreen(IcyGame game, int newPlayerId, String host, String playerTwo, String roomName) {
         super(game);
-        this.playerId = playerId;
-        this.players[0] = host;
+        playerId = newPlayerId;
+        players[0] = host;
         if (playerTwo != null) {
             addPlayerTwo(playerTwo);
         }
         System.out.println(playerId + " PLAYERS IN ROOM " + players[0] + " " + players[1]);
-        this.room = room;
+        room = roomName;
 
         stage = new Stage();
 
@@ -41,34 +35,33 @@ public class LobbyScreen extends Screen {
     }
 
     public void joinLobby(int playerId, String player) {
-        this.players[playerId] = player;
+        players[playerId] = player;
         System.out.println("Player joined " + playerId + " " + player);
-        //updateLobby(player);
     }
 
-    public void leaveLobby() throws JSONException {
+    private void leaveLobby() throws JSONException {
         game.connection.leaveLobby(players[playerId], room);
     }
 
-    public void updateLobby(String playerTwo) {
+    private void updateLobby(String playerTwo) {
         System.out.println("UPDATED: " + playerTwo);
 
         BitmapFont font = new BitmapFont();
         font.getData().setScale(4);
 
-        Label lobbyTxt = new Label(String.format("Welcome to room: " + this.room), new Label.LabelStyle(font, Color.WHITE));
-        Label hostName = new Label(String.format("Host: " + this.players[0]), new Label.LabelStyle(font, Color.WHITE));
+        Label lobbyTxt = new Label("Welcome to room: " + room, new Label.LabelStyle(font, Color.WHITE));
+        Label hostName = new Label("Host: " + players[0], new Label.LabelStyle(font, Color.WHITE));
         Label playerName;
         Label info;
         if (playerTwo == null) {
-            playerName = new Label(String.format("You: " + this.players[0]), new Label.LabelStyle(font, Color.WHITE));
-            info = new Label(String.format("Waiting for opponent..."), new Label.LabelStyle(font, Color.WHITE));
-        } else if (this.players[0] != playerTwo) {
-            playerName  = new Label(String.format("You: " + this.players[1]), new Label.LabelStyle(font, Color.WHITE));
-            info = new Label(String.format("Opponent: " + this.players[0]), new Label.LabelStyle(font, Color.WHITE));
+            playerName = new Label("You: " + players[0], new Label.LabelStyle(font, Color.WHITE));
+            info = new Label("Waiting for opponent...", new Label.LabelStyle(font, Color.WHITE));
+        } else if (!players[0].equals(playerTwo)) {
+            playerName  = new Label("You: " + players[1], new Label.LabelStyle(font, Color.WHITE));
+            info = new Label("Opponent: " + players[0], new Label.LabelStyle(font, Color.WHITE));
         } else {
-            playerName = new Label(String.format("You: " + this.players[0]), new Label.LabelStyle(font, Color.WHITE));
-            info = new Label(String.format("Opponent: " + playerTwo), new Label.LabelStyle(font, Color.WHITE));
+            playerName = new Label("You: " + players[0], new Label.LabelStyle(font, Color.WHITE));
+            info = new Label("Opponent: " + playerTwo, new Label.LabelStyle(font, Color.WHITE));
         }
 
         Table table = new Table();
@@ -86,8 +79,8 @@ public class LobbyScreen extends Screen {
         stage.addActor(table);
     }
 
-    public void addPlayerTwo(String username) {
-        this.players[1] = username;
+    public static void addPlayerTwo(String username) {
+        players[1] = username;
     }
 
     @Override
@@ -100,10 +93,6 @@ public class LobbyScreen extends Screen {
             }
             game.setScreen(new MenuScreen(game));
             dispose();
-        }
-        if (this.players[1] == null) {
-            game.connection.checkForOpponent(this);
-            System.out.println("Players: " + players[0] + " " + players[1]);
         }
     }
 

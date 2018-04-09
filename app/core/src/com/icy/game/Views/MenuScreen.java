@@ -9,15 +9,8 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.icy.game.IcyGame;
-import com.sun.org.apache.bcel.internal.generic.IXOR;
-
-import javax.xml.soap.Text;
 
 import static java.lang.Math.round;
-
-/**
- * Created by jotde on 13.03.2018.
- */
 
 public class MenuScreen extends Screen {
 
@@ -68,10 +61,8 @@ public class MenuScreen extends Screen {
     @Override
     public void handleInput() {
         if (btnPressed[0]) {
-            //game.connection.getSocket().emit("test", "heihei");
             System.out.println("Join button pressed");
             game.setScreen(new JoinScreen(game));
-            //game.setScreen(new PlayScreen(game));
             dispose();
         } else if (btnPressed[1]) {
             System.out.println("Create button pressed");
@@ -83,7 +74,6 @@ public class MenuScreen extends Screen {
             dispose();
         } else if (btnPressed[3]) {
             System.out.println("Settings button pressed");
-            //game.setScreen(new SettingsScreen(game));
             game.setScreen(new PlayScreen(game));
             dispose();
         }
