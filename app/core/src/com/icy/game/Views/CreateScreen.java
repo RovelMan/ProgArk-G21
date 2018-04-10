@@ -15,10 +15,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.icy.game.Controller.Connection;
 import com.icy.game.IcyGame;
 
-/**
- * Created by jotde on 13.03.2018.
- */
-
 public class CreateScreen extends Screen {
 
     private TextField userInput, roomInput;
@@ -32,13 +28,16 @@ public class CreateScreen extends Screen {
         Gdx.input.setInputProcessor(stage);
         this.connection = game.connection;
 
+        BitmapFont font = new BitmapFont();
+        font.getData().setScale(4);
+
         TextField.TextFieldStyle style = new TextField.TextFieldStyle();
         style.fontColor = Color.WHITE;
-        style.font = new BitmapFont();
-        Label userInputTxt = new Label(String.format("Username: "), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-        userInput = new TextField("_", style);
-        Label roomInputTxt = new Label(String.format("Room name: "), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-        roomInput = new TextField("_", style);
+        style.font = font;
+        Label userInputTxt = new Label("Username: ", new Label.LabelStyle(font, Color.WHITE));
+        userInput = new TextField("Creator", style);
+        Label roomInputTxt = new Label("Room name: ", new Label.LabelStyle(font, Color.WHITE));
+        roomInput = new TextField("DefaultRoom", style);
 
         Image backBtn = new Image(new Texture("backBtn.png"));
         Image createBtn = new Image(new Texture("createBtn.png"));
@@ -88,12 +87,14 @@ public class CreateScreen extends Screen {
         } else if (btnPressed[1]) {
             try {
                 connection.createLobby(userInput.getText(), roomInput.getText());
-                System.out.println("Lobby created!");
-                System.out.println("PlayerId: " + connection.getPlayerId() + "\tUsername: " + userInput.getText() + "\tRoom: " + roomInput.getText());
+
             } catch (Exception e) {
-                System.out.println("Could not create a game: " + e);
+                System.out.println("Could not create a lobby: " + e);
             }
-            game.setScreen(new LobbyScreen(game, connection.getPlayerId(), userInput.getText(), roomInput.getText()));
+            while (connection.getRoomName() == null) {
+                continue;
+            }
+            game.setScreen(new LobbyScreen(game, connection.getPlayerId(), connection.getRoomHost(), null, connection.getRoomName()));
             dispose();
         }
     }

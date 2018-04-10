@@ -32,13 +32,16 @@ public class JoinScreen extends Screen {
         Gdx.input.setInputProcessor(stage);
         this.connection = game.connection;
 
+        BitmapFont font = new BitmapFont();
+        font.getData().setScale(4);
+
         TextField.TextFieldStyle style = new TextField.TextFieldStyle();
         style.fontColor = Color.WHITE;
-        style.font = new BitmapFont();
-        Label userInputTxt = new Label(String.format("Username: "), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-        userInput = new TextField("_", style);
-        Label roomInputTxt = new Label(String.format("Room name: "), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-        roomInput = new TextField("_", style);
+        style.font = font;
+        Label userInputTxt = new Label(String.format("Username: "), new Label.LabelStyle(font, Color.WHITE));
+        userInput = new TextField("Joiner", style);
+        Label roomInputTxt = new Label(String.format("Room name: "), new Label.LabelStyle(font, Color.WHITE));
+        roomInput = new TextField("DefaultRoom", style);
 
         Image backBtn = new Image(new Texture("backBtn.png"));
         Image createBtn = new Image(new Texture("joinBtn.png"));
@@ -88,12 +91,15 @@ public class JoinScreen extends Screen {
         } else if (btnPressed[1]) {
             try {
                 connection.joinLobby(userInput.getText(), roomInput.getText());
-                System.out.println("Lobby joined!");
-                System.out.println("PlayerId: " + connection.getPlayerId() + "\tUsername: " + userInput.getText() + "\tRoom: " + roomInput.getText());
             } catch (Exception e) {
                 System.out.println("Could not join a game: " + e);
             }
-            game.setScreen(new LobbyScreen(game, connection.getPlayerId(), userInput.getText(), roomInput.getText()));
+            while (connection.getRoomName() == null) {
+                System.out.println("Waiting for response");
+            }
+            LobbyScreen lobby = new LobbyScreen(game, connection.getPlayerId(), connection.getRoomHost(), connection.getPlayerTwoUsername(), connection.getRoomName());
+            lobby.joinLobby(connection.getPlayerId(), connection.getPlayerTwoUsername());
+            game.setScreen(lobby);
             dispose();
         }
     }

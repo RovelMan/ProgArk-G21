@@ -5,9 +5,11 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
@@ -18,6 +20,11 @@ import com.icy.game.IcyGame;
 import com.icy.game.Models.Player;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class PlayScreen extends Screen {
     private Player player1;
@@ -26,25 +33,37 @@ public class PlayScreen extends Screen {
     private float timeElapsed;
 
     private OrthogonalTiledMapRenderer renderer;
-    private ArrayList<Rectangle> platforms;
+    private Map<String,ArrayList<Rectangle>> hitboxes;
+    private Map<String,TiledMapTileLayer> tileLayers;
+    private static final List<String> validHitboxes =
+            Collections.unmodifiableList(Arrays.asList("platformsHitbox", "logPlatformsHitbox","coinsHitbox"));
+    private static final List<String> validTileLayers =
+            Collections.unmodifiableList(Arrays.asList("platforms", "logPlatforms","coins"));
 
     PlayScreen(IcyGame game) {
         super(game);
         player1 = new Player(new Vector2(0.07f,0.5f),"running_animation/running_animation.atlas");
         cam = new OrthographicCamera();
-
         //worldWidth and worldHeight is NOT the worlds width and height! They are just the size
         //of your viewport...
         viewport = new FitViewport(IcyGame.WIDTH,IcyGame.HEIGHT, cam);
         cam.position.set(viewport.getWorldWidth()/2, viewport.getWorldHeight()/2, 0);
 
         TmxMapLoader mapLoader = new TmxMapLoader();
-        TiledMap map = mapLoader.load("Map/Files/Files/new_map.tmx");
+        TiledMap map = mapLoader.load("Map V2/new_map.tmx");
         renderer = new OrthogonalTiledMapRenderer(map);
-
-        platforms = new ArrayList<Rectangle>();
-        for (MapObject object : map.getLayers().get(3).getObjects().getByType(RectangleMapObject.class)){
-            platforms.add(((RectangleMapObject)object).getRectangle());
+        hitboxes = new HashMap<String, ArrayList<Rectangle>>();
+        tileLayers = new HashMap<String, TiledMapTileLayer>();
+        for (MapLayer layer: map.getLayers()) {
+            if(validHitboxes.contains(layer.getName())){
+                hitboxes.put(layer.getName(),new ArrayList<Rectangle>());
+                for (MapObject object : layer.getObjects().getByType(RectangleMapObject.class)){
+                    hitboxes.get(layer.getName()).add(((RectangleMapObject)object).getRectangle());
+                }
+            }
+            if(validTileLayers.contains(layer.getName())){
+                tileLayers.put(layer.getName(),(TiledMapTileLayer)layer);
+            }
         }
     }
 
@@ -80,7 +99,7 @@ public class PlayScreen extends Screen {
                     player1.setOnGround(false);
                 }
             }
-            player1.getVelocity().x = -Gdx.input.getAccelerometerX() * 200;
+            player1.getVelocity().x = Gdx.input.getRoll()*15;
         }
     }
 
@@ -90,8 +109,22 @@ public class PlayScreen extends Screen {
         handleInput();
         player1.updateVelocity();
         player1.updatePosition(deltaTime);
-        player1.checkPlatformCollision(platforms);
-        cam.position.y += 0.5;
+        if(player1.getPosition().y + player1.getSize().y < cam.position.y-cam.viewportHeight/2 ){
+            game.setScreen(new MenuScreen(game));
+        }
+
+        player1.checkPlatformCollision(hitboxes.get("platformsHitbox"));
+        //this can be moved into the players coin collision checker when the PlayScreen is converted to singleton
+        ArrayList<Rectangle> coins = hitboxes.get("coinsHitbox");
+        int removeID = player1.checkCoinCollision(coins);
+        if(removeID != -1){
+            int x = Math.round(coins.get(removeID).getX()/32);
+            int y = Math.round(coins.get(removeID).getY()/32);
+            tileLayers.get("coins").getCell(x,y).setTile(null);
+            coins.remove(removeID);
+        }
+
+        cam.position.y += 1;
         cam.update();
         renderer.setView(cam);
         timeElapsed += deltaTime;

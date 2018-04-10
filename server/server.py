@@ -26,7 +26,7 @@ def create_lobby(data):
     game = Game(room, username, level, power_ups)
     games[room] = game
     print("Room created on server:", username, room, level, power_ups)
-    emit('createRes', {'pid': 0, 'room': room}, room=room)
+    emit('createRes', {'pid': 0, 'host': games[room].getHost(), 'room': room}, room=room)
 
 
 @socketio.on('join')
@@ -37,8 +37,9 @@ def on_join(data):
     games[room].join(Player(username))
     send(username + ' has entered the room.', room=room)
     print("Player joined:", username, room)
-    emit('joinRes', {'pid': 1, 'room': room}, room=room)
+    emit('joinRes', {'pid': 1, 'room': room, 'host': games[room].getHost(), 'username': username}, room=room)
     emit('opponentJoined', {'data': username}, room=room)
+    
 
 @socketio.on('leave')
 def on_leave(data):
@@ -46,6 +47,7 @@ def on_leave(data):
     room = data['room']
     leave_room(room)
     send(username + ' has left the room.', room=room)
+    print("Player left:", username, room)
 
 
 @socketio.on('test')
@@ -56,6 +58,7 @@ def test(data):
 @socketio.on('pos')
 def pos(data):
     games[data['room']].update(data['id'], data['pos'])
+    emit('posRes', {'id': data['id'], 'pos': data['pos']})
 
 
 if __name__ == '__main__':

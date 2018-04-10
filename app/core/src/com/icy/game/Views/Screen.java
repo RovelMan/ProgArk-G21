@@ -3,9 +3,6 @@ package com.icy.game.Views;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.icy.game.IcyGame;
 
-/**
- * Created by jotde on 13.03.2018.
- */
 
 public abstract class Screen implements com.badlogic.gdx.Screen {
     protected final IcyGame game;

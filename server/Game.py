@@ -17,3 +17,6 @@ class Game:
         self.players[player].update(pos)
         pos = 1 - player
         emit('pos', pos)
+
+    def getHost(self):
+        return self.players[0].getUsername()

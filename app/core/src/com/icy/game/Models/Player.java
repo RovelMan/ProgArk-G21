@@ -16,13 +16,14 @@ public class Player extends TextureHolder {
     private float jumpForce;
     private boolean onGround;
     private int direction;
+    private static final int MAXYVELOCITY = 800;
     public Player(Vector2 scale, String path){
         super(scale,path);
         velocity = new Vector2(0,0);
         position = new Vector2(0,40);
         hitBox = new Rectangle(position.x,position.y,size.x,size.y);
         gravity = -100f;
-        jumpForce = 1000f;
+        jumpForce = 1500f;
         onGround = false;
         standingOnPlatform = null;
         direction = 1;
@@ -52,7 +53,7 @@ public class Player extends TextureHolder {
         return position;
     }
 
-    public void setDirection(int direction) {
+    private void setDirection(int direction) {
         this.direction = direction;
     }
 
@@ -61,7 +62,10 @@ public class Player extends TextureHolder {
             this.getVelocity().y = 0;
         }
         else{
-            this.getVelocity().y += this.gravity;
+            if(this.getVelocity().y > - this.MAXYVELOCITY){
+                this.getVelocity().y += this.gravity;
+            }
+
         }
     }
 
@@ -83,6 +87,15 @@ public class Player extends TextureHolder {
         }
     }
 
+    public int checkCoinCollision(ArrayList<Rectangle> coins){
+        for (Rectangle coin : coins) {
+            if (this.hitBox.overlaps(coin)) {
+                return coins.indexOf(coin);
+            }
+        }
+        return -1;
+    }
+
     public void checkPlatformCollision(ArrayList<Rectangle> platforms) {
         boolean checkCollision = true;
         if(standingOnPlatform != null){
@@ -96,7 +109,7 @@ public class Player extends TextureHolder {
         }
         if (checkCollision){
             for (Rectangle platform : platforms) {
-                if(this.hitBox.overlaps(platform) && this.getVelocity().y < 0){
+                if(this.hitBox.overlaps(platform) && this.getVelocity().y < 0 && this.getPosition().y > platform.getY()){
                     this.onGround = true;
                     this.position.y = platform.y+platform.height-1;
                     this.standingOnPlatform = platform;
