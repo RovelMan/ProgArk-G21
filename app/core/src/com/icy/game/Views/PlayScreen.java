@@ -19,6 +19,8 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.icy.game.IcyGame;
 import com.icy.game.Models.Player;
 
+import org.json.JSONException;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -28,6 +30,7 @@ import java.util.Map;
 
 public class PlayScreen extends Screen {
     private Player player1;
+    private Player player2;
     private OrthographicCamera cam;
     private Viewport viewport;
     private float timeElapsed;
@@ -43,6 +46,7 @@ public class PlayScreen extends Screen {
     PlayScreen(IcyGame game) {
         super(game);
         player1 = new Player(new Vector2(0.07f,0.5f),"running_animation/running_animation.atlas");
+        player2 = new Player(new Vector2(0.07f,0.5f),"running_animation/running_animation.atlas");
         cam = new OrthographicCamera();
         //worldWidth and worldHeight is NOT the worlds width and height! They are just the size
         //of your viewport...
@@ -109,9 +113,25 @@ public class PlayScreen extends Screen {
         handleInput();
         player1.updateVelocity();
         player1.updatePosition(deltaTime);
+        try {
+            game.connection.sendPosition(
+                game.connection.getRoomName(),
+                game.connection.getPlayerId(),
+                player1.getPosition(),
+                player1.getVelocity()
+            );
+        } catch (JSONException e) {
+            System.out.println("Something wen't wrong. Ups");
+        }
+
         if(player1.getPosition().y + player1.getSize().y < cam.position.y-cam.viewportHeight/2 ){
             game.setScreen(new MenuScreen(game));
         }
+
+        player2.getPosition().x = game.connection.getOpponentPos().x;
+        player2.getVelocity().y = game.connection.getOpponentPos().y;
+        player2.getPosition().x = game.connection.getOpponentPos().x;
+        player2.getVelocity().y = game.connection.getOpponentPos().y;
 
         player1.checkPlatformCollision(hitboxes.get("platformsHitbox"));
         //this can be moved into the players coin collision checker when the PlayScreen is converted to singleton
@@ -124,7 +144,7 @@ public class PlayScreen extends Screen {
             coins.remove(removeID);
         }
 
-        cam.position.y += 1;
+        //cam.position.y += 1;
         cam.update();
         renderer.setView(cam);
         timeElapsed += deltaTime;
@@ -139,17 +159,28 @@ public class PlayScreen extends Screen {
         renderer.render();
         game.batch.setProjectionMatrix(cam.combined);
         game.batch.begin();
-        TextureRegion frame = (TextureRegion) player1.getAnimation().getKeyFrame(timeElapsed,true);
-        boolean flip = (player1.getDirection() == -1);
+        TextureRegion frame1 = (TextureRegion) player1.getAnimation().getKeyFrame(timeElapsed,true);
+        TextureRegion frame2 = (TextureRegion) player2.getAnimation().getKeyFrame(timeElapsed,true);
+        boolean flip1 = (player1.getDirection() == -1);
+        boolean flip2 = (player2.getDirection() == -1);
         game.batch.draw(
-                frame,
-                flip ?  player1.getPosition().x + player1.getSize().x :
+                frame1,
+                flip1 ?  player1.getPosition().x + player1.getSize().x :
                         player1.getPosition().x,
                         player1.getPosition().y,
-                flip ? -player1.getSize().x :
+                flip1 ? -player1.getSize().x :
                         player1.getSize().x,
                         player1.getSize().y
-                );
+        );
+        game.batch.draw(
+                frame2,
+                flip2 ?  player2.getPosition().x + player2.getSize().x :
+                        player2.getPosition().x,
+                player2.getPosition().y,
+                flip2 ? -player2.getSize().x :
+                        player2.getSize().x,
+                player2.getSize().y
+        );
         game.batch.end();
 
     }

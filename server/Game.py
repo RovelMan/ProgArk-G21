@@ -13,10 +13,8 @@ class Game:
     def join(self, player):
         self.players.append(player)
 
-    def update(self, player, pos):
-        self.players[player].update(pos)
-        pos = 1 - player
-        emit('pos', pos)
+    def update(self, player, pos, vel):
+        self.players[player].update(pos, vel)
 
     def getHost(self):
         return self.players[0].getUsername()
