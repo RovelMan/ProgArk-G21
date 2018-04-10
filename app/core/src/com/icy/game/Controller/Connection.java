@@ -22,10 +22,16 @@ public class Connection {
     public Connection(IcyGame game, String address) {
         try {
             socket = IO.socket(address);
-            socket.on(Socket.EVENT_CONNECT, args -> {
-                System.out.println("Connected to server");
-            }).on(Socket.EVENT_DISCONNECT, (Object... args) -> {
-                System.out.println("Connection lost");
+            socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    System.out.println("Connected to server");
+                }
+            }).on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    System.out.println("Connection lost");
+                }
             }).on("createRes", new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
@@ -35,33 +41,37 @@ public class Connection {
                         roomHost = data.getString("host");
                         room = data.getString("room");
                         System.out.println("Lobby created! Your ID: " + playerId + "\tRoom name: " + data.getString("room"));
-
                         // game.setScreen(new LobbyScreen(game, getPlayerId(), getRoomHost(), null, getRoomName()));
-
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 }
-            }).on("opponentJoined", args -> {
-                JSONObject data = (JSONObject) args[0];
-                try {
-                    String res = data.getString("data");
-                    System.out.println(res + " joined the lobby!");
-                    playerTwoUsername = res;
-                    LobbyScreen.addPlayerTwo(playerTwoUsername);
-                } catch (JSONException e) {
-                    e.printStackTrace();
+            }).on("opponentJoined", new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    JSONObject data = (JSONObject) args[0];
+                    try {
+                        String res = data.getString("data");
+                        System.out.println(res + " joined the lobby!");
+                        playerTwoUsername = res;
+                        LobbyScreen.addPlayerTwo(playerTwoUsername);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
-            }).on("joinRes", args -> {
-                JSONObject data = (JSONObject) args[0];
-                try {
-                    playerId = Integer.parseInt(data.getString("pid"));
-                    roomHost = data.getString("host");
-                    room = data.getString("room");
-                    playerTwoUsername = data.getString("username");
-                    System.out.println("Lobby joined! Your ID: " + playerId + "\tRoom name: " + room + "\tHost: " + roomHost);
-                } catch (JSONException e) {
-                    e.printStackTrace();
+            }).on("joinRes", new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    JSONObject data = (JSONObject) args[0];
+                    try {
+                        playerId = Integer.parseInt(data.getString("pid"));
+                        roomHost = data.getString("host");
+                        room = data.getString("room");
+                        playerTwoUsername = data.getString("username");
+                        System.out.println("Lobby joined! Your ID: " + playerId + "\tRoom name: " + room + "\tHost: " + roomHost);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             });
             socket.connect();

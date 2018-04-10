@@ -47,13 +47,13 @@ public class MenuScreen extends Screen {
         Table table = new Table();
         table.center();
         table.setFillParent(true);
-        table.add(joinBtn).expandX().size(IcyGame.WIDTH, IcyGame.HEIGHT/5);
+        table.add(joinBtn).expandX().size(IcyGame.WIDTH*2, IcyGame.HEIGHT/2);
         table.row();
-        table.add(createBtn).expandX().size(IcyGame.WIDTH, IcyGame.HEIGHT/5);
+        table.add(createBtn).expandX().size(IcyGame.WIDTH*2, IcyGame.HEIGHT/2);
         table.row();
-        table.add(helpBtn).expandX().size(IcyGame.WIDTH, IcyGame.HEIGHT/5);
+        table.add(helpBtn).expandX().size(IcyGame.WIDTH*2, IcyGame.HEIGHT/2);
         table.row();
-        table.add(settingsBtn).expandX().size(IcyGame.WIDTH/2, IcyGame.HEIGHT/5);
+        table.add(settingsBtn).expandX().size(IcyGame.WIDTH, IcyGame.HEIGHT/2);
         table.pack();
         stage.addActor(table);
     }
@@ -95,7 +95,7 @@ public class MenuScreen extends Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         game.batch.begin();
-        game.batch.draw(background, 0, 0, round(IcyGame.WIDTH*1.75), round(IcyGame.HEIGHT*1.75));
+        game.batch.draw(background, 0, 0, round(Gdx.graphics.getWidth()), round(Gdx.graphics.getHeight()));
         game.batch.end();
 
         update(delta);
