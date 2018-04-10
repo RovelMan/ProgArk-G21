@@ -99,7 +99,7 @@ public class PlayScreen extends Screen {
                     player1.setOnGround(false);
                 }
             }
-            player1.getVelocity().x = -Gdx.input.getAccelerometerX() * 200;
+            player1.getVelocity().x = Gdx.input.getRoll()*15;
         }
     }
 
