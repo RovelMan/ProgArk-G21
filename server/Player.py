@@ -8,7 +8,6 @@ class Player:
     def update(self, pos, vel):
         self.pos = pos
         self.vel = vel
-        print("Position updated", pos, vel)
-
+        
     def getUsername(self):
         return self.username

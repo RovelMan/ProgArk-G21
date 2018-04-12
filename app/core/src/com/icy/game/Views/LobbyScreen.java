@@ -96,7 +96,7 @@ public class LobbyScreen extends Screen {
         }
         if (players[0] != null && players[1] != null) {
             System.out.println("Both players joined. Lobby full");
-            game.setScreen(new PlayScreen(game));
+            game.setScreen(new PlayScreen(game, this.playerId));
         }
     }
 

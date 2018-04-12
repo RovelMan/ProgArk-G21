@@ -34,6 +34,7 @@ public class PlayScreen extends Screen {
     private OrthographicCamera cam;
     private Viewport viewport;
     private float timeElapsed;
+    private int playerId;
 
     private OrthogonalTiledMapRenderer renderer;
     private Map<String,ArrayList<Rectangle>> hitboxes;
@@ -43,8 +44,9 @@ public class PlayScreen extends Screen {
     private static final List<String> validTileLayers =
             Collections.unmodifiableList(Arrays.asList("platforms", "logPlatforms","coins"));
 
-    PlayScreen(IcyGame game) {
+    PlayScreen(IcyGame game, int playerId) {
         super(game);
+        this.playerId = playerId;
         player1 = new Player(new Vector2(0.07f,0.5f),"running_animation/running_animation.atlas");
         player2 = new Player(new Vector2(0.07f,0.5f),"running_animation/running_animation.atlas");
         cam = new OrthographicCamera();
@@ -113,10 +115,11 @@ public class PlayScreen extends Screen {
         handleInput();
         player1.updateVelocity();
         player1.updatePosition(deltaTime);
+        System.out.println("THIS PLAYER: "+ this.playerId);
         try {
             game.connection.sendPosition(
                 game.connection.getRoomName(),
-                game.connection.getPlayerId(),
+                this.playerId,
                 player1.getPosition(),
                 player1.getVelocity()
             );

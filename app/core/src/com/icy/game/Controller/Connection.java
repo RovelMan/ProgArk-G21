@@ -84,6 +84,7 @@ public class Connection {
                         opponentPos.y = (float) data.getDouble("posY");
                         opponentVel.x = (float) data.getDouble("velX");
                         opponentVel.y = (float) data.getDouble("velY");
+                        System.out.println(data.getInt("id"));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

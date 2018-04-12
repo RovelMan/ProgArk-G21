@@ -58,7 +58,11 @@ def test(data):
 @socketio.on('pos')
 def pos(data):
     games[data['room']].update(data['id'], [data['posX'], data['posY']], [data['velX'], data['velY']])
-    emit('posRes', {'posX': data['posX'], 'posY': data['posY'], 'velX': data['velX'], 'velY': data['velY']})
+    print(data['id'])
+    if (data['id' == 0]:
+        emit('posRes1', {'id': data['id'], 'posX': data['posX'], 'posY': data['posY'], 'velX': data['velX'], 'velY': data['velY']})
+    else:
+        emit('posRes0', {'id': data['id'], 'posX': data['posX'], 'posY': data['posY'], 'velX': data['velX'], 'velY': data['velY']})
 
 if __name__ == '__main__':
     socketio.run(app, host="0.0.0.0", port=7676)

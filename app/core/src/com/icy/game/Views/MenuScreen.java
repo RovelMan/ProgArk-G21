@@ -74,7 +74,7 @@ public class MenuScreen extends Screen {
             dispose();
         } else if (btnPressed[3]) {
             System.out.println("Settings button pressed");
-            game.setScreen(new PlayScreen(game));
+            game.setScreen(new PlayScreen(game, 0));
             dispose();
         }
     }
