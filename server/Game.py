@@ -6,7 +6,7 @@ class Game:
 
     def __init__(self, name, playerOne, level, powerUps):
         self.name = name
-        self.players = [Player(playerOne)]
+        self.players = [Player(playerOne[0], playerOne[1])]
         self.level = level
         self.powerUps = powerUps
 
