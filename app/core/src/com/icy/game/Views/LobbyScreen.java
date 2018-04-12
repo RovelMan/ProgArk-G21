@@ -1,6 +1,7 @@
 package com.icy.game.Views;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -11,26 +12,26 @@ import com.icy.game.IcyGame;
 
 import org.json.JSONException;
 
-public class LobbyScreen extends Screen {
+public class LobbyScreen implements Screen {
 
     private static int playerId;
     private static String[] players = {null, null};
     private static String room;
+    private static IcyGame game;
 
     private static Stage stage;
 
-    public LobbyScreen(IcyGame game, int newPlayerId, String host, String playerTwo, String roomName) {
-        super(game);
+    public LobbyScreen(IcyGame g, int newPlayerId, String host, String playerTwo, String roomName) {
         playerId = newPlayerId;
         players[0] = host;
+        game = g;
         if (playerTwo != null) {
             addPlayerTwo(playerTwo);
         }
-        System.out.println(playerId + " PLAYERS IN ROOM " + players[0] + " " + players[1]);
+        System.out.println(playerId + 1 + " PLAYERS IN ROOM " + players[0] + " " + players[1]);
         room = roomName;
 
         stage = new Stage();
-
         updateLobby(playerTwo);
     }
 
@@ -84,37 +85,19 @@ public class LobbyScreen extends Screen {
     }
 
     @Override
-    public void handleInput() {
-        if (Gdx.input.justTouched()) {
-            try {
-                leaveLobby();
-            } catch (JSONException e) {
-                System.out.println("Unable to leave..?");
-            }
-            game.setScreen(new MenuScreen(game));
-            dispose();
-        }
-        if (players[0] != null && players[1] != null) {
-            System.out.println("Both players joined. Lobby full");
-            game.setScreen(new PlayScreen(game, this.playerId));
-        }
-    }
-
-    @Override
-    public void update(float deltaTime) {
-        handleInput();
-    }
-
-    @Override
     public void show() {
 
     }
 
     @Override
     public void render(float delta) {
+        if (players[0] != null && players[1] != null) {
+            System.out.println("Both players joined. Lobby full");
+            game.setScreen(new PlayScreen(game, this.playerId));
+        }
+
         Gdx.gl.glClearColor(1, 0, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        update(delta);
         stage.draw();
     }
 

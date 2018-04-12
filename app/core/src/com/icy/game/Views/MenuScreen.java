@@ -1,6 +1,7 @@
 package com.icy.game.Views;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -12,15 +13,14 @@ import com.icy.game.IcyGame;
 
 import static java.lang.Math.round;
 
-public class MenuScreen extends Screen {
+public class MenuScreen implements Screen {
 
-    //Keeps track of which button gets pressed
-    private boolean[] btnPressed = {false, false, false, false};
     private Stage stage;
     private Texture background;
+    private IcyGame game;
 
-    public MenuScreen(IcyGame game) {
-        super(game);
+    public MenuScreen(IcyGame g) {
+        game = g;
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
         background = new Texture("background.png");
@@ -38,8 +38,24 @@ public class MenuScreen extends Screen {
             buttons[i].addListener(new InputListener() {
                 @Override
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                    btnPressed[j] = true;
-                    return true;
+                    if (j == 0) {
+                        System.out.println("Join button pressed");
+                        game.setScreen(new JoinScreen(game));
+                        dispose();
+                    } else if (j == 1) {
+                        System.out.println("Create button pressed");
+                        game.setScreen(new CreateScreen(game));
+                        dispose();
+                    } else if (j == 2) {
+                        System.out.println("Help button pressed");
+                        game.setScreen(new TutorialScreen(game));
+                        dispose();
+                    } else if (j == 3) {
+                        System.out.println("Settings button pressed");
+                        game.setScreen(new PlayScreen(game, 0));
+                        dispose();
+                    }
+                    return false;
                 }
             });
         }
@@ -47,41 +63,15 @@ public class MenuScreen extends Screen {
         Table table = new Table();
         table.center();
         table.setFillParent(true);
-        table.add(joinBtn).expandX().size(IcyGame.WIDTH*2, IcyGame.HEIGHT/2);
+        table.add(joinBtn).expandX().size(IcyGame.WIDTH/4, IcyGame.HEIGHT/6);
         table.row();
-        table.add(createBtn).expandX().size(IcyGame.WIDTH*2, IcyGame.HEIGHT/2);
+        table.add(createBtn).expandX().size(IcyGame.WIDTH/4, IcyGame.HEIGHT/6);
         table.row();
-        table.add(helpBtn).expandX().size(IcyGame.WIDTH*2, IcyGame.HEIGHT/2);
+        table.add(helpBtn).expandX().size(IcyGame.WIDTH/4, IcyGame.HEIGHT/6);
         table.row();
-        table.add(settingsBtn).expandX().size(IcyGame.WIDTH, IcyGame.HEIGHT/2);
+        table.add(settingsBtn).expandX().size(IcyGame.WIDTH/4, IcyGame.HEIGHT/6);
         table.pack();
         stage.addActor(table);
-    }
-
-    @Override
-    public void handleInput() {
-        if (btnPressed[0]) {
-            System.out.println("Join button pressed");
-            game.setScreen(new JoinScreen(game));
-            dispose();
-        } else if (btnPressed[1]) {
-            System.out.println("Create button pressed");
-            game.setScreen(new CreateScreen(game));
-            dispose();
-        } else if (btnPressed[2]) {
-            System.out.println("Help button pressed");
-            game.setScreen(new TutorialScreen(game));
-            dispose();
-        } else if (btnPressed[3]) {
-            System.out.println("Settings button pressed");
-            game.setScreen(new PlayScreen(game, 0));
-            dispose();
-        }
-    }
-
-    @Override
-    public void update(float deltaTime) {
-        handleInput();
     }
 
     @Override
@@ -98,7 +88,6 @@ public class MenuScreen extends Screen {
         game.batch.draw(background, 0, 0, round(Gdx.graphics.getWidth()), round(Gdx.graphics.getHeight()));
         game.batch.end();
 
-        update(delta);
         stage.draw();
     }
 

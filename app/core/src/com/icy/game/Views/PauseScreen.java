@@ -1,24 +1,15 @@
 package com.icy.game.Views;
 
+import com.badlogic.gdx.Screen;
 import com.icy.game.IcyGame;
 
 /**
  * Created by jotde on 13.03.2018.
  */
 
-public class PauseScreen extends Screen {
+public class PauseScreen implements Screen {
 
     public PauseScreen(IcyGame game) {
-        super(game);
-    }
-
-    @Override
-    public void handleInput() {
-
-    }
-
-    @Override
-    public void update(float deltaTime) {
 
     }
 

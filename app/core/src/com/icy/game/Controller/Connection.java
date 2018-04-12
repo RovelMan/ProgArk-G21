@@ -1,5 +1,6 @@
 package com.icy.game.Controller;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.icy.game.IcyGame;
 import com.icy.game.Views.CreateScreen;
@@ -47,6 +48,12 @@ public class Connection {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+                    Gdx.app.postRunnable(new Runnable() {
+                        @Override
+                        public void run() {
+                            game.setScreen(new LobbyScreen(game, getPlayerId(), getRoomHost(), null, getRoomName()));
+                        }
+                    });
                 }
             }).on("opponentJoined", new Emitter.Listener() {
                 @Override
@@ -74,6 +81,14 @@ public class Connection {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+                    Gdx.app.postRunnable(new Runnable() {
+                        @Override
+                        public void run() {
+                            LobbyScreen lobby = new LobbyScreen(game, getPlayerId(), getRoomHost(), getPlayerTwoUsername(), getRoomName());
+                            lobby.joinLobby(getPlayerId(), getPlayerTwoUsername());
+                            game.setScreen(lobby);
+                        }
+                    });
                 }
             }).on("posRes", new Emitter.Listener() {
                 @Override

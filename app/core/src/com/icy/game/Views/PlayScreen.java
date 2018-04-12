@@ -2,6 +2,7 @@ package com.icy.game.Views;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -28,7 +29,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PlayScreen extends Screen {
+public class PlayScreen implements Screen {
+
+    private static IcyGame game;
     private Player player1;
     private Player player2;
     private OrthographicCamera cam;
@@ -44,8 +47,8 @@ public class PlayScreen extends Screen {
     private static final List<String> validTileLayers =
             Collections.unmodifiableList(Arrays.asList("platforms", "logPlatforms","coins"));
 
-    PlayScreen(IcyGame game, int playerId) {
-        super(game);
+    PlayScreen(IcyGame g, int playerId) {
+        game = g;
         this.playerId = playerId;
         player1 = new Player(new Vector2(0.07f,0.5f),"running_animation/running_animation.atlas");
         player2 = new Player(new Vector2(0.07f,0.5f),"running_animation/running_animation.atlas");
@@ -78,7 +81,6 @@ public class PlayScreen extends Screen {
         viewport.update(width,height);
     }
 
-    @Override
     public void handleInput() {
 
         if(IcyGame.USEDEBUG){
@@ -109,13 +111,11 @@ public class PlayScreen extends Screen {
         }
     }
 
-    @Override
     public void update(float deltaTime) {
 
         handleInput();
         player1.updateVelocity();
         player1.updatePosition(deltaTime);
-        System.out.println("THIS PLAYER: "+ this.playerId);
         try {
             game.connection.sendPosition(
                 game.connection.getRoomName(),
@@ -132,9 +132,9 @@ public class PlayScreen extends Screen {
         }
 
         player2.getPosition().x = game.connection.getOpponentPos().x;
-        player2.getVelocity().y = game.connection.getOpponentPos().y;
-        player2.getPosition().x = game.connection.getOpponentPos().x;
-        player2.getVelocity().y = game.connection.getOpponentPos().y;
+        player2.getVelocity().x = game.connection.getOpponentVel().x;
+        player2.getPosition().y = game.connection.getOpponentPos().y;
+        player2.getVelocity().y = game.connection.getOpponentVel().y;
 
         player1.checkPlatformCollision(hitboxes.get("platformsHitbox"));
         //this can be moved into the players coin collision checker when the PlayScreen is converted to singleton

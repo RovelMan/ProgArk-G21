@@ -1,6 +1,7 @@
 package com.icy.game.Views;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -19,15 +20,16 @@ import com.icy.game.IcyGame;
  * Created by jotde on 13.03.2018.
  */
 
-public class JoinScreen extends Screen {
+public class JoinScreen implements Screen {
 
     private TextField userInput, roomInput;
     private boolean[] btnPressed = {false, false};
     private Stage stage;
     private Connection connection;
+    private static IcyGame game;
 
-    public JoinScreen(IcyGame game) {
-        super(game);
+    public JoinScreen(IcyGame g) {
+        game = g;
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
         this.connection = game.connection;
@@ -54,12 +56,18 @@ public class JoinScreen extends Screen {
             buttons[i].addListener(new InputListener() {
                 @Override
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                    btnPressed[j] = true;
-                    return true;
-                }
-                @Override
-                public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                    btnPressed[j] = false;
+                    if (j == 0) {
+                        System.out.println("Back button pressed");
+                        game.setScreen(new MenuScreen(game));
+                        dispose();
+                    } else if (j == 1) {
+                        try {
+                            connection.joinLobby(userInput.getText(), roomInput.getText());
+                        } catch (Exception e) {
+                            System.out.println("Could not join a game: " + e);
+                        }
+                    }
+                    return false;
                 }
             });
         }
@@ -83,33 +91,6 @@ public class JoinScreen extends Screen {
     }
 
     @Override
-    public void handleInput() {
-        if (btnPressed[0]) {
-            System.out.println("Back button pressed");
-            game.setScreen(new MenuScreen(game));
-            dispose();
-        } else if (btnPressed[1]) {
-            try {
-                connection.joinLobby(userInput.getText(), roomInput.getText());
-            } catch (Exception e) {
-                System.out.println("Could not join a game: " + e);
-            }
-            while (connection.getRoomName() == null) {
-                System.out.println("Waiting for response");
-            }
-            LobbyScreen lobby = new LobbyScreen(game, connection.getPlayerId(), connection.getRoomHost(), connection.getPlayerTwoUsername(), connection.getRoomName());
-            lobby.joinLobby(connection.getPlayerId(), connection.getPlayerTwoUsername());
-            game.setScreen(lobby);
-            dispose();
-        }
-    }
-
-    @Override
-    public void update(float deltaTime) {
-        handleInput();
-    }
-
-    @Override
     public void show() {
 
     }
@@ -118,7 +99,6 @@ public class JoinScreen extends Screen {
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 1, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        update(delta);
         stage.draw();
     }
 

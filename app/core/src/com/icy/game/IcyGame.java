@@ -10,17 +10,14 @@ public class IcyGame extends Game {
 	//Change this to "true" to use keyboard controls
 	public static final boolean USEDEBUG = true;
 	public static final String TITLE = "2IcyBoiis";
-	public static int HEIGHT;
-	public static int WIDTH;
+	public static int HEIGHT = 800;
+	public static int WIDTH = 448;
 	public SpriteBatch batch;
 	public Connection connection;
-	private final String URL = "http://10.22.8.209:7676";
+	private final String URL = "http://127.0.0.1:7676";
 	
 	@Override
 	public void create () {
-		//world height is 3200
-		HEIGHT = 800;
-		WIDTH = 448;
 		batch = new SpriteBatch();
 		this.setScreen(new MenuScreen(this));
 		connection = new Connection(this, URL);
