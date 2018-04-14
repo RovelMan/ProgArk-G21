@@ -16,7 +16,7 @@ import io.socket.emitter.Emitter;
 public class Connection {
 
     private Socket socket;
-    private int playerId;
+    private int playerId = -1;
     private String playerTwoUsername, roomHost, room;
     private Vector2 opponentPos, opponentVel;
 
@@ -71,24 +71,27 @@ public class Connection {
             }).on("joinRes", new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
-                    JSONObject data = (JSONObject) args[0];
-                    try {
-                        playerId = Integer.parseInt(data.getString("pid"));
-                        roomHost = data.getString("host");
-                        room = data.getString("room");
-                        playerTwoUsername = data.getString("username");
-                        System.out.println("Lobby joined! Your ID: " + playerId + "\tRoom name: " + room + "\tHost: " + roomHost);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    Gdx.app.postRunnable(new Runnable() {
-                        @Override
-                        public void run() {
-                            LobbyScreen lobby = new LobbyScreen(game, getPlayerId(), getRoomHost(), getPlayerTwoUsername(), getRoomName());
-                            lobby.joinLobby(getPlayerId(), getPlayerTwoUsername());
-                            game.setScreen(lobby);
+                    if (playerId == -1) {
+                        JSONObject data = (JSONObject) args[0];
+                        try {
+                            playerId = Integer.parseInt(data.getString("pid"));
+                            roomHost = data.getString("host");
+                            room = data.getString("room");
+                            playerTwoUsername = data.getString("username");
+                            System.out.println("Lobby joined! Your ID: " + playerId + "\tRoom name: " + room + "\tHost: " + roomHost);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-                    });
+
+                        Gdx.app.postRunnable(new Runnable() {
+                            @Override
+                            public void run() {
+                                LobbyScreen lobby = new LobbyScreen(game, getPlayerId(), getRoomHost(), getPlayerTwoUsername(), getRoomName());
+                                lobby.joinLobby(getPlayerId(), getPlayerTwoUsername());
+                                game.setScreen(lobby);
+                            }
+                        });
+                    }
                 }
             }).on("posRes", new Emitter.Listener() {
                 @Override
@@ -99,7 +102,6 @@ public class Connection {
                         opponentPos.y = (float) data.getDouble("posY");
                         opponentVel.x = (float) data.getDouble("velX");
                         opponentVel.y = (float) data.getDouble("velY");
-                        System.out.println(data.getInt("id"));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

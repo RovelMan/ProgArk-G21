@@ -117,6 +117,7 @@ public class PlayScreen implements Screen {
         player1.updateVelocity();
         player1.updatePosition(deltaTime);
         try {
+            System.out.println(this.playerId);
             game.connection.sendPosition(
                 game.connection.getRoomName(),
                 this.playerId,

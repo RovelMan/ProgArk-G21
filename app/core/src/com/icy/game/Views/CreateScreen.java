@@ -38,7 +38,7 @@ public class CreateScreen implements Screen {
         Label userInputTxt = new Label("Username: ", new Label.LabelStyle(font, Color.WHITE));
         userInput = new TextField("Creator", style);
         Label roomInputTxt = new Label("Room name: ", new Label.LabelStyle(font, Color.WHITE));
-        roomInput = new TextField("DefaultRoom", style);
+        roomInput = new TextField("DefaultRoom2", style);
 
         Image backBtn = new Image(new Texture("backBtn.png"));
         Image createBtn = new Image(new Texture("createBtn.png"));
@@ -58,7 +58,7 @@ public class CreateScreen implements Screen {
                     } else if (j == 1) {
                         try {
                             connection.createLobby(userInput.getText(), roomInput.getText());
-
+                            dispose();
                         } catch (Exception e) {
                             System.out.println("Could not create a lobby: " + e);
                         }

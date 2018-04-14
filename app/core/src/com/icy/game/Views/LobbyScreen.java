@@ -25,6 +25,7 @@ public class LobbyScreen implements Screen {
         playerId = newPlayerId;
         players[0] = host;
         game = g;
+        Gdx.input.setInputProcessor(stage);
         if (playerTwo != null) {
             addPlayerTwo(playerTwo);
         }

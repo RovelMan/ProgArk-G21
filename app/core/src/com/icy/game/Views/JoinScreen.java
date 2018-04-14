@@ -43,7 +43,7 @@ public class JoinScreen implements Screen {
         Label userInputTxt = new Label(String.format("Username: "), new Label.LabelStyle(font, Color.WHITE));
         userInput = new TextField("Joiner", style);
         Label roomInputTxt = new Label(String.format("Room name: "), new Label.LabelStyle(font, Color.WHITE));
-        roomInput = new TextField("DefaultRoom", style);
+        roomInput = new TextField("DefaultRoom2", style);
 
         Image backBtn = new Image(new Texture("backBtn.png"));
         Image createBtn = new Image(new Texture("joinBtn.png"));
@@ -63,6 +63,7 @@ public class JoinScreen implements Screen {
                     } else if (j == 1) {
                         try {
                             connection.joinLobby(userInput.getText(), roomInput.getText());
+                            dispose();
                         } catch (Exception e) {
                             System.out.println("Could not join a game: " + e);
                         }

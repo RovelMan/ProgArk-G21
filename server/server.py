@@ -54,7 +54,6 @@ def test(data):
 @socketio.on('pos')
 def pos(data):
     games[data['room']].update(data['id'], [data['posX'], data['posY']], [data['velX'], data['velY']])
-
     opponent = games[data['room']].players[1 - data['id']].sid
     emit('posRes', {'id': data['id'], 'posX': data['posX'], 'posY': data['posY'], 'velX': data['velX'], 'velY': data['velY']}, room=opponent)
 
