@@ -51,7 +51,7 @@ public class PlayScreen implements Screen {
         game = g;
         this.playerId = playerId;
         player1 = new Player(new Vector2(0.07f,0.5f),"running_animation/running_animation.atlas");
-        player2 = new Player(new Vector2(0.07f,0.5f),"running_animation/running_animation.atlas");
+        player2 = new Player(new Vector2(0.07f,0.5f),"player2_running/p2_run_anim.atlas");
         cam = new OrthographicCamera();
         //worldWidth and worldHeight is NOT the worlds width and height! They are just the size
         //of your viewport...
@@ -148,7 +148,7 @@ public class PlayScreen implements Screen {
             coins.remove(removeID);
         }
 
-        //cam.position.y += 1;
+        cam.position.y += 1;
         cam.update();
         renderer.setView(cam);
         timeElapsed += deltaTime;
