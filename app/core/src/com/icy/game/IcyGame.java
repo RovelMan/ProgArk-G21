@@ -3,6 +3,7 @@ package com.icy.game;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.icy.game.Controller.Connection;
+import com.icy.game.Controller.SoundController;
 import com.icy.game.Views.MenuScreen;
 
 public class IcyGame extends Game {
@@ -15,11 +16,13 @@ public class IcyGame extends Game {
 	public SpriteBatch batch;
 	public Connection connection;
 	private final String URL = "http://192.168.1.2:7676";
+	public SoundController soundController;
 	
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
 		this.setScreen(new MenuScreen(this));
+		soundController = SoundController.getInstance();
 		connection = new Connection(this, URL);
 	}
 

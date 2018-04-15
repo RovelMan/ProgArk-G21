@@ -50,8 +50,8 @@ public class PlayScreen implements Screen {
     PlayScreen(IcyGame g, int playerId) {
         game = g;
         this.playerId = playerId;
-        player1 = new Player(new Vector2(0.07f,0.5f),"running_animation/running_animation.atlas");
-        player2 = new Player(new Vector2(0.07f,0.5f),"player2_running/p2_run_anim.atlas");
+        player1 = new Player(new Vector2(0.07f,0.5f),"running_animation/running_animation.atlas",game);
+        player2 = new Player(new Vector2(0.07f,0.5f),"player2_running/p2_run_anim.atlas",game);
         cam = new OrthographicCamera();
         //worldWidth and worldHeight is NOT the worlds width and height! They are just the size
         //of your viewport...
@@ -74,6 +74,8 @@ public class PlayScreen implements Screen {
                 tileLayers.put(layer.getName(),(TiledMapTileLayer)layer);
             }
         }
+        game.soundController.add("music","Sounds/music/music.mp3");
+        game.soundController.play("music");
     }
 
     @Override
@@ -95,16 +97,14 @@ public class PlayScreen implements Screen {
                 player1.getVelocity().x = 0;
             }
             if(Gdx.input.isKeyPressed(Input.Keys.SPACE) && player1.isOnGround()){
-                player1.getVelocity().y = player1.getJumpForce();
-                player1.setOnGround(false);
+                player1.jump();
             }
 
         }
         else{
             if (Gdx.input.justTouched()) {
                 if(player1.isOnGround()){
-                    player1.getVelocity().y = player1.getJumpForce();
-                    player1.setOnGround(false);
+                    player1.jump();
                 }
             }
             player1.getVelocity().x = Gdx.input.getRoll()*15;
@@ -129,6 +129,7 @@ public class PlayScreen implements Screen {
         }
 
         if(player1.getPosition().y + player1.getSize().y < cam.position.y-cam.viewportHeight/2 ){
+            game.soundController.remove("music");
             game.setScreen(new MenuScreen(game));
         }
 
