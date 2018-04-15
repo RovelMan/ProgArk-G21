@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -18,6 +19,7 @@ public class LobbyScreen implements Screen {
     private static String[] players = {null, null};
     private static String room;
     private static IcyGame game;
+    private Texture background;
 
     private static Stage stage;
 
@@ -31,6 +33,8 @@ public class LobbyScreen implements Screen {
         }
         System.out.println(playerId + 1 + " PLAYERS IN ROOM " + players[0] + " " + players[1]);
         room = roomName;
+
+        background = new Texture("NavButtons/background2.png");
 
         stage = new Stage();
         updateLobby(playerTwo);
@@ -66,16 +70,18 @@ public class LobbyScreen implements Screen {
             info = new Label("Opponent: " + playerTwo, new Label.LabelStyle(font, Color.WHITE));
         }
 
+        int width = Gdx.graphics.getWidth();
+
         Table table = new Table();
         table.center();
         table.setFillParent(true);
-        table.add(lobbyTxt).expandX().padBottom(10);
+        table.add(lobbyTxt).expandX().padBottom(10).width(width);
         table.row();
-        table.add(hostName).expandX().padBottom(10);
+        table.add(hostName).expandX().padBottom(10).width(width);
         table.row();
-        table.add(playerName).expandX().padBottom(10);
+        table.add(playerName).expandX().padBottom(10).width(width);
         table.row();
-        table.add(info).expandX().padBottom(10);
+        table.add(info).expandX().padBottom(10).width(width);
         table.pack();
         stage = new Stage();
         stage.addActor(table);
@@ -99,6 +105,9 @@ public class LobbyScreen implements Screen {
 
         Gdx.gl.glClearColor(1, 0, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        game.batch.begin();
+        game.batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        game.batch.end();
         stage.draw();
     }
 
