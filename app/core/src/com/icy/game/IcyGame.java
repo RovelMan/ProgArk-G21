@@ -12,6 +12,8 @@ public class IcyGame extends Game {
 	public static final String TITLE = "2IcyBoiis";
 	public static int HEIGHT;
 	public static int WIDTH;
+	// Use this as volume for all sounds
+	public static float VOLUME = 1.0f;
 	public SpriteBatch batch;
 	public Connection connection;
 	private final String URL = "http://10.22.40.108:7676";
