@@ -9,9 +9,11 @@ import com.icy.game.IcyGame;
 
 public class EndScreen implements Screen {
 
+    private static IcyGame game;
 
-    public EndScreen(IcyGame game) {
 
+    public EndScreen(IcyGame g) {
+        game = g;
     }
 
     @Override

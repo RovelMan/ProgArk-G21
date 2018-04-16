@@ -132,6 +132,10 @@ public class PlayScreen implements Screen {
         if(player1.getPosition().y + player1.getSize().y < cam.position.y-cam.viewportHeight/2 ){
             game.setScreen(new MenuScreen(game));
         }
+        if(player2.getPosition().y + player2.getSize().y < cam.position.y-cam.viewportHeight/2 ){
+            game.setScreen(new MenuScreen(game));
+        }
+
 
         player2.getPosition().x = game.connection.getOpponentPos().x;
         player2.getVelocity().x = game.connection.getOpponentVel().x;
