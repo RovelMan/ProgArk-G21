@@ -1,6 +1,7 @@
 package com.icy.game.Views;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -19,18 +20,22 @@ import com.icy.game.IcyGame;
  * Created by jotde on 13.03.2018.
  */
 
-public class JoinScreen extends Screen {
+public class JoinScreen implements Screen {
 
     private TextField userInput, roomInput;
     private boolean[] btnPressed = {false, false};
     private Stage stage;
     private Connection connection;
+    private static IcyGame game;
+    private Texture background;
 
-    public JoinScreen(IcyGame game) {
-        super(game);
+    public JoinScreen(IcyGame g) {
+        game = g;
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
         this.connection = game.connection;
+
+        background = new Texture("NavButtons/background2.png");
 
         BitmapFont font = new BitmapFont();
         font.getData().setScale(4);
@@ -41,72 +46,55 @@ public class JoinScreen extends Screen {
         Label userInputTxt = new Label(String.format("Username: "), new Label.LabelStyle(font, Color.WHITE));
         userInput = new TextField("Joiner", style);
         Label roomInputTxt = new Label(String.format("Room name: "), new Label.LabelStyle(font, Color.WHITE));
-        roomInput = new TextField("DefaultRoom", style);
+        roomInput = new TextField("DefaultRoom2", style);
 
-        Image backBtn = new Image(new Texture("backBtn.png"));
-        Image createBtn = new Image(new Texture("joinBtn.png"));
+        Image backBtn = new Image(new Texture("NavButtons/BACK.png"));
+        Image joinBtn = new Image(new Texture("NavButtons/JOIN.png"));
 
         //Buttons are easily added to this array
-        Image[] buttons = {backBtn, createBtn};
+        Image[] buttons = {backBtn, joinBtn};
 
         for (int i = 0; i < buttons.length; i++) {
             final int j = i;
             buttons[i].addListener(new InputListener() {
                 @Override
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                    btnPressed[j] = true;
-                    return true;
-                }
-                @Override
-                public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                    btnPressed[j] = false;
+                    if (j == 0) {
+                        System.out.println("Back button pressed");
+                        game.setScreen(new MenuScreen(game));
+                        dispose();
+                    } else if (j == 1) {
+                        try {
+                            connection.joinLobby(userInput.getText(), roomInput.getText());
+                            dispose();
+                        } catch (Exception e) {
+                            System.out.println("Could not join a game: " + e);
+                        }
+                    }
+                    return false;
                 }
             });
         }
 
+        int width = Gdx.graphics.getWidth();
+        int height = Gdx.graphics.getHeight();
+
         Table table = new Table();
         table.center();
         table.setFillParent(true);
-        table.add(userInputTxt).expandX().padBottom(10).size(IcyGame.WIDTH, IcyGame.HEIGHT/8);
+        table.add(userInputTxt).expandX().size(width/2, height/6);
         table.row();
-        table.add(userInput).expandX().padBottom(10).size(IcyGame.WIDTH, IcyGame.HEIGHT/8);
+        table.add(userInput).expandX().padBottom(10).size(width/2, height/8);
         table.row();
-        table.add(roomInputTxt).expandX().padBottom(10).size(IcyGame.WIDTH, IcyGame.HEIGHT/8);
+        table.add(roomInputTxt).expandX().size(width/2, height/6);
         table.row();
-        table.add(roomInput).expandX().padBottom(20).size(IcyGame.WIDTH, IcyGame.HEIGHT/8);
+        table.add(roomInput).expandX().padBottom(20).size(width/2, height/8);
         table.row();
-        table.add(createBtn).expandX().padBottom(10).size(IcyGame.WIDTH, IcyGame.HEIGHT/8);
+        table.add(joinBtn).expandX().padBottom(10).size(width/2, height/8);
         table.row();
-        table.add(backBtn).expandX().size(IcyGame.WIDTH, IcyGame.HEIGHT/8);
+        table.add(backBtn).expandX().size(width/2, height/8);
         table.pack();
         stage.addActor(table);
-    }
-
-    @Override
-    public void handleInput() {
-        if (btnPressed[0]) {
-            System.out.println("Back button pressed");
-            game.setScreen(new MenuScreen(game));
-            dispose();
-        } else if (btnPressed[1]) {
-            try {
-                connection.joinLobby(userInput.getText(), roomInput.getText());
-            } catch (Exception e) {
-                System.out.println("Could not join a game: " + e);
-            }
-            while (connection.getRoomName() == null) {
-                System.out.println("Waiting for response");
-            }
-            LobbyScreen lobby = new LobbyScreen(game, connection.getPlayerId(), connection.getRoomHost(), connection.getPlayerTwoUsername(), connection.getRoomName());
-            lobby.joinLobby(connection.getPlayerId(), connection.getPlayerTwoUsername());
-            game.setScreen(lobby);
-            dispose();
-        }
-    }
-
-    @Override
-    public void update(float deltaTime) {
-        handleInput();
     }
 
     @Override
@@ -118,7 +106,9 @@ public class JoinScreen extends Screen {
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 1, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        update(delta);
+        game.batch.begin();
+        game.batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        game.batch.end();
         stage.draw();
     }
 

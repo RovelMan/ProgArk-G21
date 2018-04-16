@@ -1,8 +1,10 @@
 package com.icy.game.Models;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.icy.game.Controller.SoundController;
 import com.icy.game.IcyGame;
 
 import java.util.ArrayList;
@@ -17,14 +19,17 @@ public class Player extends TextureHolder {
     private boolean onGround;
     private int direction;
     private static final int MAXYVELOCITY = 800;
-    public Player(Vector2 scale, String path){
+    private IcyGame game;
+
+    public Player(Vector2 scale, String path, IcyGame g){
         super(scale,path);
+        game = g;
         velocity = new Vector2(0,0);
-        position = new Vector2(0,40);
+        position = new Vector2(0,33);
         hitBox = new Rectangle(position.x,position.y,size.x,size.y);
         gravity = -100f;
         jumpForce = 1500f;
-        onGround = false;
+        onGround = true;
         standingOnPlatform = null;
         direction = 1;
     }
@@ -35,6 +40,13 @@ public class Player extends TextureHolder {
 
     public boolean isOnGround(){
         return onGround;
+    }
+
+    public void jump(){
+        this.velocity.y = this.getJumpForce();
+        this.setOnGround(false);
+        game.soundController.playEffect("jump");
+
     }
 
     public void setOnGround(boolean onGround) {
@@ -90,6 +102,7 @@ public class Player extends TextureHolder {
     public int checkCoinCollision(ArrayList<Rectangle> coins){
         for (Rectangle coin : coins) {
             if (this.hitBox.overlaps(coin)) {
+                game.soundController.playEffect("coin");
                 return coins.indexOf(coin);
             }
         }

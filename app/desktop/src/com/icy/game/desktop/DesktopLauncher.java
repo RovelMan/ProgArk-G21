@@ -11,6 +11,7 @@ public class DesktopLauncher {
 		config.height = IcyGame.HEIGHT;
 		config.width = IcyGame.WIDTH;
 		config.foregroundFPS = 60;
+		config.backgroundFPS = 0;
 		new LwjglApplication(new IcyGame(), config);
 	}
 }
