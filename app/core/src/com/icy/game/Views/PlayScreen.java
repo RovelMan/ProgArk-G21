@@ -130,7 +130,6 @@ public class PlayScreen implements Screen {
         }
 
         if(player1.getPosition().y + player1.getSize().y < cam.position.y-cam.viewportHeight/2 ){
-            game.soundController.removeMusic("music");
             game.setScreen(new MenuScreen(game));
         }
 
