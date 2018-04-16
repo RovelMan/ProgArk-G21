@@ -4,6 +4,8 @@ package com.icy.game.Controller;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.icy.game.IcyGame;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,10 +32,12 @@ public class SoundController {
     }
 
     public void playEffect(String name){
+        music.get(name).setVolume(IcyGame.VOLUME);
         sounds.get(name).play();
     }
 
     public void playMusic(String name){
+        music.get(name).setVolume(IcyGame.VOLUME);
         music.get(name).play();
     }
 

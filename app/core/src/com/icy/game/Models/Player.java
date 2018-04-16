@@ -18,6 +18,7 @@ public class Player extends TextureHolder {
     private float jumpForce;
     private boolean onGround;
     private int direction;
+    private boolean powerJump;
     private static final int MAXYVELOCITY = 800;
     private IcyGame game;
 
