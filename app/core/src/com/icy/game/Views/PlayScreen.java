@@ -37,6 +37,7 @@ public class PlayScreen implements Screen {
     private OrthographicCamera cam;
     private Viewport viewport;
     private float timeElapsed;
+    private float timePrevious;
     private int playerId;
 
     private OrthogonalTiledMapRenderer renderer;
@@ -111,20 +112,21 @@ public class PlayScreen implements Screen {
     }
 
     public void update(float deltaTime) {
-
+        timeElapsed += deltaTime;
         handleInput();
         player1.updateVelocity();
         player1.updatePosition(deltaTime);
-        try {
-            System.out.println(this.playerId);
-            game.connection.sendPosition(
-                game.connection.getRoomName(),
-                this.playerId,
-                player1.getPosition(),
-                player1.getVelocity()
-            );
-        } catch (JSONException e) {
-            System.out.println("Something wen't wrong. Ups");
+        if (timeElapsed - timePrevious > 0.03) {
+            try {
+                game.connection.sendPosition(
+                        game.connection.getRoomName(),
+                        this.playerId,
+                        player1.getPosition(),
+                        player1.getVelocity()
+                );
+            } catch (JSONException e) {
+                System.out.println("Something wen't wrong. Ups");
+            }
         }
 
         if(player1.getPosition().y + player1.getSize().y < cam.position.y-cam.viewportHeight/2 ){
@@ -148,10 +150,12 @@ public class PlayScreen implements Screen {
             coins.remove(removeID);
         }
 
-        cam.position.y += 1;
+        if (timeElapsed > 2) {
+            cam.position.y += 1;
+        }
+
         cam.update();
         renderer.setView(cam);
-        timeElapsed += deltaTime;
 
     }
 
