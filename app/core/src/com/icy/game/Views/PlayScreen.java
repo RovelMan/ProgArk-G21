@@ -43,9 +43,9 @@ public class PlayScreen implements Screen {
     private Map<String,ArrayList<Rectangle>> hitboxes;
     private Map<String,TiledMapTileLayer> tileLayers;
     private static final List<String> validHitboxes =
-            Collections.unmodifiableList(Arrays.asList("platformsHitbox", "logPlatformsHitbox","coinsHitbox"));
+            Collections.unmodifiableList(Arrays.asList("platformsHitbox", "logPlatformsHitbox","jumpPowerHitbox"));
     private static final List<String> validTileLayers =
-            Collections.unmodifiableList(Arrays.asList("platforms", "logPlatforms","coins"));
+            Collections.unmodifiableList(Arrays.asList("platforms", "logPlatforms","jumpPower"));
 
     PlayScreen(IcyGame g, int playerId) {
         game = g;
@@ -139,12 +139,12 @@ public class PlayScreen implements Screen {
 
         player1.checkPlatformCollision(hitboxes.get("platformsHitbox"));
         //this can be moved into the players coin collision checker when the PlayScreen is converted to singleton
-        ArrayList<Rectangle> coins = hitboxes.get("coinsHitbox");
+        ArrayList<Rectangle> coins = hitboxes.get("jumpPowerHitbox");
         int removeID = player1.checkCoinCollision(coins);
         if(removeID != -1){
             int x = Math.round(coins.get(removeID).getX()/32);
             int y = Math.round(coins.get(removeID).getY()/32);
-            tileLayers.get("coins").getCell(x,y).setTile(null);
+            tileLayers.get("jumpPower").getCell(x,y).setTile(null);
             coins.remove(removeID);
         }
 
