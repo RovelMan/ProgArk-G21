@@ -55,7 +55,7 @@ public class MenuScreen implements Screen {
                         dispose();
                     } else if (j == 3) {
                         System.out.println("Settings button pressed");
-                        game.setScreen(new PlayScreen(game, 0));
+                        game.setScreen(new SettingsScreen(game));
                         dispose();
                     }
                     return false;
