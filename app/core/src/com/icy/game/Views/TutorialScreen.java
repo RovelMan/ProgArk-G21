@@ -6,6 +6,11 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.icy.game.IcyGame;
 
 /**
@@ -15,8 +20,9 @@ import com.icy.game.IcyGame;
 public class TutorialScreen implements Screen{
 
     private IcyGame game;
-    private int page_counter = 0;
+    private int page_counter;
     private Viewport viewport;
+    private Stage stage;
     private Texture tutorial_1 = new Texture("tutorial/tutorial_1.png");
     private Texture tutorial_2 = new Texture("tutorial/tutorial_2.png");
     private Texture tutorial_3 = new Texture("tutorial/tutorial_3.png");
@@ -26,7 +32,9 @@ public class TutorialScreen implements Screen{
 
     public TutorialScreen(IcyGame game) {
         this.game = game;
-
+        page_counter = -1;
+        this.stage = new Stage();
+        Gdx.input.setInputProcessor(stage);
     }
 
     @Override
@@ -36,12 +44,12 @@ public class TutorialScreen implements Screen{
 
     @Override
     public void render(float delta) {
-        handleInput();
         Gdx.gl.glClearColor(1, 0, 1, 1);
-        batch.begin();
-        batch.draw(tutorial_screens[page_counter], 0,0);
-        batch.end();
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        handleInput();
+        batch.begin();
+        batch.draw(tutorial_screens[page_counter], 0,0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        batch.end();
 
     }
 
@@ -70,16 +78,16 @@ public class TutorialScreen implements Screen{
     }
 
     public void handleInput(){
-        if (Gdx.input.justTouched() && page_counter == 3) {
+        System.out.print(page_counter);
+        if(Gdx.input.justTouched()){
+            page_counter++;
+        }
+        if (page_counter == 4) {
+            page_counter = 0;
             game.setScreen(new MenuScreen(game));
             dispose();
         }
-        else if(Gdx.input.justTouched()){
-            System.out.print("does draw");
-            page_counter++;
-            //batch.begin();
-            //batch.end();
-        }
+
     }
 
 }
