@@ -32,8 +32,6 @@ public class Player extends TextureHolder {
         onGround = true;
         standingOnPlatform = null;
         direction = 1;
-        game.soundController.add("jump", "Sounds/effects/jump.mp3");
-        game.soundController.add("coin","Sounds/effects/coin.mp3");
     }
 
     public float getJumpForce() {
@@ -47,7 +45,7 @@ public class Player extends TextureHolder {
     public void jump(){
         this.velocity.y = this.getJumpForce();
         this.setOnGround(false);
-        game.soundController.play("jump");
+        game.soundController.playEffect("jump");
 
     }
 
@@ -104,7 +102,7 @@ public class Player extends TextureHolder {
     public int checkCoinCollision(ArrayList<Rectangle> coins){
         for (Rectangle coin : coins) {
             if (this.hitBox.overlaps(coin)) {
-                game.soundController.play("coin");
+                game.soundController.playEffect("coin");
                 return coins.indexOf(coin);
             }
         }

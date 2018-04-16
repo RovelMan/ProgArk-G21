@@ -74,8 +74,7 @@ public class PlayScreen implements Screen {
                 tileLayers.put(layer.getName(),(TiledMapTileLayer)layer);
             }
         }
-        game.soundController.add("music","Sounds/music/music.mp3");
-        game.soundController.play("music");
+        game.soundController.playMusic("music");
     }
 
     @Override
@@ -129,7 +128,7 @@ public class PlayScreen implements Screen {
         }
 
         if(player1.getPosition().y + player1.getSize().y < cam.position.y-cam.viewportHeight/2 ){
-            game.soundController.remove("music");
+            game.soundController.removeMusic("music");
             game.setScreen(new MenuScreen(game));
         }
 

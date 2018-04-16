@@ -23,6 +23,9 @@ public class IcyGame extends Game {
 		batch = new SpriteBatch();
 		this.setScreen(new MenuScreen(this));
 		soundController = SoundController.getInstance();
+		soundController.addEffect("jump", "Sounds/effects/jump.mp3");
+		soundController.addEffect("coin","Sounds/effects/coin.mp3");
+		soundController.addMusic("music","Sounds/music/music.mp3");
 		connection = new Connection(this, URL);
 	}
 
