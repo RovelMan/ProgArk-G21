@@ -1,6 +1,7 @@
 package com.icy.game.Views;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -12,23 +13,25 @@ import com.icy.game.IcyGame;
 
 import static java.lang.Math.round;
 
-public class MenuScreen extends Screen {
+public class MenuScreen implements Screen {
 
-    //Keeps track of which button gets pressed
-    private boolean[] btnPressed = {false, false, false, false};
     private Stage stage;
     private Texture background;
+    private IcyGame game;
+    private int move;
 
-    public MenuScreen(IcyGame game) {
-        super(game);
+    public MenuScreen(IcyGame g) {
+        game = g;
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
-        background = new Texture("background.png");
+        background = new Texture("NavButtons/background.png");
+        move = 0;
 
-        Image joinBtn = new Image(new Texture("Buttons/JoinBtn/JoinBtn_1.png"));
-        Image createBtn = new Image(new Texture("Buttons/CreateBtn/CreateBtn_1.png"));
-        Image settingsBtn = new Image(new Texture("Buttons/SettingsBtn.png"));
-        Image helpBtn = new Image(new Texture("Buttons/HelpBtn/HelpBtn_1.png"));
+        Image logo = new Image(new Texture("2ICYBOIIS_logo_pixelated.png"));
+        Image joinBtn = new Image(new Texture("NavButtons/JOIN.png"));
+        Image createBtn = new Image(new Texture("NavButtons/CREATE.png"));
+        Image settingsBtn = new Image(new Texture("NavButtons/SETTINGS.png"));
+        Image helpBtn = new Image(new Texture("NavButtons/HELP.png"));
 
         //Buttons are easily added to this array
         Image[] buttons = {joinBtn, createBtn, helpBtn, settingsBtn};
@@ -38,50 +41,45 @@ public class MenuScreen extends Screen {
             buttons[i].addListener(new InputListener() {
                 @Override
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                    btnPressed[j] = true;
-                    return true;
+                    if (j == 0) {
+                        System.out.println("Join button pressed");
+                        game.setScreen(new JoinScreen(game));
+                        dispose();
+                    } else if (j == 1) {
+                        System.out.println("Create button pressed");
+                        game.setScreen(new CreateScreen(game));
+                        dispose();
+                    } else if (j == 2) {
+                        System.out.println("Help button pressed");
+                        game.setScreen(new TutorialScreen(game));
+                        dispose();
+                    } else if (j == 3) {
+                        System.out.println("Settings button pressed");
+                        game.setScreen(new PlayScreen(game, 0));
+                        dispose();
+                    }
+                    return false;
                 }
             });
         }
 
+        int width = Gdx.graphics.getWidth();
+        int height = Gdx.graphics.getHeight();
+
         Table table = new Table();
         table.center();
         table.setFillParent(true);
-        table.add(joinBtn).expandX().size(IcyGame.WIDTH*2, IcyGame.HEIGHT/2);
+        table.add(logo).expandX().size(width, height/6).padBottom(20);
         table.row();
-        table.add(createBtn).expandX().size(IcyGame.WIDTH*2, IcyGame.HEIGHT/2);
+        table.add(joinBtn).expandX().size(width/3, height/8);
         table.row();
-        table.add(helpBtn).expandX().size(IcyGame.WIDTH*2, IcyGame.HEIGHT/2);
+        table.add(createBtn).expandX().size(width/2, height/8);
         table.row();
-        table.add(settingsBtn).expandX().size(IcyGame.WIDTH, IcyGame.HEIGHT/2);
+        table.add(helpBtn).expandX().size(width/3, height/8).padBottom(10);
+        table.row();
+        table.add(settingsBtn).expandX().size(width/6, height/8);
         table.pack();
         stage.addActor(table);
-    }
-
-    @Override
-    public void handleInput() {
-        if (btnPressed[0]) {
-            System.out.println("Join button pressed");
-            game.setScreen(new JoinScreen(game));
-            dispose();
-        } else if (btnPressed[1]) {
-            System.out.println("Create button pressed");
-            game.setScreen(new CreateScreen(game));
-            dispose();
-        } else if (btnPressed[2]) {
-            System.out.println("Help button pressed");
-            game.setScreen(new TutorialScreen(game));
-            dispose();
-        } else if (btnPressed[3]) {
-            System.out.println("Settings button pressed");
-            game.setScreen(new SettingsScreen(game));
-            dispose();
-        }
-    }
-
-    @Override
-    public void update(float deltaTime) {
-        handleInput();
     }
 
     @Override
@@ -93,12 +91,15 @@ public class MenuScreen extends Screen {
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
+        if (move < -1000) {
+            move = 0;
+        } else {
+            move--;
+        }
         game.batch.begin();
-        game.batch.draw(background, 0, 0, round(Gdx.graphics.getWidth()), round(Gdx.graphics.getHeight()));
+        game.batch.draw(background, 0, 0+move, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()*2);
         game.batch.end();
 
-        update(delta);
         stage.draw();
     }
 

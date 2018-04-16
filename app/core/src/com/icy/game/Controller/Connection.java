@@ -1,5 +1,7 @@
 package com.icy.game.Controller;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
 import com.icy.game.IcyGame;
 import com.icy.game.Views.CreateScreen;
 import com.icy.game.Views.LobbyScreen;
@@ -14,12 +16,13 @@ import io.socket.emitter.Emitter;
 public class Connection {
 
     private Socket socket;
-    private int playerId;
-    private String playerTwoUsername;
-    private String roomHost;
-    private String room;
+    private int playerId = -1;
+    private String playerTwoUsername, roomHost, room;
+    private Vector2 opponentPos, opponentVel;
 
     public Connection(IcyGame game, String address) {
+        opponentPos = new Vector2();
+        opponentVel = new Vector2();
         try {
             socket = IO.socket(address);
             socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
@@ -45,6 +48,12 @@ public class Connection {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+                    Gdx.app.postRunnable(new Runnable() {
+                        @Override
+                        public void run() {
+                            game.setScreen(new LobbyScreen(game, getPlayerId(), getRoomHost(), null, getRoomName()));
+                        }
+                    });
                 }
             }).on("opponentJoined", new Emitter.Listener() {
                 @Override
@@ -62,13 +71,37 @@ public class Connection {
             }).on("joinRes", new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
+                    if (playerId == -1) {
+                        JSONObject data = (JSONObject) args[0];
+                        try {
+                            playerId = Integer.parseInt(data.getString("pid"));
+                            roomHost = data.getString("host");
+                            room = data.getString("room");
+                            playerTwoUsername = data.getString("username");
+                            System.out.println("Lobby joined! Your ID: " + playerId + "\tRoom name: " + room + "\tHost: " + roomHost);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        Gdx.app.postRunnable(new Runnable() {
+                            @Override
+                            public void run() {
+                                LobbyScreen lobby = new LobbyScreen(game, getPlayerId(), getRoomHost(), getPlayerTwoUsername(), getRoomName());
+                                lobby.joinLobby(getPlayerId(), getPlayerTwoUsername());
+                                game.setScreen(lobby);
+                            }
+                        });
+                    }
+                }
+            }).on("posRes", new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
                     JSONObject data = (JSONObject) args[0];
                     try {
-                        playerId = Integer.parseInt(data.getString("pid"));
-                        roomHost = data.getString("host");
-                        room = data.getString("room");
-                        playerTwoUsername = data.getString("username");
-                        System.out.println("Lobby joined! Your ID: " + playerId + "\tRoom name: " + room + "\tHost: " + roomHost);
+                        opponentPos.x = (float) data.getDouble("posX");
+                        opponentPos.y = (float) data.getDouble("posY");
+                        opponentVel.x = (float) data.getDouble("velX");
+                        opponentVel.y = (float) data.getDouble("velY");
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -104,6 +137,17 @@ public class Connection {
         socket.emit("leave", game);
     }
 
+    public void sendPosition(final String roomName, final int playerId, final Vector2 pos, final Vector2 vel) throws JSONException{
+        JSONObject player = new JSONObject();
+        player.put("room", roomName);
+        player.put("id", playerId);
+        player.put("posX", (double) pos.x);
+        player.put("posY", (double) pos.y);
+        player.put("velX", (double) vel.x);
+        player.put("velY", (double) vel.y);
+        socket.emit("pos", player);
+    }
+
     public Socket getSocket() {
         return socket;
     }
@@ -124,4 +168,11 @@ public class Connection {
         return room;
     }
 
+    public Vector2 getOpponentPos() {
+        return opponentPos;
+    }
+
+    public Vector2 getOpponentVel() {
+        return opponentVel;
+    }
 }

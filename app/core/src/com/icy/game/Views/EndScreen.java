@@ -1,25 +1,16 @@
 package com.icy.game.Views;
 
+import com.badlogic.gdx.Screen;
 import com.icy.game.IcyGame;
 
 /**
  * Created by jotde on 13.03.2018.
  */
 
-public class EndScreen extends Screen {
+public class EndScreen implements Screen {
 
 
     public EndScreen(IcyGame game) {
-        super(game);
-    }
-
-    @Override
-    public void handleInput() {
-
-    }
-
-    @Override
-    public void update(float deltaTime) {
 
     }
 

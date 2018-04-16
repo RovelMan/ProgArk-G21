@@ -3,6 +3,7 @@ package com.icy.game.Views;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -23,14 +24,15 @@ import com.icy.game.IcyGame;
  * Created by jotde on 13.03.2018.
  */
 
-public class SettingsScreen extends Screen {
+public class SettingsScreen implements Screen {
 
     private Stage stage;
     private boolean backPressed, soundOff, checkboxTouched;
     private Image checked, unchecked;
+    private static IcyGame game;
 
-    public SettingsScreen(IcyGame game) {
-        super(game);
+    public SettingsScreen(IcyGame g) {
+        game = g;
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
         BitmapFont font = new BitmapFont();
