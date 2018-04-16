@@ -2,6 +2,7 @@ package com.icy.game.Views;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -12,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -24,30 +26,35 @@ import com.icy.game.IcyGame;
 public class SettingsScreen extends Screen {
 
     private Stage stage;
-    private CheckBox checkBox;
-    private boolean backPressed;
+    private boolean backPressed, soundOff, checkboxTouched;
+    private Image checked, unchecked;
 
     public SettingsScreen(IcyGame game) {
         super(game);
-        AssetManager assetManager = new AssetManager();
-        assetManager.load("data/flat_earth_ui.json", Skin.class);
-        assetManager.finishLoading();
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
+        BitmapFont font = new BitmapFont();
+        font.getData().setScale(5);
+        Label soundLabel = new Label("Sound", new Label.LabelStyle(font, Color.WHITE));
 
-        checkBox = new CheckBox(" Sound", assetManager.get("data/flat_earth_ui.json", Skin.class));
-        checkBox.setChecked(true);
+        checked = new Image(new Texture("Buttons/Checkbox/checkBox_checked.png"));
+        unchecked = new Image(new Texture("Buttons/Checkbox/checkBox_unchecked.png"));
 
-        checkBox.addListener(new ChangeListener() {
+        checked.addListener(new InputListener() {
             @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                if (!checkBox.isChecked()) {
-                    IcyGame.VOLUME = 0f;
-                }
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                soundOff = true;
+                checkboxTouched = true;
+                return true;
+            }
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                soundOff = false;
+                checkboxTouched = false;
             }
         });
 
-        Image backBtn = new Image(new Texture("backBtn.jpg"));
+        Image backBtn = new Image(new Texture("backBtn.png"));
         backBtn.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -63,7 +70,8 @@ public class SettingsScreen extends Screen {
         Table table = new Table();
         table.center();
         table.setFillParent(true);
-        table.add(checkBox).expandX().padBottom(10).size(IcyGame.WIDTH, IcyGame.HEIGHT/2);
+        table.add(checked).padBottom(10).size(IcyGame.WIDTH / 8, IcyGame.HEIGHT / 2);
+        table.add(soundLabel).padBottom(10).size(IcyGame.WIDTH / 2, IcyGame.HEIGHT / 2);
         table.row();
         table.row();
         table.row();
@@ -74,6 +82,12 @@ public class SettingsScreen extends Screen {
 
     @Override
     public void handleInput() {
+        if (checkboxTouched) {
+            if (soundOff) {
+                checked = unchecked;
+                IcyGame.VOLUME = 0;
+            }
+        }
         if (backPressed) {
             System.out.println("Back button pressed");;
             game.setScreen(new MenuScreen(game));
