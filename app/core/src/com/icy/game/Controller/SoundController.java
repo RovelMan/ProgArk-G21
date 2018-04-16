@@ -32,8 +32,7 @@ public class SoundController {
     }
 
     public void playEffect(String name){
-        music.get(name).setVolume(IcyGame.VOLUME);
-        sounds.get(name).play();
+        sounds.get(name).play(IcyGame.VOLUME);
     }
 
     public void playMusic(String name){

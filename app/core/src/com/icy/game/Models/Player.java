@@ -1,6 +1,7 @@
 package com.icy.game.Models;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -33,24 +34,62 @@ public class Player extends TextureHolder {
         onGround = true;
         standingOnPlatform = null;
         direction = 1;
+        powerJump = false;
     }
 
-    public float getJumpForce() {
+    private float getJumpForce() {
         return jumpForce;
     }
 
-    public boolean isOnGround(){
+    private boolean isOnGround(){
         return onGround;
     }
 
-    public void jump(){
-        this.velocity.y = this.getJumpForce();
-        this.setOnGround(false);
+    public void handleInput(){
+        if(IcyGame.USEDEBUG){
+
+            if(Gdx.input.isKeyPressed(Input.Keys.D)){
+                this.velocity.x = 500;
+            }
+            else if(Gdx.input.isKeyPressed(Input.Keys.A)){
+                this.velocity.x = -500;
+            }
+            else{
+                this.velocity.x = 0;
+            }
+            if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
+                this.jump();
+            }
+
+        }
+        else{
+            if (Gdx.input.justTouched()) {
+                if(this.isOnGround()){
+                    this.jump();
+                }
+            }
+            this.velocity.x = Gdx.input.getRoll()*15;
+        }
+    }
+
+    private void jump(){
+
+        if(this.isOnGround()){
+            this.velocity.y = this.getJumpForce();
+            this.setOnGround(false);
+
+        }
+        else if(powerJump && this.velocity.y < 0){
+            this.velocity.y = this.getJumpForce();
+            this.powerJump = false;
+            this.setOnGround(false);
+        }
+
         game.soundController.playEffect("jump");
 
     }
 
-    public void setOnGround(boolean onGround) {
+    private void setOnGround(boolean onGround) {
         this.onGround = onGround;
     }
 
@@ -75,7 +114,7 @@ public class Player extends TextureHolder {
             this.getVelocity().y = 0;
         }
         else{
-            if(this.getVelocity().y > - this.MAXYVELOCITY){
+            if(this.getVelocity().y > - MAXYVELOCITY){
                 this.getVelocity().y += this.gravity;
             }
 
@@ -100,11 +139,15 @@ public class Player extends TextureHolder {
         }
     }
 
-    public int checkCoinCollision(ArrayList<Rectangle> coins){
-        for (Rectangle coin : coins) {
-            if (this.hitBox.overlaps(coin)) {
-                game.soundController.playEffect("coin");
-                return coins.indexOf(coin);
+    public int checkPowerupCollision(ArrayList<Rectangle> powerups, String type){
+        for (Rectangle powerup : powerups) {
+            if (this.hitBox.overlaps(powerup)) {
+                if(type.equals("jump")){
+                    game.soundController.playEffect("coin");
+                    this.powerJump = true;
+                }
+
+                return powerups.indexOf(powerup);
             }
         }
         return -1;

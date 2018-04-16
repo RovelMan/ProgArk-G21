@@ -1,7 +1,6 @@
 package com.icy.game.Views;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -61,11 +60,11 @@ public class PlayScreen implements Screen {
         TmxMapLoader mapLoader = new TmxMapLoader();
         TiledMap map = mapLoader.load("Map V2/new_map.tmx");
         renderer = new OrthogonalTiledMapRenderer(map);
-        hitboxes = new HashMap<String, ArrayList<Rectangle>>();
-        tileLayers = new HashMap<String, TiledMapTileLayer>();
+        hitboxes = new HashMap<>();
+        tileLayers = new HashMap<>();
         for (MapLayer layer: map.getLayers()) {
             if(validHitboxes.contains(layer.getName())){
-                hitboxes.put(layer.getName(),new ArrayList<Rectangle>());
+                hitboxes.put(layer.getName(),new ArrayList<>());
                 for (MapObject object : layer.getObjects().getByType(RectangleMapObject.class)){
                     hitboxes.get(layer.getName()).add(((RectangleMapObject)object).getRectangle());
                 }
@@ -82,41 +81,12 @@ public class PlayScreen implements Screen {
         viewport.update(width,height);
     }
 
-    public void handleInput() {
+    private void update(float deltaTime) {
 
-        if(IcyGame.USEDEBUG){
-
-            if(Gdx.input.isKeyPressed(Input.Keys.D)){
-                player1.getVelocity().x = 500;
-            }
-            else if(Gdx.input.isKeyPressed(Input.Keys.A)){
-                player1.getVelocity().x = -500;
-            }
-            else{
-                player1.getVelocity().x = 0;
-            }
-            if(Gdx.input.isKeyPressed(Input.Keys.SPACE) && player1.isOnGround()){
-                player1.jump();
-            }
-
-        }
-        else{
-            if (Gdx.input.justTouched()) {
-                if(player1.isOnGround()){
-                    player1.jump();
-                }
-            }
-            player1.getVelocity().x = Gdx.input.getRoll()*15;
-        }
-    }
-
-    public void update(float deltaTime) {
-
-        handleInput();
+        player1.handleInput();
         player1.updateVelocity();
         player1.updatePosition(deltaTime);
         try {
-            System.out.println(this.playerId);
             game.connection.sendPosition(
                 game.connection.getRoomName(),
                 this.playerId,
@@ -137,21 +107,25 @@ public class PlayScreen implements Screen {
         player2.getVelocity().y = game.connection.getOpponentVel().y;
 
         player1.checkPlatformCollision(hitboxes.get("platformsHitbox"));
-        //this can be moved into the players coin collision checker when the PlayScreen is converted to singleton
-        ArrayList<Rectangle> jumpPowerups = hitboxes.get("jumpPowerHitbox");
-        int removeID = player1.checkCoinCollision(jumpPowerups);
-        if(removeID != -1){
-            int x = Math.round(jumpPowerups.get(removeID).getX()/32);
-            int y = Math.round(jumpPowerups.get(removeID).getY()/32);
-            tileLayers.get("jumpPower").getCell(x,y).setTile(null);
-            jumpPowerups.remove(removeID);
-        }
+
+        handlePowerup("jump",tileLayers.get("jumpPower"), hitboxes.get("jumpPowerHitbox"));
 
         cam.position.y += 1;
         cam.update();
         renderer.setView(cam);
         timeElapsed += deltaTime;
 
+    }
+
+    private void handlePowerup(String type, TiledMapTileLayer layer, ArrayList<Rectangle> hitbox){
+        ArrayList<Rectangle> jumpPowerups = hitbox;
+        int removeID = player1.checkPowerupCollision(jumpPowerups,type);
+        if(removeID != -1){
+            int x = Math.round(jumpPowerups.get(removeID).getX()/32);
+            int y = Math.round(jumpPowerups.get(removeID).getY()/32);
+            layer.getCell(x,y).setTile(null);
+            jumpPowerups.remove(removeID);
+        }
     }
 
     @Override
