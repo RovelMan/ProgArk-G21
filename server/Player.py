@@ -5,4 +5,5 @@ class Player:
 
     def join(self, username, game):
         self.username = username
-        self.game = null
+        self.game = game
+        game.join(self)

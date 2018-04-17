@@ -6,6 +6,7 @@ import time
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '321sfsdf23'
+app.config['DEBUG'] = True
 socketio = SocketIO(app)
 
 games = {}
@@ -16,11 +17,12 @@ players = {}
 def connect():
     sid = request.sid
     players[sid] = Player(sid)
-    print("Device connected - SID: " + str(sid))
+    print("Device connected - SID:", sid)
 
 
 @socketio.on('create')
 def create_lobby(data):
+    player = players[request.sid]
     username = data['username']
     room = data['room']
     level = data['level']
@@ -31,24 +33,24 @@ def create_lobby(data):
         emit('createRes', {'pid': -1, 'host': None, 'room': None}, room=request.sid)
     else:
         join_room(room)
-        game = Game(room, [username, request.sid], level, power_ups)
+        game = Game(room, level, power_ups)
+        player.join(username, game)
         games[room] = game
         print("Room created on server:", username, room, level, power_ups, request.sid)
-        emit('createRes', {'pid': 0, 'host': games[room].getHost(), 'room': room}, room=request.sid)
+        emit('createRes', {'pid': 0, 'host': games[room].getHost().username, 'room': room}, room=request.sid)
 
 
 @socketio.on('join')
 def on_join(data):
-    player = players['request.sid']
+    player = players[request.sid]
     username = data['username']
     room = data['room']
 
-    player.join(username, room)
-    games[room].join(player)
+    player.join(username, games[room])
 
     join_room(room)
     print("Player joined:", username, room)
-    emit('joinRes', {'pid': 1, 'room': room, 'host': games[room].getHost(), 'username': username}, room=room)
+    emit('joinRes', {'pid': 1, 'room': room, 'host': games[room].getHost().username, 'username': username}, room=room)
     emit('opponentJoined', {'data': username}, room=room)
 
 
