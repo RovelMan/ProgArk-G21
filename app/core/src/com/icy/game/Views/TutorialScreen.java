@@ -70,7 +70,6 @@ public class TutorialScreen implements Screen{
     }
 
     public void handleInput(){
-        System.out.print(page_counter);
         if(Gdx.input.justTouched()){
             page_counter++;
         }
