@@ -6,10 +6,14 @@ import time
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '321sfsdf23'
-app.config['DEBUG'] = True
 socketio = SocketIO(app)
 
 games = {}
+
+
+@socketio.on('connect')
+def connect():
+    print("Device connected - SID: ", request.sid)
 
 
 @socketio.on('create')
