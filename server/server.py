@@ -10,31 +10,56 @@ app.config['DEBUG'] = True
 socketio = SocketIO(app)
 
 games = {}
+players = {}
+
+
+@socketio.on('connect')
+def connect():
+    sid = request.sid
+    players[sid] = Player(sid)
+    print("Device connected - SID:", sid)
+
+
+@socketio.on('disconnect')
+def disconnect():
+    sid = request.sid
+    players.pop(sid)
+    print("Device disconnected - SID:", sid)
 
 
 @socketio.on('create')
 def create_lobby(data):
+    player = players[request.sid]
     username = data['username']
     room = data['room']
     level = data['level']
     power_ups = data['powerups']
-    join_room(room)
-    game = Game(room, [username, request.sid], level, power_ups)
-    games[room] = game
-    print("Room created on server:", username, room, level, power_ups, request.sid)
-    emit('createRes', {'pid': 0, 'host': games[room].getHost(), 'room': room}, room=request.sid)
+
+    if games.get(room):
+        print("Room allready exists:", room)
+        emit('createRes', {'pid': -1, 'host': None, 'room': None}, room=request.sid)
+    else:
+        join_room(room)
+        game = Game(room, level, power_ups)
+        player.join(username, game)
+        games[room] = game
+        print("Room created on server:", username, room, level, power_ups, request.sid)
+        emit('createRes', {'pid': 0, 'host': games[room].getHost().username, 'room': room}, room=request.sid)
 
 
 @socketio.on('join')
 def on_join(data):
+    player = players[request.sid]
     username = data['username']
     room = data['room']
+
+    player.join(username, games[room])
+
     join_room(room)
-    games[room].join(Player(username, request.sid))
-    send(username + ' has entered the room.', room=room)
     print("Player joined:", username, room)
-    emit('joinRes', {'pid': 1, 'room': room, 'host': games[room].getHost(), 'username': username}, room=room)
-    emit('opponentJoined', {'data': username}, room=room)
+    opponent = games[data['room']].players[1 - data['id']].sid
+    emit('joinRes', {'pid': 1, 'room': room, 'host': games[room].getHost().username, 'username': username}, room=request.sid)
+    emit('opponentJoined', {'data': username}, room=opponent)
 
 
 @socketio.on('leave')
@@ -46,16 +71,22 @@ def on_leave(data):
     print("Player left:", username, room)
 
 
+@socketio.on('gameOver')
+def test(data):
+    games.pop(data['room'])
+    print('\nGame over! - Winner:', data['winner'])
+
+
 @socketio.on('test')
 def test(data):
-    print('\nTest message received: ', data, "\n SID: ", request.sid)
+    print('\nTest message received: ', data, '\n SID: ', request.sid)
 
 
 @socketio.on('pos')
 def pos(data):
-    games[data['room']].update(data['id'], [data['posX'], data['posY']], [data['velX'], data['velY']])
     opponent = games[data['room']].players[1 - data['id']].sid
-    emit('posRes', {'id': data['id'], 'posX': data['posX'], 'posY': data['posY'], 'velX': data['velX'], 'velY': data['velY']}, room=opponent)
+    emit('posRes', {'posX': data['posX'], 'posY': data['posY'], 'velX': data['velX'], 'velY': data['velY']}, room=opponent)
+
 
 if __name__ == '__main__':
     socketio.run(app, host="0.0.0.0", port=7676)
