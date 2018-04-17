@@ -55,7 +55,14 @@ def test(data):
 def pos(data):
     games[data['room']].update(data['id'], [data['posX'], data['posY']], [data['velX'], data['velY']])
     opponent = games[data['room']].players[1 - data['id']].sid
-    emit('posRes', {'id': data['id'], 'posX': data['posX'], 'posY': data['posY'], 'velX': data['velX'], 'velY': data['velY']}, room=opponent)
+    emit('posRes', {'posX': data['posX'], 'posY': data['posY'], 'velX': data['velX'], 'velY': data['velY']}, room=opponent)
+
+
+@socketio.on('powerupPickup')
+def powerupPickup(data):
+    opponent = games[data['room']].players[1 - data['id']].sid
+    emit('powerupPickupRes', {'tileId': data['tileId']}, room=opponent)
+
 
 if __name__ == '__main__':
     socketio.run(app, host="0.0.0.0", port=7676)

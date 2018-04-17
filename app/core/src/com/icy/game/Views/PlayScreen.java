@@ -37,6 +37,7 @@ public class PlayScreen implements Screen {
     private Viewport viewport;
     private float timeElapsed;
     private int playerId;
+    private ArrayList<Integer> removedTiles;
 
     private OrthogonalTiledMapRenderer renderer;
     private Map<String,ArrayList<Rectangle>> hitboxes;
@@ -51,6 +52,7 @@ public class PlayScreen implements Screen {
         this.playerId = playerId;
         player1 = new Player(new Vector2(0.07f,0.5f),"running_animation/running_animation.atlas",game);
         player2 = new Player(new Vector2(0.07f,0.5f),"player2_running/p2_run_anim.atlas",game);
+        removedTiles = new ArrayList<>();
         cam = new OrthographicCamera();
         //worldWidth and worldHeight is NOT the worlds width and height! They are just the size
         //of your viewport...
@@ -86,16 +88,13 @@ public class PlayScreen implements Screen {
         player1.handleInput();
         player1.updateVelocity();
         player1.updatePosition(deltaTime);
-        try {
-            game.connection.sendPosition(
-                game.connection.getRoomName(),
-                this.playerId,
-                player1.getPosition(),
-                player1.getVelocity()
-            );
-        } catch (JSONException e) {
-            System.out.println("Something wen't wrong. Ups");
-        }
+        player1.checkPlatformCollision(hitboxes.get("platformsHitbox"));
+
+        int removeID = player1.checkPowerupCollision(hitboxes.get("jumpPowerHitbox"),"jump");
+        handlePowerup(tileLayers.get("jumpPower"), "jumpPowerHitbox", removeID);
+        sendGameInfo(removeID);
+        removeID = game.connection.getRemoveTileId();
+        handlePowerup(tileLayers.get("jumpPower"), "jumpPowerHitbox", removeID);
 
         if(player1.getPosition().y + player1.getSize().y < cam.position.y-cam.viewportHeight/2 ){
             game.setScreen(new MenuScreen(game));
@@ -106,25 +105,41 @@ public class PlayScreen implements Screen {
         player2.getPosition().y = game.connection.getOpponentPos().y;
         player2.getVelocity().y = game.connection.getOpponentVel().y;
 
-        player1.checkPlatformCollision(hitboxes.get("platformsHitbox"));
-
-        handlePowerup("jump",tileLayers.get("jumpPower"), hitboxes.get("jumpPowerHitbox"));
-
-        cam.position.y += 1;
+        cam.position.y += 0.1;
         cam.update();
         renderer.setView(cam);
         timeElapsed += deltaTime;
-
     }
 
-    private void handlePowerup(String type, TiledMapTileLayer layer, ArrayList<Rectangle> hitbox){
-        ArrayList<Rectangle> jumpPowerups = hitbox;
-        int removeID = player1.checkPowerupCollision(jumpPowerups,type);
-        if(removeID != -1){
-            int x = Math.round(jumpPowerups.get(removeID).getX()/32);
-            int y = Math.round(jumpPowerups.get(removeID).getY()/32);
-            layer.getCell(x,y).setTile(null);
-            jumpPowerups.remove(removeID);
+    private void handlePowerup(TiledMapTileLayer layer, String hitboxName, final int removeID){
+        ArrayList<Rectangle>hitbox = hitboxes.get(hitboxName);
+        if(!removedTiles.contains(removeID) && removeID != -1){
+            int x = Math.round(hitbox.get(removeID).getX()/32);
+            int y = Math.round(hitbox.get(removeID).getY()/32);
+            layer.getCell(x, y).setTile(null);
+            hitbox.remove(removeID);
+            removedTiles.add(removeID);
+        }
+    }
+
+    private void sendGameInfo(final int removeId){
+        try {
+            game.connection.sendPosition(
+                    game.connection.getRoomName(),
+                    this.playerId,
+                    player1.getPosition(),
+                    player1.getVelocity()
+            );
+            if(removeId != -1){
+                game.connection.sendPowerupPickup(
+                        game.connection.getRoomName(),
+                        this.playerId,
+                        removeId
+                );
+
+            }
+        } catch (JSONException e) {
+            System.out.println("Something wen't wrong. Ups");
         }
     }
 
