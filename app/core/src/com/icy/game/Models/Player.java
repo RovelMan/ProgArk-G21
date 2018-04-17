@@ -20,6 +20,8 @@ public class Player extends TextureHolder {
     private int direction;
     private static final int MAXYVELOCITY = 800;
     private IcyGame game;
+    private int playerId;
+    private String username;
 
     public Player(Vector2 scale, String path, IcyGame g){
         super(scale,path);
@@ -33,6 +35,23 @@ public class Player extends TextureHolder {
         standingOnPlatform = null;
         direction = 1;
     }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setPlayerId(int playerId) {
+        this.playerId = playerId;
+    }
+
+    public int getPlayerId() {
+        return playerId;
+    }
+
 
     public float getJumpForce() {
         return jumpForce;

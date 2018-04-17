@@ -57,9 +57,9 @@ def on_join(data):
 
     join_room(room)
     print("Player joined:", username, room)
-    opponent = games[data['room']].players[1 - data['id']].sid
+    host = games[data['room']].getHost().sid
     emit('joinRes', {'pid': 1, 'room': room, 'host': games[room].getHost().username, 'username': username}, room=request.sid)
-    emit('opponentJoined', {'data': username}, room=opponent)
+    emit('opponentJoined', {'data': username}, room=host)
 
 
 @socketio.on('leave')
@@ -78,7 +78,7 @@ def test(data):
 
 
 @socketio.on('test')
-def test(data):
+def tests(data):
     print('\nTest message received: ', data, '\n SID: ', request.sid)
 
 

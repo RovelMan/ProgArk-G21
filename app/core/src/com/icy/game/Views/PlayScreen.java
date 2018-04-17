@@ -38,7 +38,6 @@ public class PlayScreen implements Screen {
     private Viewport viewport;
     private float timeElapsed;
     private float timePrevious;
-    private int playerId;
 
     private OrthogonalTiledMapRenderer renderer;
     private Map<String,ArrayList<Rectangle>> hitboxes;
@@ -48,11 +47,10 @@ public class PlayScreen implements Screen {
     private static final List<String> validTileLayers =
             Collections.unmodifiableList(Arrays.asList("platforms", "logPlatforms","jumpPower"));
 
-    PlayScreen(IcyGame g, int playerId) {
+    PlayScreen(IcyGame g, Player player1, Player player2) {
         game = g;
-        this.playerId = playerId;
-        player1 = new Player(new Vector2(0.07f,0.5f),"running_animation/running_animation.atlas",game);
-        player2 = new Player(new Vector2(0.07f,0.5f),"player2_running/p2_run_anim.atlas",game);
+        this.player2 = player1;
+        this.player1 = player2;
         cam = new OrthographicCamera();
         //worldWidth and worldHeight is NOT the worlds width and height! They are just the size
         //of your viewport...
@@ -114,13 +112,15 @@ public class PlayScreen implements Screen {
     public void update(float deltaTime) {
         timeElapsed += deltaTime;
         handleInput();
+        System.out.println(player1.getPlayerId() + " " + player2.getPlayerId());
+
         player1.updateVelocity();
         player1.updatePosition(deltaTime);
         if (timeElapsed - timePrevious > 0.03) {
             try {
                 game.connection.sendPosition(
                         game.connection.getRoomName(),
-                        this.playerId,
+                        player1.getPlayerId(),
                         player1.getPosition(),
                         player1.getVelocity()
                 );
