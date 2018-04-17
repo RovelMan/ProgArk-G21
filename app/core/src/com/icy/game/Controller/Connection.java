@@ -3,8 +3,8 @@ package com.icy.game.Controller;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.icy.game.IcyGame;
-import com.icy.game.Views.CreateScreen;
 import com.icy.game.Views.LobbyScreen;
+import com.icy.game.Views.MenuScreen;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -71,27 +71,25 @@ public class Connection {
             }).on("joinRes", new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
-                    if (playerId == -1) {
-                        JSONObject data = (JSONObject) args[0];
-                        try {
-                            playerId = Integer.parseInt(data.getString("pid"));
-                            roomHost = data.getString("host");
-                            room = data.getString("room");
-                            playerTwoUsername = data.getString("username");
-                            System.out.println("Lobby joined! Your ID: " + playerId + "\tRoom name: " + room + "\tHost: " + roomHost);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                        Gdx.app.postRunnable(new Runnable() {
-                            @Override
-                            public void run() {
-                                LobbyScreen lobby = new LobbyScreen(game, getPlayerId(), getRoomHost(), getPlayerTwoUsername(), getRoomName());
-                                lobby.joinLobby(getPlayerId(), getPlayerTwoUsername());
-                                game.setScreen(lobby);
-                            }
-                        });
+                    JSONObject data = (JSONObject) args[0];
+                    try {
+                        playerId = Integer.parseInt(data.getString("pid"));
+                        roomHost = data.getString("host");
+                        room = data.getString("room");
+                        playerTwoUsername = data.getString("username");
+                        System.out.println("Lobby joined! Your ID: " + playerId + "\tRoom name: " + room + "\tHost: " + roomHost);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
+
+                    Gdx.app.postRunnable(new Runnable() {
+                        @Override
+                        public void run() {
+                            LobbyScreen lobby = new LobbyScreen(game, getPlayerId(), getRoomHost(), getPlayerTwoUsername(), getRoomName());
+                            lobby.joinLobby(getPlayerId(), getPlayerTwoUsername());
+                            game.setScreen(lobby);
+                        }
+                    });
                 }
             }).on("posRes", new Emitter.Listener() {
                 @Override
@@ -105,6 +103,55 @@ public class Connection {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+                }
+            }).on("rematchRes", new Emitter.Listener() {
+                int player1Id;
+                String player1Username, player2Username, roomName;
+                @Override
+                public void call(Object... args) {
+                    System.out.println("Rematch");
+                    JSONObject data = (JSONObject) args[0];
+                    try {
+                        player1Id = data.getInt("id");
+                        player1Username = data.getString("username1");
+                        player2Username = data.getString("username2");
+                        roomName = data.getString("room");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    Gdx.app.postRunnable(new Runnable() {
+                        @Override
+                        public void run() {
+                            game.setScreen(new LobbyScreen(game, player1Id, player1Username, player2Username, roomName));
+                        }
+                    });
+                }
+            }).on("playerLeftRes", new Emitter.Listener() {
+                String roomName;
+                @Override
+                public void call(Object... args) {
+                    System.out.println("Player left. Returning to menu");
+                    JSONObject data = (JSONObject) args[0];
+                    try {
+                        roomName = data.getString("room");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    Gdx.app.postRunnable(new Runnable() {
+                        @Override
+                        public void run() {
+                            JSONObject room = new JSONObject();
+                            try {
+                                room.put("room", roomName);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            socket.emit("gameOver", room);
+                            game.setScreen(new MenuScreen(game));
+                        }
+                    });
                 }
             });
             socket.connect();
@@ -130,11 +177,29 @@ public class Connection {
         socket.emit("join", game);
     }
 
-    public void leaveLobby(final String username, final String roomName) throws JSONException {
+    public void leaveLobby(final int playerId, final String username, final String roomName) throws JSONException {
         JSONObject game = new JSONObject();
+        game.put("id", playerId);
         game.put("username", username);
         game.put("room", roomName);
+        reset();
         socket.emit("leave", game);
+    }
+
+    public void rematch(final int playerId, final String playerOneUsername, final String playerTwoUsername, final String roomName) throws JSONException {
+        JSONObject game = new JSONObject();
+        game.put("id", playerId);
+        game.put("username1", playerOneUsername);
+        game.put("username2", playerTwoUsername);
+        game.put("room", roomName);
+        socket.emit("rematch", game);
+    }
+
+    public void gameOver(final String roomName, final String winner) throws JSONException {
+        JSONObject game = new JSONObject();
+        game.put("room", roomName);
+        game.put("winner", winner);
+        socket.emit("gameOver", game);
     }
 
     public void sendPosition(final String roomName, final int playerId, final Vector2 pos, final Vector2 vel) throws JSONException{
@@ -158,6 +223,13 @@ public class Connection {
 
     public String getPlayerTwoUsername() {
         return playerTwoUsername;
+    }
+
+    public void reset() {
+        this.playerId = -1;
+        this.playerTwoUsername = null;
+        this.roomHost = null;
+        this.room = null;
     }
 
     public String getRoomHost() {

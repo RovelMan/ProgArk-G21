@@ -61,6 +61,10 @@ def on_join(data):
     emit('joinRes', {'pid': 1, 'room': room, 'host': games[room].getHost().username, 'username': username}, room=request.sid)
     emit('opponentJoined', {'data': username}, room=host)
 
+@socketio.on('rematch')
+def on_rematch(data):
+    opponent = games[data['room']].players[1 - data['id']].sid
+    emit('rematchRes', {'id': 1-data['id'], 'username1': data['username1'], 'username2': data['username2'], 'room': data['room']}, room=opponent)
 
 @socketio.on('leave')
 def on_leave(data):
@@ -69,11 +73,14 @@ def on_leave(data):
     leave_room(room)
     send(username + ' has left the room.', room=room)
     print("Player left:", username, room)
+    opponent = games[data['room']].players[1 - data['id']].sid
+    emit('playerLeftRes', {'room': data['room']}, room=opponent)
 
 
 @socketio.on('gameOver')
 def test(data):
     games.pop(data['room'])
+    print(games)
     print('\nGame over! - Winner:', data['winner'])
 
 

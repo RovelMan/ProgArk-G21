@@ -26,6 +26,8 @@ public class LobbyScreen implements Screen {
     private static Stage stage;
 
     public LobbyScreen(IcyGame g, int newPlayerId, String host, String playerTwo, String roomName) {
+        System.out.println("LOBBY: " + newPlayerId + " " + host + " " + playerTwo + " " + roomName + " " + players[0] + " " + players[1]);
+        reset();
         playerId = newPlayerId;
         players[0] = host;
         game = g;
@@ -48,7 +50,7 @@ public class LobbyScreen implements Screen {
     }
 
     private void leaveLobby() throws JSONException {
-        game.connection.leaveLobby(players[playerId], room);
+        game.connection.leaveLobby(playerId, players[playerId], room);
     }
 
     private void updateLobby(String playerTwo) {
@@ -91,6 +93,13 @@ public class LobbyScreen implements Screen {
 
     public static void addPlayerTwo(String username) {
         players[1] = username;
+    }
+
+    public void reset() {
+        this.playerId = -1;
+        this.players[0] = null;
+        this.players[1] = null;
+        this.room = null;
     }
 
     @Override

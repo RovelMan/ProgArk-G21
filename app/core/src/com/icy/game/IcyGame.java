@@ -17,7 +17,7 @@ public class IcyGame extends Game {
 	public static float VOLUME = 1.0f;
 	public SpriteBatch batch;
 	public Connection connection;
-	private final String URL = "http://10.22.43.121:7676";
+	private final String URL = "http://192.168.1.2:7676";
 	public SoundController soundController;
 	
 	@Override

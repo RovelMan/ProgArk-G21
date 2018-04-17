@@ -52,6 +52,10 @@ public class Player extends TextureHolder {
         return playerId;
     }
 
+    public void reset() {
+        this.playerId = -1;
+        this.username = "";
+    }
 
     public float getJumpForce() {
         return jumpForce;

@@ -112,7 +112,6 @@ public class PlayScreen implements Screen {
     public void update(float deltaTime) {
         timeElapsed += deltaTime;
         handleInput();
-        System.out.println(player1.getPlayerId() + " " + player2.getPlayerId());
 
         player1.updateVelocity();
         player1.updatePosition(deltaTime);
@@ -130,10 +129,10 @@ public class PlayScreen implements Screen {
         }
 
         if(player1.getPosition().y + player1.getSize().y < cam.position.y-cam.viewportHeight/2 ){
-            game.setScreen(new MenuScreen(game));
+            game.setScreen(new EndScreen(game, player1, player2, 2));
         }
         if(player2.getPosition().y + player2.getSize().y < cam.position.y-cam.viewportHeight/2 ){
-            game.setScreen(new MenuScreen(game));
+            game.setScreen(new EndScreen(game, player1, player2, 1));
         }
 
 
