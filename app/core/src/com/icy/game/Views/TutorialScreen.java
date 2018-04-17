@@ -6,11 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.icy.game.IcyGame;
 
 /**
@@ -21,14 +17,10 @@ public class TutorialScreen implements Screen{
 
     private IcyGame game;
     private int page_counter;
-    private Viewport viewport;
     private Stage stage;
-    private Texture tutorial_1 = new Texture("tutorial/tutorial_1.png");
-    private Texture tutorial_2 = new Texture("tutorial/tutorial_2.png");
-    private Texture tutorial_3 = new Texture("tutorial/tutorial_3.png");
-    private Texture tutorial_4 = new Texture("tutorial/tutorial_4.png");
     private SpriteBatch batch = new SpriteBatch();
-    private Texture[] tutorial_screens = {tutorial_1, tutorial_2, tutorial_3, tutorial_4};
+    private Texture[] tutorial_screens = {new Texture("tutorial/tutorial_1.png"), new Texture("tutorial/tutorial_2.png"),
+            new Texture("tutorial/tutorial_3.png"), new Texture("tutorial/tutorial_4.png"), new Texture("tutorial/tutorial_5.png")};
 
     public TutorialScreen(IcyGame game) {
         this.game = game;
@@ -82,7 +74,7 @@ public class TutorialScreen implements Screen{
         if(Gdx.input.justTouched()){
             page_counter++;
         }
-        if (page_counter == 4) {
+        if (page_counter == tutorial_screens.length) {
             page_counter = 0;
             game.setScreen(new MenuScreen(game));
             dispose();
