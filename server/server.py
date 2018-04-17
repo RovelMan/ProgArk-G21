@@ -20,6 +20,13 @@ def connect():
     print("Device connected - SID:", sid)
 
 
+@socketio.on('disconnect')
+def disconnect():
+    sid = request.sid
+    players.pop(sid)
+    print("Device disconnected - SID:", sid)
+
+
 @socketio.on('create')
 def create_lobby(data):
     player = players[request.sid]
@@ -77,7 +84,7 @@ def test(data):
 @socketio.on('pos')
 def pos(data):
     opponent = games[data['room']].players[1 - data['id']].sid
-    emit('posRes', {'id': data['id'], 'posX': data['posX'], 'posY': data['posY'], 'velX': data['velX'], 'velY': data['velY']}, room=opponent)
+    emit('posRes', {'posX': data['posX'], 'posY': data['posY'], 'velX': data['velX'], 'velY': data['velY']}, room=opponent)
 
 
 if __name__ == '__main__':
