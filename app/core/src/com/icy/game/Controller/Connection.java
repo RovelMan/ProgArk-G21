@@ -213,10 +213,6 @@ public class Connection {
         socket.emit("pos", player);
     }
 
-    public Socket getSocket() {
-        return socket;
-    }
-
     public int getPlayerId() {
         return playerId;
     }
