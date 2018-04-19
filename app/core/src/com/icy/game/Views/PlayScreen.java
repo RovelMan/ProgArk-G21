@@ -36,8 +36,6 @@ public class PlayScreen implements Screen {
     private OrthographicCamera cam;
     private Viewport viewport;
     private float timeElapsed;
-    private float timePrevious;
-    private int playerId;
     private ArrayList<Integer> removedTiles;
     private OrthogonalTiledMapRenderer renderer;
     private Map<String,ArrayList<Rectangle>> hitboxes;
@@ -91,9 +89,7 @@ public class PlayScreen implements Screen {
 
         int removeID = player1.checkPowerupCollision(hitboxes.get("jumpPowerHitbox"),"jump");
         handlePowerup(tileLayers.get("jumpPower"), "jumpPowerHitbox", removeID);
-        if (timeElapsed - timePrevious > 0.03) {
-            sendGameInfo(removeID);
-        }
+        sendGameInfo(removeID);
         removeID = game.connection.getRemoveTileId();
         handlePowerup(tileLayers.get("jumpPower"), "jumpPowerHitbox", removeID);
 
@@ -132,14 +128,14 @@ public class PlayScreen implements Screen {
         try {
             game.connection.sendPosition(
                     game.connection.getRoomName(),
-                    this.playerId,
+                    player1.getPlayerId(),
                     player1.getPosition(),
                     player1.getVelocity()
             );
             if(removeId != -1){
                 game.connection.sendPowerupPickup(
                         game.connection.getRoomName(),
-                        this.playerId,
+                        player1.getPlayerId(),
                         removeId
                 );
             }
