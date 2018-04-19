@@ -61,10 +61,12 @@ def on_join(data):
     emit('joinRes', {'pid': 1, 'room': room, 'host': games[room].getHost().username, 'username': username}, room=request.sid)
     emit('opponentJoined', {'data': username}, room=host)
 
+
 @socketio.on('rematch')
 def on_rematch(data):
     opponent = games[data['room']].players[1 - data['id']].sid
     emit('rematchRes', {'id': 1-data['id'], 'username1': data['username1'], 'username2': data['username2'], 'room': data['room']}, room=opponent)
+
 
 @socketio.on('leave')
 def on_leave(data):
@@ -91,8 +93,11 @@ def tests(data):
 
 @socketio.on('pos')
 def pos(data):
-    opponent = games[data['room']].players[1 - data['id']].sid
-    emit('posRes', {'posX': data['posX'], 'posY': data['posY'], 'velX': data['velX'], 'velY': data['velY']}, room=opponent)
+    try:
+        opponent = games[data['room']].players[1 - data['id']].sid
+        emit('posRes', {'posX': data['posX'], 'posY': data['posY'], 'velX': data['velX'], 'velY': data['velY']}, room=opponent)
+    except:
+        pass  # Other player has allready left
 
 
 if __name__ == '__main__':
