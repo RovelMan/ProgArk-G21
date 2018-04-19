@@ -7,9 +7,9 @@ import com.icy.game.Controller.SoundController;
 import com.icy.game.Views.MenuScreen;
 
 public class IcyGame extends Game {
-	private static final IcyGame INSTANCE = new IcyGame();
+	private static IcyGame INSTANCE;
 	//Change this to "true" to use keyboard controls
-	public static final boolean USEDEBUG = false;
+	public static final boolean USEDEBUG = true;
 	public static final String TITLE = "2IcyBoiis";
 	public static int HEIGHT = 800;
 	public static int WIDTH = 448;
@@ -30,6 +30,7 @@ public class IcyGame extends Game {
 		soundController.addEffect("jump", "Sounds/effects/jump.mp3");
 		soundController.addEffect("coin","Sounds/effects/coin.mp3");
 		soundController.addMusic("music","Sounds/music/music.mp3");
+		INSTANCE = this;
 	}
 
 	@Override
