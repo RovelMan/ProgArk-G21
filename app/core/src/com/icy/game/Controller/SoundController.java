@@ -10,12 +10,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SoundController {
-    private static final SoundController ourInstance = new SoundController();
+    private static final SoundController INSTANCE = new SoundController();
     private Map<String,Sound> sounds;
     private Map<String,Music> music;
 
     public static SoundController getInstance() {
-        return ourInstance;
+        return INSTANCE;
     }
 
     private SoundController() {

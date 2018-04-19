@@ -15,15 +15,13 @@ import com.icy.game.IcyGame;
 
 public class TutorialScreen implements Screen{
 
-    private IcyGame game;
     private int page_counter;
     private Stage stage;
     private SpriteBatch batch = new SpriteBatch();
     private Texture[] tutorial_screens = {new Texture("tutorial/tutorial_1.png"), new Texture("tutorial/tutorial_2.png"),
             new Texture("tutorial/tutorial_3.png"), new Texture("tutorial/tutorial_4.png"), new Texture("tutorial/tutorial_5.png")};
 
-    public TutorialScreen(IcyGame game) {
-        this.game = game;
+    public TutorialScreen() {
         page_counter = -1;
         this.stage = new Stage();
         Gdx.input.setInputProcessor(stage);
@@ -75,7 +73,7 @@ public class TutorialScreen implements Screen{
         }
         if (page_counter == tutorial_screens.length) {
             page_counter = 0;
-            game.setScreen(new MenuScreen(game));
+            IcyGame.getInstance().setScreen(new MenuScreen());
             dispose();
         }
 

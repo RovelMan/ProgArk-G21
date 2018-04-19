@@ -7,7 +7,7 @@ import com.icy.game.Controller.SoundController;
 import com.icy.game.Views.MenuScreen;
 
 public class IcyGame extends Game {
-
+	private static final IcyGame INSTANCE = new IcyGame();
 	//Change this to "true" to use keyboard controls
 	public static final boolean USEDEBUG = false;
 	public static final String TITLE = "2IcyBoiis";
@@ -15,20 +15,21 @@ public class IcyGame extends Game {
 	public static int WIDTH = 448;
 	// Use this as volume for all sounds
 	public static float VOLUME = 1.0f;
-	public SpriteBatch batch;
-	public Connection connection;
-	private final String URL = "http://77.66.48.113:7676";
-	public SoundController soundController;
-	
+	public static SpriteBatch batch;
+	public static final String URL = "http://77.66.48.113:7676";
+
+	public static IcyGame getInstance() {
+		return INSTANCE;
+	}
+
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
+		SoundController soundController = SoundController.getInstance();
 		this.setScreen(new MenuScreen(this));
-		soundController = SoundController.getInstance();
 		soundController.addEffect("jump", "Sounds/effects/jump.mp3");
 		soundController.addEffect("coin","Sounds/effects/coin.mp3");
 		soundController.addMusic("music","Sounds/music/music.mp3");
-		connection = new Connection(this, URL);
 	}
 
 	@Override

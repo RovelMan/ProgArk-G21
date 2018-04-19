@@ -9,7 +9,7 @@ import com.icy.game.IcyGame;
 
 public class PauseScreen implements Screen {
 
-    public PauseScreen(IcyGame game) {
+    public PauseScreen() {
 
     }
 

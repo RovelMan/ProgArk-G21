@@ -20,15 +20,11 @@ public class CreateScreen implements Screen {
 
     private TextField userInput, roomInput;
     private Stage stage;
-    private Connection connection;
-    private static IcyGame game;
     private Texture background;
 
-    public CreateScreen(IcyGame g) {
-        game = g;
+    public CreateScreen() {
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
-        this.connection = game.connection;
 
         background = new Texture("NavButtons/background2.png");
 
@@ -56,11 +52,11 @@ public class CreateScreen implements Screen {
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                     if (j == 0) {
                         System.out.println("Back button pressed");
-                        game.setScreen(new MenuScreen(game));
+                        IcyGame.getInstance().setScreen(new MenuScreen());
                         dispose();
                     } else if (j == 1) {
                         try {
-                            connection.createLobby(userInput.getText(), roomInput.getText());
+                            Connection.getInstance().createLobby(userInput.getText(), roomInput.getText());
                             dispose();
                         } catch (Exception e) {
                             System.out.println("Could not create a lobby: " + e);
@@ -101,9 +97,9 @@ public class CreateScreen implements Screen {
     public void render(float delta) {
         Gdx.gl.glClearColor(1, 1, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        game.batch.begin();
-        game.batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        game.batch.end();
+        IcyGame.getInstance().batch.begin();
+        IcyGame.getInstance().batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        IcyGame.getInstance().batch.end();
         stage.draw();
     }
 

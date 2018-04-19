@@ -16,6 +16,8 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.icy.game.Controller.Connection;
+import com.icy.game.Controller.SoundController;
 import com.icy.game.IcyGame;
 import com.icy.game.Models.Player;
 
@@ -30,7 +32,6 @@ import java.util.Map;
 
 public class PlayScreen implements Screen {
 
-    private static IcyGame game;
     private Player player1;
     private Player player2;
     private OrthographicCamera cam;
@@ -45,8 +46,7 @@ public class PlayScreen implements Screen {
     private static final List<String> validTileLayers =
             Collections.unmodifiableList(Arrays.asList("platforms", "logPlatforms","jumpPower"));
 
-    PlayScreen(IcyGame g, Player player1, Player player2) {
-        game = g;
+    PlayScreen(Player player1, Player player2) {
         this.player2 = player1;
         this.player1 = player2;
         removedTiles = new ArrayList<>();
@@ -72,7 +72,7 @@ public class PlayScreen implements Screen {
                 tileLayers.put(layer.getName(),(TiledMapTileLayer)layer);
             }
         }
-        game.soundController.playMusic("music");
+        SoundController.getInstance().playMusic("music");
     }
 
     @Override
@@ -90,20 +90,20 @@ public class PlayScreen implements Screen {
         int removeID = player1.checkPowerupCollision(hitboxes.get("jumpPowerHitbox"),"jump");
         handlePowerup(tileLayers.get("jumpPower"), "jumpPowerHitbox", removeID);
         sendGameInfo(removeID);
-        removeID = game.connection.getRemoveTileId();
+        removeID = Connection.getInstance().getRemoveTileId();
         handlePowerup(tileLayers.get("jumpPower"), "jumpPowerHitbox", removeID);
 
         if(player1.getPosition().y + player1.getSize().y < cam.position.y-cam.viewportHeight/2 ){
-            game.setScreen(new EndScreen(game, player1, player2, 2));
+            IcyGame.getInstance().setScreen(new EndScreen(player1, player2, 2));
         }
         if(player2.getPosition().y + player2.getSize().y < cam.position.y-cam.viewportHeight/2 ){
-            game.setScreen(new EndScreen(game, player1, player2, 1));
+            IcyGame.getInstance().setScreen(new EndScreen(player1, player2, 1));
         }
 
-        player2.getPosition().x = game.connection.getOpponentPos().x;
-        player2.getVelocity().x = game.connection.getOpponentVel().x;
-        player2.getPosition().y = game.connection.getOpponentPos().y;
-        player2.getVelocity().y = game.connection.getOpponentVel().y;
+        player2.getPosition().x = Connection.getInstance().getOpponentPos().x;
+        player2.getVelocity().x = Connection.getInstance().getOpponentVel().x;
+        player2.getPosition().y = Connection.getInstance().getOpponentPos().y;
+        player2.getVelocity().y = Connection.getInstance().getOpponentVel().y;
 
         if (timeElapsed > 2) {
             cam.position.y += 1;
@@ -126,15 +126,15 @@ public class PlayScreen implements Screen {
 
     private void sendGameInfo(final int removeId){
         try {
-            game.connection.sendPosition(
-                    game.connection.getRoomName(),
+            Connection.getInstance().sendPosition(
+                    Connection.getInstance().getRoomName(),
                     player1.getPlayerId(),
                     player1.getPosition(),
                     player1.getVelocity()
             );
             if(removeId != -1){
-                game.connection.sendPowerupPickup(
-                        game.connection.getRoomName(),
+                Connection.getInstance().sendPowerupPickup(
+                        Connection.getInstance().getRoomName(),
                         player1.getPlayerId(),
                         removeId
                 );
@@ -150,13 +150,13 @@ public class PlayScreen implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         renderer.render();
-        game.batch.setProjectionMatrix(cam.combined);
-        game.batch.begin();
+        IcyGame.getInstance().batch.setProjectionMatrix(cam.combined);
+        IcyGame.getInstance().batch.begin();
         TextureRegion frame1 = (TextureRegion) player1.getAnimation().getKeyFrame(timeElapsed,true);
         TextureRegion frame2 = (TextureRegion) player2.getAnimation().getKeyFrame(timeElapsed,true);
         boolean flip1 = (player1.getDirection() == -1);
         boolean flip2 = (player2.getDirection() == -1);
-        game.batch.draw(
+        IcyGame.getInstance().batch.draw(
                 frame1,
                 flip1 ?  player1.getPosition().x + player1.getSize().x :
                         player1.getPosition().x,
@@ -165,7 +165,7 @@ public class PlayScreen implements Screen {
                         player1.getSize().x,
                         player1.getSize().y
         );
-        game.batch.draw(
+        IcyGame.getInstance().batch.draw(
                 frame2,
                 flip2 ?  player2.getPosition().x + player2.getSize().x :
                         player2.getPosition().x,
@@ -174,7 +174,7 @@ public class PlayScreen implements Screen {
                         player2.getSize().x,
                 player2.getSize().y
         );
-        game.batch.end();
+        IcyGame.getInstance().batch.end();
 
     }
 
