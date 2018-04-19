@@ -3,6 +3,7 @@ package com.icy.game.Controller;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.icy.game.IcyGame;
+import com.icy.game.Models.Opponent;
 import com.icy.game.Views.LobbyScreen;
 import com.icy.game.Views.MenuScreen;
 import org.json.JSONException;
@@ -17,7 +18,7 @@ public class Connection {
     private Socket socket;
     private int playerId = -1;
     private String playerTwoUsername, roomHost, room;
-    private Vector2 opponentPos, opponentVel;
+    private Opponent opponent = Opponent.getInstance();
     private int removeTileId = -1;
 
     public static Connection getInstance() {
@@ -25,8 +26,6 @@ public class Connection {
     }
 
     private Connection(String address) {
-        opponentPos = new Vector2();
-        opponentVel = new Vector2();
         try {
             socket = IO.socket(address);
             socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
@@ -100,10 +99,8 @@ public class Connection {
                 public void call(Object... args) {
                     JSONObject data = (JSONObject) args[0];
                     try {
-                        opponentPos.x = (float) data.getDouble("posX");
-                        opponentPos.y = (float) data.getDouble("posY");
-                        opponentVel.x = (float) data.getDouble("velX");
-                        opponentVel.y = (float) data.getDouble("velY");
+                        opponent.setPosition(new Vector2((float) data.getDouble("posX"),(float) data.getDouble("posY")));
+                        opponent.setVelocity(new Vector2((float) data.getDouble("velX"),(float) data.getDouble("velY")));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -260,13 +257,5 @@ public class Connection {
 
     public String getRoomName() {
         return room;
-    }
-
-    public Vector2 getOpponentPos() {
-        return opponentPos;
-    }
-
-    public Vector2 getOpponentVel() {
-        return opponentVel;
     }
 }
