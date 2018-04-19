@@ -9,7 +9,7 @@ import com.icy.game.Views.MenuScreen;
 public class IcyGame extends Game {
 
 	//Change this to "true" to use keyboard controls
-	public static final boolean USEDEBUG = true;
+	public static final boolean USEDEBUG = false;
 	public static final String TITLE = "2IcyBoiis";
 	public static int HEIGHT = 800;
 	public static int WIDTH = 448;
@@ -17,7 +17,7 @@ public class IcyGame extends Game {
 	public static float VOLUME = 1.0f;
 	public SpriteBatch batch;
 	public Connection connection;
-	private final String URL = "http://192.168.1.2:7676";
+	private final String URL = "http://77.66.48.113:7676";
 	public SoundController soundController;
 	
 	@Override
