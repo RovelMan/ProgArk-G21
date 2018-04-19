@@ -1,7 +1,6 @@
 package com.icy.game.Views;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -38,7 +37,8 @@ public class PlayScreen implements Screen {
     private Viewport viewport;
     private float timeElapsed;
     private float timePrevious;
-
+    private int playerId;
+    private ArrayList<Integer> removedTiles;
     private OrthogonalTiledMapRenderer renderer;
     private Map<String,ArrayList<Rectangle>> hitboxes;
     private Map<String,TiledMapTileLayer> tileLayers;
@@ -51,6 +51,7 @@ public class PlayScreen implements Screen {
         game = g;
         this.player2 = player1;
         this.player1 = player2;
+        removedTiles = new ArrayList<>();
         cam = new OrthographicCamera();
         //worldWidth and worldHeight is NOT the worlds width and height! They are just the size
         //of your viewport...
@@ -60,11 +61,11 @@ public class PlayScreen implements Screen {
         TmxMapLoader mapLoader = new TmxMapLoader();
         TiledMap map = mapLoader.load("Map V2/new_map.tmx");
         renderer = new OrthogonalTiledMapRenderer(map);
-        hitboxes = new HashMap<String, ArrayList<Rectangle>>();
-        tileLayers = new HashMap<String, TiledMapTileLayer>();
+        hitboxes = new HashMap<>();
+        tileLayers = new HashMap<>();
         for (MapLayer layer: map.getLayers()) {
             if(validHitboxes.contains(layer.getName())){
-                hitboxes.put(layer.getName(),new ArrayList<Rectangle>());
+                hitboxes.put(layer.getName(),new ArrayList<>());
                 for (MapObject object : layer.getObjects().getByType(RectangleMapObject.class)){
                     hitboxes.get(layer.getName()).add(((RectangleMapObject)object).getRectangle());
                 }
@@ -81,52 +82,20 @@ public class PlayScreen implements Screen {
         viewport.update(width,height);
     }
 
-    public void handleInput() {
-
-        if(IcyGame.USEDEBUG){
-
-            if(Gdx.input.isKeyPressed(Input.Keys.D)){
-                player1.getVelocity().x = 500;
-            }
-            else if(Gdx.input.isKeyPressed(Input.Keys.A)){
-                player1.getVelocity().x = -500;
-            }
-            else{
-                player1.getVelocity().x = 0;
-            }
-            if(Gdx.input.isKeyPressed(Input.Keys.SPACE) && player1.isOnGround()){
-                player1.jump();
-            }
-
-        }
-        else{
-            if (Gdx.input.justTouched()) {
-                if(player1.isOnGround()){
-                    player1.jump();
-                }
-            }
-            player1.getVelocity().x = Gdx.input.getRoll()*15;
-        }
-    }
-
     public void update(float deltaTime) {
         timeElapsed += deltaTime;
-        handleInput();
-
+        player1.handleInput();
         player1.updateVelocity();
         player1.updatePosition(deltaTime);
+        player1.checkPlatformCollision(hitboxes.get("platformsHitbox"));
+
+        int removeID = player1.checkPowerupCollision(hitboxes.get("jumpPowerHitbox"),"jump");
+        handlePowerup(tileLayers.get("jumpPower"), "jumpPowerHitbox", removeID);
         if (timeElapsed - timePrevious > 0.03) {
-            try {
-                game.connection.sendPosition(
-                        game.connection.getRoomName(),
-                        player1.getPlayerId(),
-                        player1.getPosition(),
-                        player1.getVelocity()
-                );
-            } catch (JSONException e) {
-                System.out.println("Something wen't wrong. Ups");
-            }
+            sendGameInfo(removeID);
         }
+        removeID = game.connection.getRemoveTileId();
+        handlePowerup(tileLayers.get("jumpPower"), "jumpPowerHitbox", removeID);
 
         if(player1.getPosition().y + player1.getSize().y < cam.position.y-cam.viewportHeight/2 ){
             game.setScreen(new EndScreen(game, player1, player2, 2));
@@ -135,30 +104,48 @@ public class PlayScreen implements Screen {
             game.setScreen(new EndScreen(game, player1, player2, 1));
         }
 
-
         player2.getPosition().x = game.connection.getOpponentPos().x;
         player2.getVelocity().x = game.connection.getOpponentVel().x;
         player2.getPosition().y = game.connection.getOpponentPos().y;
         player2.getVelocity().y = game.connection.getOpponentVel().y;
 
-        player1.checkPlatformCollision(hitboxes.get("platformsHitbox"));
-        //this can be moved into the players coin collision checker when the PlayScreen is converted to singleton
-        ArrayList<Rectangle> coins = hitboxes.get("jumpPowerHitbox");
-        int removeID = player1.checkCoinCollision(coins);
-        if(removeID != -1){
-            int x = Math.round(coins.get(removeID).getX()/32);
-            int y = Math.round(coins.get(removeID).getY()/32);
-            tileLayers.get("jumpPower").getCell(x,y).setTile(null);
-            coins.remove(removeID);
-        }
-
         if (timeElapsed > 2) {
             cam.position.y += 1;
         }
-
         cam.update();
         renderer.setView(cam);
+        timeElapsed += deltaTime;
+    }
 
+    private void handlePowerup(TiledMapTileLayer layer, String hitboxName, final int removeID){
+        ArrayList<Rectangle>hitbox = hitboxes.get(hitboxName);
+        if(!removedTiles.contains(removeID) && removeID != -1){
+            int x = Math.round(hitbox.get(removeID).getX()/32);
+            int y = Math.round(hitbox.get(removeID).getY()/32);
+            layer.getCell(x, y).setTile(null);
+            hitbox.remove(removeID);
+            removedTiles.add(removeID);
+        }
+    }
+
+    private void sendGameInfo(final int removeId){
+        try {
+            game.connection.sendPosition(
+                    game.connection.getRoomName(),
+                    this.playerId,
+                    player1.getPosition(),
+                    player1.getVelocity()
+            );
+            if(removeId != -1){
+                game.connection.sendPowerupPickup(
+                        game.connection.getRoomName(),
+                        this.playerId,
+                        removeId
+                );
+            }
+        } catch (JSONException e) {
+            System.out.println("Something wen't wrong. Ups");
+        }
     }
 
     @Override

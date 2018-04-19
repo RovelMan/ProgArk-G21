@@ -95,5 +95,11 @@ def pos(data):
     emit('posRes', {'posX': data['posX'], 'posY': data['posY'], 'velX': data['velX'], 'velY': data['velY']}, room=opponent)
 
 
+@socketio.on('powerupPickup')
+def powerupPickup(data):
+    opponent = games[data['room']].players[1 - data['id']].sid
+    emit('powerupPickupRes', {'tileId': data['tileId']}, room=opponent)
+
+
 if __name__ == '__main__':
     socketio.run(app, host="0.0.0.0", port=7676)

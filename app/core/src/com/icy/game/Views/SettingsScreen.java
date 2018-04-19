@@ -48,6 +48,7 @@ public class SettingsScreen implements Screen {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 System.out.println("Audio off");
                 IcyGame.VOLUME = 0;
+                game.soundController.stopMusic("music");
                 System.out.println(IcyGame.VOLUME);
                 return true;
             }

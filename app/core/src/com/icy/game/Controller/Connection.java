@@ -5,7 +5,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.icy.game.IcyGame;
 import com.icy.game.Views.LobbyScreen;
 import com.icy.game.Views.MenuScreen;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -19,6 +18,7 @@ public class Connection {
     private int playerId = -1;
     private String playerTwoUsername, roomHost, room;
     private Vector2 opponentPos, opponentVel;
+    private int removeTileId = -1;
 
     public Connection(IcyGame game, String address) {
         opponentPos = new Vector2();
@@ -153,11 +153,25 @@ public class Connection {
                         }
                     });
                 }
+            }).on("powerupPickupRes", new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    JSONObject data = (JSONObject) args[0];
+                    try {
+                        removeTileId = data.getInt("tileId");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
             });
             socket.connect();
         } catch (Exception e) {
             System.out.println("Failed to connect. Error: " + e);
         }
+    }
+
+    public int getRemoveTileId() {
+        return removeTileId;
     }
 
     public void createLobby(String username, String roomName) throws JSONException {
@@ -211,6 +225,14 @@ public class Connection {
         player.put("velX", (double) vel.x);
         player.put("velY", (double) vel.y);
         socket.emit("pos", player);
+    }
+
+    public void sendPowerupPickup(final String roomName, final int playerId, final int tileId) throws JSONException{
+        JSONObject tile = new JSONObject();
+        tile.put("room", roomName);
+        tile.put("id", playerId);
+        tile.put("tileId",tileId);
+        socket.emit("powerupPickup", tile);
     }
 
     public int getPlayerId() {
