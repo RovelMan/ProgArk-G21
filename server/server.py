@@ -93,8 +93,11 @@ def tests(data):
 
 @socketio.on('pos')
 def pos(data):
-    opponent = games[data['room']].players[1 - data['id']].sid
-    emit('posRes', {'posX': data['posX'], 'posY': data['posY'], 'velX': data['velX'], 'velY': data['velY']}, room=opponent)
+    try:
+        opponent = games[data['room']].players[1 - data['id']].sid
+        emit('posRes', {'posX': data['posX'], 'posY': data['posY'], 'velX': data['velX'], 'velY': data['velY']}, room=opponent)
+    except:
+        pass  # Other player has allready left
 
 
 @socketio.on('powerupPickup')
