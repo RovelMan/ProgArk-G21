@@ -40,6 +40,10 @@ public class SoundController {
         music.get(name).play();
     }
 
+    public void stopMusic(String name){
+        music.get(name).stop();
+    }
+
     public void removeEffect(String name){
         sounds.get(name).stop();
         sounds.get(name).dispose();
