@@ -87,16 +87,13 @@ public class Player extends TextureHolder {
         }
         else{
             if (Gdx.input.justTouched()) {
-                if(this.isOnGround()){
-                    this.jump();
-                }
+                jump();
             }
             this.velocity.x = Gdx.input.getRoll()*15;
         }
     }
 
     private void jump(){
-
         if(this.isOnGround()){
             this.velocity.y = this.getJumpForce();
             this.setOnGround(false);
@@ -168,6 +165,7 @@ public class Player extends TextureHolder {
                 if(type.equals("jump")){
                     game.soundController.playEffect("coin");
                     this.powerJump = true;
+                    System.out.println(this.powerJump);
                 }
 
                 return powerups.indexOf(powerup);

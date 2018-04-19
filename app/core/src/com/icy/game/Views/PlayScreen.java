@@ -81,7 +81,6 @@ public class PlayScreen implements Screen {
     }
 
     public void update(float deltaTime) {
-        timeElapsed += deltaTime;
         player1.handleInput();
         player1.updateVelocity();
         player1.updatePosition(deltaTime);
