@@ -12,7 +12,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.icy.game.Controller.Connection;
 import com.icy.game.IcyGame;
-import com.icy.game.Models.Opponent;
 import com.icy.game.Models.Player;
 
 import org.json.JSONException;
@@ -111,18 +110,19 @@ public class LobbyScreen implements Screen {
     public void render(float delta) {
         if (players[0] != null && players[1] != null) {
             System.out.println("Both players joined. Lobby full");
-            Player player = Player.getInstance();
-            player.setPlayerId(0);
-            player.setUsername(players[0]);
 
-            Opponent opponent = Opponent.getInstance();
-            opponent.setPlayerId(1);
-            opponent.setUsername(players[1]);
+            Player player1 = new Player(new Vector2(0.07f,0.5f),"running_animation/running_animation.atlas");
+            player1.setPlayerId(0);
+            player1.setUsername(players[0]);
+
+            Player player2 = new Player(new Vector2(0.07f,0.5f),"player2_running/p2_run_anim.atlas");
+            player2.setPlayerId(1);
+            player2.setUsername(players[1]);
 
             if (playerId == 1) {
-                IcyGame.getInstance().setScreen(new PlayScreen());
+                IcyGame.getInstance().setScreen(new PlayScreen(player1, player2));
             } else {
-                IcyGame.getInstance().setScreen(new PlayScreen());
+                IcyGame.getInstance().setScreen(new PlayScreen(player2, player1));
             }
         }
 

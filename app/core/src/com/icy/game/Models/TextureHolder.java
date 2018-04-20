@@ -5,11 +5,11 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
-public abstract class AnimationHolder {
+public abstract class TextureHolder {
     Vector2 size;
     Animation<TextureRegion> animation;
 
-    AnimationHolder(Vector2 scale, String path){
+    TextureHolder(Vector2 scale,String path){
         TextureAtlas animationAtlas = new TextureAtlas(Gdx.files.internal(path));
         animation = new Animation<TextureRegion>(0.2f, animationAtlas.getRegions());
         float width = animationAtlas.getTextures().first().getWidth();

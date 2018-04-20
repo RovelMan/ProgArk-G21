@@ -14,7 +14,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.icy.game.Controller.Connection;
 import com.icy.game.IcyGame;
-import com.icy.game.Models.Opponent;
 import com.icy.game.Models.Player;
 
 import org.json.JSONException;
@@ -27,10 +26,12 @@ public class EndScreen implements Screen {
 
     private Stage stage;
     private Texture background;
-    private Player player = Player.getInstance();
-    private Opponent opponent = Opponent.getInstance();
+    private Player player1;
+    private Player player2;
 
-    EndScreen(int winner) {
+    public EndScreen(Player player1, Player player2, int winner) {
+        this.player1 = player1;
+        this.player2 = player2;
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
 
@@ -42,9 +43,9 @@ public class EndScreen implements Screen {
         Label gameOverTxt = new Label("Game over", new Label.LabelStyle(font, Color.WHITE));
         String winnerName;
         if (winner == 1) {
-            winnerName = player.getUsername();
+            winnerName = player1.getUsername();
         } else {
-            winnerName = opponent.getUsername();
+            winnerName = player2.getUsername();
         }
         Label playerWonTxt = new Label("Player " + winnerName + " won!", new Label.LabelStyle(font, Color.WHITE));
 
@@ -63,28 +64,24 @@ public class EndScreen implements Screen {
                         System.out.println("Rematch button pressed");
                         //RESET GAME AND REMEMBER VALUES
                         try {
-                            player.resetProperties();
-                            opponent.resetProperties();
-                            Connection.getInstance().rematch(player.getPlayerId(), player.getUsername(), opponent.getUsername(), Connection.getInstance().getRoomName());
+                            Connection.getInstance().rematch(player1.getPlayerId(), player1.getUsername(), player2.getUsername(), Connection.getInstance().getRoomName());
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        IcyGame.getInstance().setScreen(new LobbyScreen(player.getPlayerId(), player.getUsername(), opponent.getUsername(), Connection.getInstance().getRoomName()));
+                        IcyGame.getInstance().setScreen(new LobbyScreen(player1.getPlayerId(), player1.getUsername(), player2.getUsername(), Connection.getInstance().getRoomName()));
                         dispose();
                     } else if (j == 1) {
                         System.out.println("Quit button pressed");
                         //END GAME AND RESET VALUES
                         try {
                             String roomname = Connection.getInstance().getRoomName();
-                            Connection.getInstance().leaveLobby(player.getPlayerId(), player.getUsername(), roomname);
-                            player.resetIdentity();
-                            player.resetProperties();
-                            opponent.resetIdentity();
-                            opponent.resetProperties();
+                            Connection.getInstance().leaveLobby(player1.getPlayerId(), player1.getUsername(), roomname);
+                            player1.reset();
+                            player2.reset();
                             if (winner == 1) {
-                                Connection.getInstance().gameOver(roomname, player.getUsername());
+                                Connection.getInstance().gameOver(roomname, player1.getUsername());
                             } else {
-                                Connection.getInstance().gameOver(roomname, opponent.getUsername());
+                                Connection.getInstance().gameOver(roomname, player2.getUsername());
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
