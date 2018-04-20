@@ -10,12 +10,7 @@ import com.icy.game.IcyGame;
 
 import java.util.ArrayList;
 
-/**
- * Created by havard on 19.04.18.
- */
-
-public class Player extends AnimationHolder {
-    private static final Player ourInstance = new Player();
+public class Player extends TextureHolder {
     private Vector2 position;
     private Vector2 velocity;
     private Rectangle hitBox;
@@ -29,12 +24,8 @@ public class Player extends AnimationHolder {
     private int playerId;
     private String username;
 
-    public static Player getInstance() {
-        return ourInstance;
-    }
-
-    private Player() {
-        super(new Vector2(0.07f,0.5f),"running_animation/running_animation.atlas");
+    public Player(Vector2 scale, String path){
+        super(scale,path);
         velocity = new Vector2(0,0);
         position = new Vector2(0,33);
         hitBox = new Rectangle(position.x,position.y,size.x,size.y);
@@ -62,14 +53,9 @@ public class Player extends AnimationHolder {
         return playerId;
     }
 
-    public void resetIdentity() {
+    public void reset() {
         this.playerId = -1;
         this.username = "";
-    }
-
-    public void resetProperties(){
-        this.velocity = new Vector2(0,0);
-        this.position = new Vector2(0,40);
     }
 
     private float getJumpForce() {
@@ -95,6 +81,7 @@ public class Player extends AnimationHolder {
             if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
                 this.jump();
             }
+
         }
         else{
             if (Gdx.input.justTouched()) {
@@ -115,7 +102,9 @@ public class Player extends AnimationHolder {
             this.powerJump = false;
             this.setOnGround(false);
         }
+
         SoundController.getInstance().playEffect("jump");
+
     }
 
     private void setOnGround(boolean onGround) {
@@ -205,7 +194,6 @@ public class Player extends AnimationHolder {
             }
         }
     }
-
 
     @Override
     public Vector2 getSize() {

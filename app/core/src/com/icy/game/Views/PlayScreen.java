@@ -13,12 +13,12 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.icy.game.Controller.Connection;
 import com.icy.game.Controller.SoundController;
 import com.icy.game.IcyGame;
-import com.icy.game.Models.Opponent;
 import com.icy.game.Models.Player;
 
 import org.json.JSONException;
@@ -32,8 +32,8 @@ import java.util.Map;
 
 public class PlayScreen implements Screen {
 
-    private Player player = Player.getInstance();
-    private Opponent opponent = Opponent.getInstance();
+    private Player player1;
+    private Player player2;
     private OrthographicCamera cam;
     private Viewport viewport;
     private float timeElapsed;
@@ -46,7 +46,9 @@ public class PlayScreen implements Screen {
     private static final List<String> validTileLayers =
             Collections.unmodifiableList(Arrays.asList("platforms", "logPlatforms","jumpPower"));
 
-    PlayScreen() {
+    PlayScreen(Player player1, Player player2) {
+        this.player2 = player1;
+        this.player1 = player2;
         removedTiles = new ArrayList<>();
         cam = new OrthographicCamera();
         //worldWidth and worldHeight is NOT the worlds width and height! They are just the size
@@ -78,30 +80,36 @@ public class PlayScreen implements Screen {
         viewport.update(width,height);
     }
 
-    private void update(float deltaTime) {
-        timeElapsed += deltaTime;
-        player.handleInput();
-        player.updateVelocity();
-        player.updatePosition(deltaTime);
-        player.checkPlatformCollision(hitboxes.get("platformsHitbox"));
+    public void update(float deltaTime) {
+        player1.handleInput();
+        player1.updateVelocity();
+        player1.updatePosition(deltaTime);
+        player1.checkPlatformCollision(hitboxes.get("platformsHitbox"));
 
-        int removeID = player.checkPowerupCollision(hitboxes.get("jumpPowerHitbox"),"jump");
+        int removeID = player1.checkPowerupCollision(hitboxes.get("jumpPowerHitbox"),"jump");
         handlePowerup(tileLayers.get("jumpPower"), "jumpPowerHitbox", removeID);
         sendGameInfo(removeID);
         removeID = Connection.getInstance().getRemoveTileId();
         handlePowerup(tileLayers.get("jumpPower"), "jumpPowerHitbox", removeID);
 
-        if(player.getPosition().y + player.getSize().y < cam.position.y-cam.viewportHeight/2 ){
-            IcyGame.getInstance().setScreen(new EndScreen(2));
+        if(player1.getPosition().y + player1.getSize().y < cam.position.y-cam.viewportHeight/2 ){
+            IcyGame.getInstance().setScreen(new EndScreen(player1, player2, 2));
         }
-        if(opponent.getPosition().y + opponent.getSize().y < cam.position.y-cam.viewportHeight/2 ){
-            IcyGame.getInstance().setScreen(new EndScreen(1));
+        if(player2.getPosition().y + player2.getSize().y < cam.position.y-cam.viewportHeight/2 ){
+            IcyGame.getInstance().setScreen(new EndScreen(player1, player2, 1));
         }
+
+        player2.getPosition().x = Connection.getInstance().getOpponentPos().x;
+        player2.getVelocity().x = Connection.getInstance().getOpponentVel().x;
+        player2.getPosition().y = Connection.getInstance().getOpponentPos().y;
+        player2.getVelocity().y = Connection.getInstance().getOpponentVel().y;
+
         if (timeElapsed > 2) {
             cam.position.y += 1;
         }
         cam.update();
         renderer.setView(cam);
+        timeElapsed += deltaTime;
     }
 
     private void handlePowerup(TiledMapTileLayer layer, String hitboxName, final int removeID){
@@ -119,14 +127,14 @@ public class PlayScreen implements Screen {
         try {
             Connection.getInstance().sendPosition(
                     Connection.getInstance().getRoomName(),
-                    player.getPlayerId(),
-                    player.getPosition(),
-                    player.getVelocity()
+                    player1.getPlayerId(),
+                    player1.getPosition(),
+                    player1.getVelocity()
             );
             if(removeId != -1){
                 Connection.getInstance().sendPowerupPickup(
                         Connection.getInstance().getRoomName(),
-                        player.getPlayerId(),
+                        player1.getPlayerId(),
                         removeId
                 );
             }
@@ -143,23 +151,27 @@ public class PlayScreen implements Screen {
         renderer.render();
         IcyGame.getInstance().batch.setProjectionMatrix(cam.combined);
         IcyGame.getInstance().batch.begin();
-        TextureRegion frame1 = (TextureRegion) player.getAnimation().getKeyFrame(timeElapsed,true);
-        TextureRegion frame2 = (TextureRegion) opponent.getAnimation().getKeyFrame(timeElapsed,true);
-        boolean flip1 = (player.getDirection() == -1);
+        TextureRegion frame1 = (TextureRegion) player1.getAnimation().getKeyFrame(timeElapsed,true);
+        TextureRegion frame2 = (TextureRegion) player2.getAnimation().getKeyFrame(timeElapsed,true);
+        boolean flip1 = (player1.getDirection() == -1);
+        boolean flip2 = (player2.getDirection() == -1);
         IcyGame.getInstance().batch.draw(
                 frame1,
-                flip1 ?  player.getPosition().x + player.getSize().x :
-                        player.getPosition().x,
-                        player.getPosition().y,
-                flip1 ? -player.getSize().x :
-                        player.getSize().x,
-                        player.getSize().y
+                flip1 ?  player1.getPosition().x + player1.getSize().x :
+                        player1.getPosition().x,
+                        player1.getPosition().y,
+                flip1 ? -player1.getSize().x :
+                        player1.getSize().x,
+                        player1.getSize().y
         );
         IcyGame.getInstance().batch.draw(
-                frame2, opponent.getPosition().x,
-                        opponent.getPosition().y,
-                        opponent.getSize().x,
-                        opponent.getSize().y
+                frame2,
+                flip2 ?  player2.getPosition().x + player2.getSize().x :
+                        player2.getPosition().x,
+                player2.getPosition().y,
+                flip2 ? -player2.getSize().x :
+                        player2.getSize().x,
+                player2.getSize().y
         );
         IcyGame.getInstance().batch.end();
 
