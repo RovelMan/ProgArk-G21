@@ -22,14 +22,14 @@ public class MenuScreen implements Screen {
     public MenuScreen() {
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
-        background = new Texture("NavButtons/background.png");
+        background = new Texture("Backgrounds/menu_background.png");
         move = 0;
 
-        Image logo = new Image(new Texture("2ICYBOIIS_logo_pixelated.png"));
-        Image joinBtn = new Image(new Texture("NavButtons/JOIN.png"));
-        Image createBtn = new Image(new Texture("NavButtons/CREATE.png"));
-        Image settingsBtn = new Image(new Texture("NavButtons/SETTINGS.png"));
-        Image helpBtn = new Image(new Texture("NavButtons/HELP.png"));
+        Image logo = new Image(new Texture("Logos/2ICYBOIIS_logo_pixelated.png"));
+        Image joinBtn = new Image(new Texture("Buttons/JOIN.png"));
+        Image createBtn = new Image(new Texture("Buttons/CREATE.png"));
+        Image settingsBtn = new Image(new Texture("Buttons/SETTINGS.png"));
+        Image helpBtn = new Image(new Texture("Buttons/HELP.png"));
 
         //Buttons are easily added to this array
         Image[] buttons = {joinBtn, createBtn, helpBtn, settingsBtn};

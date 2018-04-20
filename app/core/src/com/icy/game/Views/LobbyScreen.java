@@ -37,7 +37,7 @@ public class LobbyScreen implements Screen {
         System.out.println(playerId + 1 + " PLAYERS IN ROOM " + players[0] + " " + players[1]);
         room = roomName;
 
-        background = new Texture("NavButtons/background2.png");
+        background = new Texture("Backgrounds/default_background.png");
 
         stage = new Stage();
         updateLobby(playerTwo);
@@ -111,11 +111,11 @@ public class LobbyScreen implements Screen {
         if (players[0] != null && players[1] != null) {
             System.out.println("Both players joined. Lobby full");
 
-            Player player1 = new Player(new Vector2(0.07f,0.5f),"running_animation/running_animation.atlas");
+            Player player1 = new Player(new Vector2(0.07f,0.5f),"Players/running_animation/running_animation.atlas");
             player1.setPlayerId(0);
             player1.setUsername(players[0]);
 
-            Player player2 = new Player(new Vector2(0.07f,0.5f),"player2_running/p2_run_anim.atlas");
+            Player player2 = new Player(new Vector2(0.07f,0.5f),"Players/player2_running/p2_run_anim.atlas");
             player2.setPlayerId(1);
             player2.setUsername(players[1]);
 

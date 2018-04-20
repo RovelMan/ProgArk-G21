@@ -31,7 +31,7 @@ public class SettingsScreen implements Screen {
         font.getData().setScale(4);
         Label audioLabel = new Label("Audio", new Label.LabelStyle(font, Color.WHITE));
 
-        audioOn = new Image(new Texture("Buttons/Audio/audio_on.png"));
+        audioOn = new Image(new Texture("Buttons/audio_on.png"));
         audioOn.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -41,7 +41,7 @@ public class SettingsScreen implements Screen {
                 return true;
             }
         });
-        audioOff = new Image(new Texture("Buttons/Audio/audio_off.png"));
+        audioOff = new Image(new Texture("Buttons/audio_off.png"));
         audioOff.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -54,7 +54,7 @@ public class SettingsScreen implements Screen {
         });
 
 
-        Image backBtn = new Image(new Texture("NavButtons/BACK.png"));
+        Image backBtn = new Image(new Texture("Buttons/BACK.png"));
         backBtn.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {

@@ -57,7 +57,7 @@ public class PlayScreen implements Screen {
         cam.position.set(viewport.getWorldWidth()/2, viewport.getWorldHeight()/2, 0);
 
         TmxMapLoader mapLoader = new TmxMapLoader();
-        TiledMap map = mapLoader.load("Map V2/new_map.tmx");
+        TiledMap map = mapLoader.load("Maps/map_1.tmx");
         renderer = new OrthogonalTiledMapRenderer(map);
         hitboxes = new HashMap<>();
         tileLayers = new HashMap<>();
@@ -105,7 +105,7 @@ public class PlayScreen implements Screen {
         player2.getVelocity().y = Connection.getInstance().getOpponentVel().y;
 
         if (timeElapsed > 2) {
-            cam.position.y += 1;
+            //cam.position.y += 1;
         }
         cam.update();
         renderer.setView(cam);

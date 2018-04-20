@@ -26,7 +26,7 @@ public class CreateScreen implements Screen {
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
 
-        background = new Texture("NavButtons/background2.png");
+        background = new Texture("Backgrounds/default_background.png");
 
         BitmapFont font = new BitmapFont();
         font.getData().setScale(4);
@@ -39,8 +39,8 @@ public class CreateScreen implements Screen {
         Label roomInputTxt = new Label("Room name: ", new Label.LabelStyle(font, Color.WHITE));
         roomInput = new TextField("DefaultRoom2", style);
 
-        Image backBtn = new Image(new Texture("NavButtons/BACK.png"));
-        Image createBtn = new Image(new Texture("NavButtons/CREATE.png"));
+        Image backBtn = new Image(new Texture("Buttons/BACK.png"));
+        Image createBtn = new Image(new Texture("Buttons/CREATE.png"));
 
         //Buttons are easily added to this array
         Image[] buttons = {backBtn, createBtn};

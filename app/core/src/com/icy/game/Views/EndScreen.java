@@ -35,7 +35,7 @@ public class EndScreen implements Screen {
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
 
-        background = new Texture("NavButtons/background2.png");
+        background = new Texture("Backgrounds/default_background.png");
 
         BitmapFont font = new BitmapFont();
         font.getData().setScale(4);
@@ -49,8 +49,8 @@ public class EndScreen implements Screen {
         }
         Label playerWonTxt = new Label("Player " + winnerName + " won!", new Label.LabelStyle(font, Color.WHITE));
 
-        Image rematchBtn = new Image(new Texture("NavButtons/REMATCH.png"));
-        Image quitBtn = new Image(new Texture("NavButtons/QUIT.png"));
+        Image rematchBtn = new Image(new Texture("Buttons/REMATCH.png"));
+        Image quitBtn = new Image(new Texture("Buttons/QUIT.png"));
 
         //Buttons are easily added to this array
         Image[] buttons = {rematchBtn, quitBtn};

@@ -16,7 +16,7 @@ public class IcyGame extends Game {
 	// Use this as volume for all sounds
 	public static float VOLUME = 1.0f;
 	public static SpriteBatch batch;
-	public static final String URL = "http://77.66.48.113:7676";
+	public static final String URL = "http://192.168.1.2:7676";
 
 	public static IcyGame getInstance() {
 		return INSTANCE;
@@ -28,8 +28,8 @@ public class IcyGame extends Game {
 		SoundController soundController = SoundController.getInstance();
 		this.setScreen(new MenuScreen());
 		soundController.addEffect("jump", "Sounds/effects/jump.mp3");
-		soundController.addEffect("coin","Sounds/effects/coin.mp3");
-		soundController.addMusic("music","Sounds/music/music.mp3");
+		soundController.addEffect("coin", "Sounds/effects/coin.mp3");
+		soundController.addMusic("music", "Sounds/music/music.mp3");
 		INSTANCE = this;
 	}
 
