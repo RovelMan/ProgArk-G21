@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.icy.game.Controller.SoundController;
 import com.icy.game.IcyGame;
 
 /**
@@ -22,10 +23,8 @@ public class SettingsScreen implements Screen {
 
     private Stage stage;
     private Image audioOn, audioOff;
-    private static IcyGame game;
 
-    public SettingsScreen(IcyGame g) {
-        game = g;
+    public SettingsScreen() {
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
         BitmapFont font = new BitmapFont();
@@ -48,7 +47,7 @@ public class SettingsScreen implements Screen {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 System.out.println("Audio off");
                 IcyGame.VOLUME = 0;
-                game.soundController.stopMusic("music");
+                SoundController.getInstance().stopMusic("music");
                 System.out.println(IcyGame.VOLUME);
                 return true;
             }
@@ -60,7 +59,7 @@ public class SettingsScreen implements Screen {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 System.out.println("Back button pressed");
-                game.setScreen(new MenuScreen(game));
+                IcyGame.getInstance().setScreen(new MenuScreen());
                 dispose();
                 return true;
             }

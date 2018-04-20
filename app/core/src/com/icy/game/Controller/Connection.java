@@ -13,14 +13,18 @@ import io.socket.client.IO;
 import io.socket.emitter.Emitter;
 
 public class Connection {
-
+    private static final Connection INSTANCE = new Connection(IcyGame.URL);
     private Socket socket;
     private int playerId = -1;
     private String playerTwoUsername, roomHost, room;
     private Vector2 opponentPos, opponentVel;
     private int removeTileId = -1;
 
-    public Connection(IcyGame game, String address) {
+    public static Connection getInstance() {
+        return INSTANCE;
+    }
+
+    private Connection(String address) {
         opponentPos = new Vector2();
         opponentVel = new Vector2();
         try {
@@ -51,7 +55,7 @@ public class Connection {
                     Gdx.app.postRunnable(new Runnable() {
                         @Override
                         public void run() {
-                            game.setScreen(new LobbyScreen(game, getPlayerId(), getRoomHost(), null, getRoomName()));
+                            IcyGame.getInstance().setScreen(new LobbyScreen(getPlayerId(), getRoomHost(), null, getRoomName()));
                         }
                     });
                 }
@@ -85,9 +89,9 @@ public class Connection {
                     Gdx.app.postRunnable(new Runnable() {
                         @Override
                         public void run() {
-                            LobbyScreen lobby = new LobbyScreen(game, getPlayerId(), getRoomHost(), getPlayerTwoUsername(), getRoomName());
+                            LobbyScreen lobby = new LobbyScreen(getPlayerId(), getRoomHost(), getPlayerTwoUsername(), getRoomName());
                             lobby.joinLobby(getPlayerId(), getPlayerTwoUsername());
-                            game.setScreen(lobby);
+                            IcyGame.getInstance().setScreen(lobby);
                         }
                     });
                 }
@@ -123,7 +127,7 @@ public class Connection {
                     Gdx.app.postRunnable(new Runnable() {
                         @Override
                         public void run() {
-                            game.setScreen(new LobbyScreen(game, player1Id, player1Username, player2Username, roomName));
+                            IcyGame.getInstance().setScreen(new LobbyScreen(player1Id, player1Username, player2Username, roomName));
                         }
                     });
                 }
@@ -149,7 +153,7 @@ public class Connection {
                                 e.printStackTrace();
                             }
                             socket.emit("gameOver", room);
-                            game.setScreen(new MenuScreen(game));
+                            IcyGame.getInstance().setScreen(new MenuScreen());
                         }
                     });
                 }

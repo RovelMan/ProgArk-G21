@@ -21,13 +21,11 @@ public class Player extends TextureHolder {
     private int direction;
     private boolean powerJump;
     private static final int MAXYVELOCITY = 800;
-    private IcyGame game;
     private int playerId;
     private String username;
 
-    public Player(Vector2 scale, String path, IcyGame g){
+    public Player(Vector2 scale, String path){
         super(scale,path);
-        game = g;
         velocity = new Vector2(0,0);
         position = new Vector2(0,33);
         hitBox = new Rectangle(position.x,position.y,size.x,size.y);
@@ -105,7 +103,7 @@ public class Player extends TextureHolder {
             this.setOnGround(false);
         }
 
-        game.soundController.playEffect("jump");
+        SoundController.getInstance().playEffect("jump");
 
     }
 
@@ -163,7 +161,7 @@ public class Player extends TextureHolder {
         for (Rectangle powerup : powerups) {
             if (this.hitBox.overlaps(powerup)) {
                 if(type.equals("jump")){
-                    game.soundController.playEffect("coin");
+                    SoundController.getInstance().playEffect("coin");
                     this.powerJump = true;
                     System.out.println(this.powerJump);
                 }

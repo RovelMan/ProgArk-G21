@@ -23,17 +23,12 @@ import com.icy.game.IcyGame;
 public class JoinScreen implements Screen {
 
     private TextField userInput, roomInput;
-    private boolean[] btnPressed = {false, false};
     private Stage stage;
-    private Connection connection;
-    private static IcyGame game;
     private Texture background;
 
-    public JoinScreen(IcyGame g) {
-        game = g;
+    public JoinScreen() {
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
-        this.connection = game.connection;
 
         background = new Texture("NavButtons/background2.png");
 
@@ -61,11 +56,11 @@ public class JoinScreen implements Screen {
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                     if (j == 0) {
                         System.out.println("Back button pressed");
-                        game.setScreen(new MenuScreen(game));
+                        IcyGame.getInstance().setScreen(new MenuScreen());
                         dispose();
                     } else if (j == 1) {
                         try {
-                            connection.joinLobby(userInput.getText(), roomInput.getText());
+                            Connection.getInstance().joinLobby(userInput.getText(), roomInput.getText());
                             dispose();
                         } catch (Exception e) {
                             System.out.println("Could not join a game: " + e);
@@ -106,9 +101,9 @@ public class JoinScreen implements Screen {
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 1, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        game.batch.begin();
-        game.batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        game.batch.end();
+        IcyGame.getInstance().batch.begin();
+        IcyGame.getInstance().batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        IcyGame.getInstance().batch.end();
         stage.draw();
     }
 

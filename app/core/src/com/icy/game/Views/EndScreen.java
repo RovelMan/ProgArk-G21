@@ -25,19 +25,15 @@ import org.json.JSONException;
 public class EndScreen implements Screen {
 
     private Stage stage;
-    private Connection connection;
-    private static IcyGame game;
     private Texture background;
     private Player player1;
     private Player player2;
 
-    public EndScreen(IcyGame g, Player player1, Player player2, int winner) {
-        game = g;
+    public EndScreen(Player player1, Player player2, int winner) {
         this.player1 = player1;
         this.player2 = player2;
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
-        this.connection = game.connection;
 
         background = new Texture("NavButtons/background2.png");
 
@@ -68,29 +64,29 @@ public class EndScreen implements Screen {
                         System.out.println("Rematch button pressed");
                         //RESET GAME AND REMEMBER VALUES
                         try {
-                            connection.rematch(player1.getPlayerId(), player1.getUsername(), player2.getUsername(), connection.getRoomName());
+                            Connection.getInstance().rematch(player1.getPlayerId(), player1.getUsername(), player2.getUsername(), Connection.getInstance().getRoomName());
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        game.setScreen(new LobbyScreen(game, player1.getPlayerId(), player1.getUsername(), player2.getUsername(), connection.getRoomName()));
+                        IcyGame.getInstance().setScreen(new LobbyScreen(player1.getPlayerId(), player1.getUsername(), player2.getUsername(), Connection.getInstance().getRoomName()));
                         dispose();
                     } else if (j == 1) {
                         System.out.println("Quit button pressed");
                         //END GAME AND RESET VALUES
                         try {
-                            String roomname = connection.getRoomName();
-                            connection.leaveLobby(player1.getPlayerId(), player1.getUsername(), roomname);
+                            String roomname = Connection.getInstance().getRoomName();
+                            Connection.getInstance().leaveLobby(player1.getPlayerId(), player1.getUsername(), roomname);
                             player1.reset();
                             player2.reset();
                             if (winner == 1) {
-                                connection.gameOver(roomname, player1.getUsername());
+                                Connection.getInstance().gameOver(roomname, player1.getUsername());
                             } else {
-                                connection.gameOver(roomname, player2.getUsername());
+                                Connection.getInstance().gameOver(roomname, player2.getUsername());
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        game.setScreen(new MenuScreen(game));
+                        IcyGame.getInstance().setScreen(new MenuScreen());
                     }
                     return false;
                 }
@@ -123,9 +119,9 @@ public class EndScreen implements Screen {
     public void render(float delta) {
         Gdx.gl.glClearColor(1, 1, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        game.batch.begin();
-        game.batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        game.batch.end();
+        IcyGame.getInstance().batch.begin();
+        IcyGame.getInstance().batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        IcyGame.getInstance().batch.end();
         stage.draw();
     }
 

@@ -17,11 +17,9 @@ public class MenuScreen implements Screen {
 
     private Stage stage;
     private Texture background;
-    private IcyGame game;
     private int move;
 
-    public MenuScreen(IcyGame g) {
-        game = g;
+    public MenuScreen() {
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
         background = new Texture("NavButtons/background.png");
@@ -43,19 +41,19 @@ public class MenuScreen implements Screen {
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                     if (j == 0) {
                         System.out.println("Join button pressed");
-                        game.setScreen(new JoinScreen(game));
+                        IcyGame.getInstance().setScreen(new JoinScreen());
                         dispose();
                     } else if (j == 1) {
                         System.out.println("Create button pressed");
-                        game.setScreen(new CreateScreen(game));
+                        IcyGame.getInstance().setScreen(new CreateScreen());
                         dispose();
                     } else if (j == 2) {
                         System.out.println("Help button pressed");
-                        game.setScreen(new TutorialScreen(game));
+                        IcyGame.getInstance().setScreen(new TutorialScreen());
                         dispose();
                     } else if (j == 3) {
                         System.out.println("Settings button pressed");
-                        game.setScreen(new SettingsScreen(game));
+                        IcyGame.getInstance().setScreen(new SettingsScreen());
                         dispose();
                     }
                     return false;
@@ -96,9 +94,9 @@ public class MenuScreen implements Screen {
         } else {
             move--;
         }
-        game.batch.begin();
-        game.batch.draw(background, 0, 0+move, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()*2);
-        game.batch.end();
+        IcyGame.getInstance().batch.begin();
+        IcyGame.getInstance().batch.draw(background, 0, 0+move, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()*2);
+        IcyGame.getInstance().batch.end();
 
         stage.draw();
     }
