@@ -13,25 +13,40 @@ import com.icy.game.IcyGame;
  * Created by jotde on 13.03.2018.
  */
 
-public class TutorialScreen implements Screen{
+public class TutorialScreen implements Screen {
 
-    private IcyGame game;
     private int page_counter;
     private Stage stage;
-    private SpriteBatch batch = new SpriteBatch();
-    private Texture[] tutorial_screens = {new Texture("tutorial/tutorial_1.png"), new Texture("tutorial/tutorial_2.png"),
-            new Texture("tutorial/tutorial_3.png"), new Texture("tutorial/tutorial_4.png"), new Texture("tutorial/tutorial_5.png")};
+    private SpriteBatch batch;
+    private Texture[] tutorial_screens = {
+            new Texture("TutorialScreens/tutorial_1.png"),
+            new Texture("TutorialScreens/tutorial_2.png"),
+            new Texture("TutorialScreens/tutorial_3.png"),
+            new Texture("TutorialScreens/tutorial_4.png"),
+            new Texture("TutorialScreens/tutorial_5.png")
+    };
 
-    public TutorialScreen(IcyGame game) {
-        this.game = game;
+    public TutorialScreen() {
         page_counter = -1;
-        this.stage = new Stage();
+        stage = new Stage();
+        batch = new SpriteBatch();
         Gdx.input.setInputProcessor(stage);
     }
 
     @Override
     public void show() {
 
+    }
+
+    public void handleInput(){
+        if(Gdx.input.justTouched()){
+            page_counter++;
+        }
+        if (page_counter == tutorial_screens.length) {
+            page_counter = 0;
+            IcyGame.getInstance().setScreen(new MenuScreen());
+            dispose();
+        }
     }
 
     @Override
@@ -42,11 +57,11 @@ public class TutorialScreen implements Screen{
         batch.begin();
         batch.draw(tutorial_screens[page_counter], 0,0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         batch.end();
-
     }
 
     @Override
     public void resize(int width, int height) {
+
     }
 
     @Override
@@ -66,18 +81,6 @@ public class TutorialScreen implements Screen{
 
     @Override
     public void dispose() {
-
-    }
-
-    public void handleInput(){
-        if(Gdx.input.justTouched()){
-            page_counter++;
-        }
-        if (page_counter == tutorial_screens.length) {
-            page_counter = 0;
-            game.setScreen(new MenuScreen(game));
-            dispose();
-        }
 
     }
 

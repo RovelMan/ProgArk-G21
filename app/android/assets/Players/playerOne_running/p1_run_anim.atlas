@@ -1,0 +1,32 @@
+p1_walk_right.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+p1_walk01
+  rotate: false
+  xy: 3, 0
+  size: 121, 128
+  orig: 121, 128
+  offset: 0, 0
+  index: -1
+p1_walk02
+  rotate: false
+  xy: 121, 0
+  size: 121, 128
+  orig: 121, 128
+  offset: 0, 0
+  index: -1
+p1_walk03
+  rotate: false
+  xy: 242, 0
+  size: 121, 128
+  orig: 121, 128
+  offset: 0, 0
+  index: -1
+p1_walk04
+  rotate: false
+  xy: 364, 0
+  size: 121, 128
+  orig: 121, 128
+  offset: 0, 0
+  index: -1

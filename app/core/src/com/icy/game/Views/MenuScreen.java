@@ -17,21 +17,19 @@ public class MenuScreen implements Screen {
 
     private Stage stage;
     private Texture background;
-    private IcyGame game;
     private int move;
 
-    public MenuScreen(IcyGame g) {
-        game = g;
+    public MenuScreen() {
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
-        background = new Texture("NavButtons/background.png");
+        background = new Texture("Backgrounds/menu_background.png");
         move = 0;
 
-        Image logo = new Image(new Texture("2ICYBOIIS_logo_pixelated.png"));
-        Image joinBtn = new Image(new Texture("NavButtons/JOIN.png"));
-        Image createBtn = new Image(new Texture("NavButtons/CREATE.png"));
-        Image settingsBtn = new Image(new Texture("NavButtons/SETTINGS.png"));
-        Image helpBtn = new Image(new Texture("NavButtons/HELP.png"));
+        Image logo = new Image(new Texture("Logos/2ICYBOIIS_logo_pixelated.png"));
+        Image joinBtn = new Image(new Texture("Buttons/JOIN.png"));
+        Image createBtn = new Image(new Texture("Buttons/CREATE.png"));
+        Image settingsBtn = new Image(new Texture("Buttons/SETTINGS.png"));
+        Image helpBtn = new Image(new Texture("Buttons/HELP.png"));
 
         //Buttons are easily added to this array
         Image[] buttons = {joinBtn, createBtn, helpBtn, settingsBtn};
@@ -43,19 +41,19 @@ public class MenuScreen implements Screen {
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                     if (j == 0) {
                         System.out.println("Join button pressed");
-                        game.setScreen(new JoinScreen(game));
+                        IcyGame.getInstance().setScreen(new JoinScreen());
                         dispose();
                     } else if (j == 1) {
                         System.out.println("Create button pressed");
-                        game.setScreen(new CreateScreen(game));
+                        IcyGame.getInstance().setScreen(new CreateScreen());
                         dispose();
                     } else if (j == 2) {
                         System.out.println("Help button pressed");
-                        game.setScreen(new TutorialScreen(game));
+                        IcyGame.getInstance().setScreen(new TutorialScreen());
                         dispose();
                     } else if (j == 3) {
                         System.out.println("Settings button pressed");
-                        game.setScreen(new SettingsScreen(game));
+                        IcyGame.getInstance().setScreen(new SettingsScreen());
                         dispose();
                     }
                     return false;
@@ -96,9 +94,9 @@ public class MenuScreen implements Screen {
         } else {
             move--;
         }
-        game.batch.begin();
-        game.batch.draw(background, 0, 0+move, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()*2);
-        game.batch.end();
+        IcyGame.getInstance().batch.begin();
+        IcyGame.getInstance().batch.draw(background, 0, 0+move, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()*2);
+        IcyGame.getInstance().batch.end();
 
         stage.draw();
     }

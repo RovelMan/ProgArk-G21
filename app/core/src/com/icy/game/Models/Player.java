@@ -1,6 +1,7 @@
 package com.icy.game.Models;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -18,12 +19,13 @@ public class Player extends TextureHolder {
     private float jumpForce;
     private boolean onGround;
     private int direction;
+    private boolean powerJump;
     private static final int MAXYVELOCITY = 800;
-    private IcyGame game;
+    private int playerId;
+    private String username;
 
-    public Player(Vector2 scale, String path, IcyGame g){
+    public Player(Vector2 scale, String path){
         super(scale,path);
-        game = g;
         velocity = new Vector2(0,0);
         position = new Vector2(0,33);
         hitBox = new Rectangle(position.x,position.y,size.x,size.y);
@@ -32,24 +34,80 @@ public class Player extends TextureHolder {
         onGround = true;
         standingOnPlatform = null;
         direction = 1;
+        powerJump = false;
     }
 
-    public float getJumpForce() {
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setPlayerId(int playerId) {
+        this.playerId = playerId;
+    }
+
+    public int getPlayerId() {
+        return playerId;
+    }
+
+    public void reset() {
+        this.playerId = -1;
+        this.username = "";
+    }
+
+    private float getJumpForce() {
         return jumpForce;
     }
 
-    public boolean isOnGround(){
+    private boolean isOnGround(){
         return onGround;
     }
 
-    public void jump(){
-        this.velocity.y = this.getJumpForce();
-        this.setOnGround(false);
-        game.soundController.playEffect("jump");
+    public void handleInput(){
+        if(IcyGame.USEDEBUG){
+
+            if(Gdx.input.isKeyPressed(Input.Keys.D)){
+                this.velocity.x = 500;
+            }
+            else if(Gdx.input.isKeyPressed(Input.Keys.A)){
+                this.velocity.x = -500;
+            }
+            else{
+                this.velocity.x = 0;
+            }
+            if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
+                this.jump();
+            }
+
+        }
+        else{
+            if (Gdx.input.justTouched()) {
+                jump();
+            }
+            this.velocity.x = Gdx.input.getRoll()*15;
+        }
+    }
+
+    private void jump(){
+        if(this.isOnGround()){
+            this.velocity.y = this.getJumpForce();
+            this.setOnGround(false);
+
+        }
+        else if(powerJump && this.velocity.y < 0){
+            this.velocity.y = this.getJumpForce();
+            this.powerJump = false;
+            this.setOnGround(false);
+        }
+
+        SoundController.getInstance().playEffect("jump");
 
     }
 
-    public void setOnGround(boolean onGround) {
+    private void setOnGround(boolean onGround) {
         this.onGround = onGround;
     }
 
@@ -74,7 +132,7 @@ public class Player extends TextureHolder {
             this.getVelocity().y = 0;
         }
         else{
-            if(this.getVelocity().y > - this.MAXYVELOCITY){
+            if(this.getVelocity().y > - MAXYVELOCITY){
                 this.getVelocity().y += this.gravity;
             }
 
@@ -99,11 +157,16 @@ public class Player extends TextureHolder {
         }
     }
 
-    public int checkCoinCollision(ArrayList<Rectangle> coins){
-        for (Rectangle coin : coins) {
-            if (this.hitBox.overlaps(coin)) {
-                game.soundController.playEffect("coin");
-                return coins.indexOf(coin);
+    public int checkPowerupCollision(ArrayList<Rectangle> powerups, String type){
+        for (Rectangle powerup : powerups) {
+            if (this.hitBox.overlaps(powerup)) {
+                if(type.equals("jump")){
+                    SoundController.getInstance().playEffect("coin");
+                    this.powerJump = true;
+                    System.out.println(this.powerJump);
+                }
+
+                return powerups.indexOf(powerup);
             }
         }
         return -1;

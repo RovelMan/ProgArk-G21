@@ -6,10 +6,13 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.icy.game.Controller.Connection;
 import com.icy.game.IcyGame;
+import com.icy.game.Models.Player;
 
 import org.json.JSONException;
 
@@ -18,15 +21,15 @@ public class LobbyScreen implements Screen {
     private static int playerId;
     private static String[] players = {null, null};
     private static String room;
-    private static IcyGame game;
     private Texture background;
 
     private static Stage stage;
 
-    public LobbyScreen(IcyGame g, int newPlayerId, String host, String playerTwo, String roomName) {
+    public LobbyScreen(int newPlayerId, String host, String playerTwo, String roomName) {
+        System.out.println("LOBBY: " + newPlayerId + " " + host + " " + playerTwo + " " + roomName + " " + players[0] + " " + players[1]);
+        reset();
         playerId = newPlayerId;
         players[0] = host;
-        game = g;
         Gdx.input.setInputProcessor(stage);
         if (playerTwo != null) {
             addPlayerTwo(playerTwo);
@@ -34,7 +37,7 @@ public class LobbyScreen implements Screen {
         System.out.println(playerId + 1 + " PLAYERS IN ROOM " + players[0] + " " + players[1]);
         room = roomName;
 
-        background = new Texture("NavButtons/background2.png");
+        background = new Texture("Backgrounds/default_background.png");
 
         stage = new Stage();
         updateLobby(playerTwo);
@@ -46,7 +49,7 @@ public class LobbyScreen implements Screen {
     }
 
     private void leaveLobby() throws JSONException {
-        game.connection.leaveLobby(players[playerId], room);
+        Connection.getInstance().leaveLobby(playerId, players[playerId], room);
     }
 
     private void updateLobby(String playerTwo) {
@@ -91,6 +94,13 @@ public class LobbyScreen implements Screen {
         players[1] = username;
     }
 
+    public void reset() {
+        this.playerId = -1;
+        this.players[0] = null;
+        this.players[1] = null;
+        this.room = null;
+    }
+
     @Override
     public void show() {
 
@@ -100,14 +110,27 @@ public class LobbyScreen implements Screen {
     public void render(float delta) {
         if (players[0] != null && players[1] != null) {
             System.out.println("Both players joined. Lobby full");
-            game.setScreen(new PlayScreen(game, this.playerId));
+
+            Player player1 = new Player(new Vector2(0.07f,0.5f),"Players/running_animation/running_animation.atlas");
+            player1.setPlayerId(0);
+            player1.setUsername(players[0]);
+
+            Player player2 = new Player(new Vector2(0.07f,0.5f),"Players/player2_running/p2_run_anim.atlas");
+            player2.setPlayerId(1);
+            player2.setUsername(players[1]);
+
+            if (playerId == 1) {
+                IcyGame.getInstance().setScreen(new PlayScreen(player1, player2));
+            } else {
+                IcyGame.getInstance().setScreen(new PlayScreen(player2, player1));
+            }
         }
 
         Gdx.gl.glClearColor(1, 0, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        game.batch.begin();
-        game.batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        game.batch.end();
+        IcyGame.getInstance().batch.begin();
+        IcyGame.getInstance().batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        IcyGame.getInstance().batch.end();
         stage.draw();
     }
 

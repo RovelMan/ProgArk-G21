@@ -23,19 +23,14 @@ import com.icy.game.IcyGame;
 public class JoinScreen implements Screen {
 
     private TextField userInput, roomInput;
-    private boolean[] btnPressed = {false, false};
     private Stage stage;
-    private Connection connection;
-    private static IcyGame game;
     private Texture background;
 
-    public JoinScreen(IcyGame g) {
-        game = g;
+    public JoinScreen() {
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
-        this.connection = game.connection;
 
-        background = new Texture("NavButtons/background2.png");
+        background = new Texture("Backgrounds/default_background.png");
 
         BitmapFont font = new BitmapFont();
         font.getData().setScale(4);
@@ -48,8 +43,8 @@ public class JoinScreen implements Screen {
         Label roomInputTxt = new Label(String.format("Room name: "), new Label.LabelStyle(font, Color.WHITE));
         roomInput = new TextField("DefaultRoom2", style);
 
-        Image backBtn = new Image(new Texture("NavButtons/BACK.png"));
-        Image joinBtn = new Image(new Texture("NavButtons/JOIN.png"));
+        Image backBtn = new Image(new Texture("Buttons/BACK.png"));
+        Image joinBtn = new Image(new Texture("Buttons/JOIN.png"));
 
         //Buttons are easily added to this array
         Image[] buttons = {backBtn, joinBtn};
@@ -61,11 +56,11 @@ public class JoinScreen implements Screen {
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                     if (j == 0) {
                         System.out.println("Back button pressed");
-                        game.setScreen(new MenuScreen(game));
+                        IcyGame.getInstance().setScreen(new MenuScreen());
                         dispose();
                     } else if (j == 1) {
                         try {
-                            connection.joinLobby(userInput.getText(), roomInput.getText());
+                            Connection.getInstance().joinLobby(userInput.getText(), roomInput.getText());
                             dispose();
                         } catch (Exception e) {
                             System.out.println("Could not join a game: " + e);
@@ -106,9 +101,9 @@ public class JoinScreen implements Screen {
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 1, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        game.batch.begin();
-        game.batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        game.batch.end();
+        IcyGame.getInstance().batch.begin();
+        IcyGame.getInstance().batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        IcyGame.getInstance().batch.end();
         stage.draw();
     }
 

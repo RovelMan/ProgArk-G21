@@ -1,7 +1,6 @@
 package com.icy.game.Views;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -17,6 +16,8 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.icy.game.Controller.Connection;
+import com.icy.game.Controller.SoundController;
 import com.icy.game.IcyGame;
 import com.icy.game.Models.Player;
 
@@ -31,15 +32,12 @@ import java.util.Map;
 
 public class PlayScreen implements Screen {
 
-    private static IcyGame game;
     private Player player1;
     private Player player2;
     private OrthographicCamera cam;
     private Viewport viewport;
     private float timeElapsed;
-    private float timePrevious;
-    private int playerId;
-
+    private ArrayList<Integer> removedTiles;
     private OrthogonalTiledMapRenderer renderer;
     private Map<String,ArrayList<Rectangle>> hitboxes;
     private Map<String,TiledMapTileLayer> tileLayers;
@@ -48,11 +46,10 @@ public class PlayScreen implements Screen {
     private static final List<String> validTileLayers =
             Collections.unmodifiableList(Arrays.asList("platforms", "logPlatforms","jumpPower"));
 
-    PlayScreen(IcyGame g, int playerId) {
-        game = g;
-        this.playerId = playerId;
-        player1 = new Player(new Vector2(0.07f,0.5f),"running_animation/running_animation.atlas",game);
-        player2 = new Player(new Vector2(0.07f,0.5f),"player2_running/p2_run_anim.atlas",game);
+    PlayScreen(Player player1, Player player2) {
+        this.player2 = player1;
+        this.player1 = player2;
+        removedTiles = new ArrayList<>();
         cam = new OrthographicCamera();
         //worldWidth and worldHeight is NOT the worlds width and height! They are just the size
         //of your viewport...
@@ -60,13 +57,13 @@ public class PlayScreen implements Screen {
         cam.position.set(viewport.getWorldWidth()/2, viewport.getWorldHeight()/2, 0);
 
         TmxMapLoader mapLoader = new TmxMapLoader();
-        TiledMap map = mapLoader.load("Map V2/new_map.tmx");
+        TiledMap map = mapLoader.load("Maps/map_1.tmx");
         renderer = new OrthogonalTiledMapRenderer(map);
-        hitboxes = new HashMap<String, ArrayList<Rectangle>>();
-        tileLayers = new HashMap<String, TiledMapTileLayer>();
+        hitboxes = new HashMap<>();
+        tileLayers = new HashMap<>();
         for (MapLayer layer: map.getLayers()) {
             if(validHitboxes.contains(layer.getName())){
-                hitboxes.put(layer.getName(),new ArrayList<Rectangle>());
+                hitboxes.put(layer.getName(),new ArrayList<>());
                 for (MapObject object : layer.getObjects().getByType(RectangleMapObject.class)){
                     hitboxes.get(layer.getName()).add(((RectangleMapObject)object).getRectangle());
                 }
@@ -75,7 +72,7 @@ public class PlayScreen implements Screen {
                 tileLayers.put(layer.getName(),(TiledMapTileLayer)layer);
             }
         }
-        game.soundController.playMusic("music");
+        SoundController.getInstance().playMusic("music");
     }
 
     @Override
@@ -83,83 +80,67 @@ public class PlayScreen implements Screen {
         viewport.update(width,height);
     }
 
-    public void handleInput() {
+    public void update(float deltaTime) {
+        player1.handleInput();
+        player1.updateVelocity();
+        player1.updatePosition(deltaTime);
+        player1.checkPlatformCollision(hitboxes.get("platformsHitbox"));
 
-        if(IcyGame.USEDEBUG){
+        int removeID = player1.checkPowerupCollision(hitboxes.get("jumpPowerHitbox"),"jump");
+        handlePowerup(tileLayers.get("jumpPower"), "jumpPowerHitbox", removeID);
+        sendGameInfo(removeID);
+        removeID = Connection.getInstance().getRemoveTileId();
+        handlePowerup(tileLayers.get("jumpPower"), "jumpPowerHitbox", removeID);
 
-            if(Gdx.input.isKeyPressed(Input.Keys.D)){
-                player1.getVelocity().x = 500;
-            }
-            else if(Gdx.input.isKeyPressed(Input.Keys.A)){
-                player1.getVelocity().x = -500;
-            }
-            else{
-                player1.getVelocity().x = 0;
-            }
-            if(Gdx.input.isKeyPressed(Input.Keys.SPACE) && player1.isOnGround()){
-                player1.jump();
-            }
-
+        if(player1.getPosition().y + player1.getSize().y < cam.position.y-cam.viewportHeight/2 ){
+            IcyGame.getInstance().setScreen(new EndScreen(player1, player2, 2));
         }
-        else{
-            if (Gdx.input.justTouched()) {
-                if(player1.isOnGround()){
-                    player1.jump();
-                }
-            }
-            player1.getVelocity().x = Gdx.input.getRoll()*15;
+        if(player2.getPosition().y + player2.getSize().y < cam.position.y-cam.viewportHeight/2 ){
+            IcyGame.getInstance().setScreen(new EndScreen(player1, player2, 1));
+        }
+
+        player2.getPosition().x = Connection.getInstance().getOpponentPos().x;
+        player2.getVelocity().x = Connection.getInstance().getOpponentVel().x;
+        player2.getPosition().y = Connection.getInstance().getOpponentPos().y;
+        player2.getVelocity().y = Connection.getInstance().getOpponentVel().y;
+
+        if (timeElapsed > 2) {
+            //cam.position.y += 1;
+        }
+        cam.update();
+        renderer.setView(cam);
+        timeElapsed += deltaTime;
+    }
+
+    private void handlePowerup(TiledMapTileLayer layer, String hitboxName, final int removeID){
+        ArrayList<Rectangle>hitbox = hitboxes.get(hitboxName);
+        if(!removedTiles.contains(removeID) && removeID != -1){
+            int x = Math.round(hitbox.get(removeID).getX()/32);
+            int y = Math.round(hitbox.get(removeID).getY()/32);
+            layer.getCell(x, y).setTile(null);
+            hitbox.remove(removeID);
+            removedTiles.add(removeID);
         }
     }
 
-    public void update(float deltaTime) {
-        timeElapsed += deltaTime;
-        handleInput();
-        player1.updateVelocity();
-        player1.updatePosition(deltaTime);
-        if (timeElapsed - timePrevious > 0.03) {
-            try {
-                game.connection.sendPosition(
-                        game.connection.getRoomName(),
-                        this.playerId,
-                        player1.getPosition(),
-                        player1.getVelocity()
+    private void sendGameInfo(final int removeId){
+        try {
+            Connection.getInstance().sendPosition(
+                    Connection.getInstance().getRoomName(),
+                    player1.getPlayerId(),
+                    player1.getPosition(),
+                    player1.getVelocity()
+            );
+            if(removeId != -1){
+                Connection.getInstance().sendPowerupPickup(
+                        Connection.getInstance().getRoomName(),
+                        player1.getPlayerId(),
+                        removeId
                 );
-            } catch (JSONException e) {
-                System.out.println("Something wen't wrong. Ups");
             }
+        } catch (JSONException e) {
+            System.out.println("Something wen't wrong. Ups");
         }
-
-        if(player1.getPosition().y + player1.getSize().y < cam.position.y-cam.viewportHeight/2 ){
-            game.setScreen(new MenuScreen(game));
-        }
-        if(player2.getPosition().y + player2.getSize().y < cam.position.y-cam.viewportHeight/2 ){
-            game.setScreen(new MenuScreen(game));
-        }
-
-
-        player2.getPosition().x = game.connection.getOpponentPos().x;
-        player2.getVelocity().x = game.connection.getOpponentVel().x;
-        player2.getPosition().y = game.connection.getOpponentPos().y;
-        player2.getVelocity().y = game.connection.getOpponentVel().y;
-
-        player1.checkPlatformCollision(hitboxes.get("platformsHitbox"));
-        //this can be moved into the players coin collision checker when the PlayScreen is converted to singleton
-        ArrayList<Rectangle> coins = hitboxes.get("jumpPowerHitbox");
-        int removeID = player1.checkCoinCollision(coins);
-        if(removeID != -1){
-            int x = Math.round(coins.get(removeID).getX()/32);
-            int y = Math.round(coins.get(removeID).getY()/32);
-            tileLayers.get("jumpPower").getCell(x,y).setTile(null);
-            coins.remove(removeID);
-        }
-
-        if (timeElapsed > 2) {
-            cam.position.y += 1;
-        }
-
-        cam.update();
-        renderer.setView(cam);
-
     }
 
     @Override
@@ -168,13 +149,13 @@ public class PlayScreen implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         renderer.render();
-        game.batch.setProjectionMatrix(cam.combined);
-        game.batch.begin();
+        IcyGame.getInstance().batch.setProjectionMatrix(cam.combined);
+        IcyGame.getInstance().batch.begin();
         TextureRegion frame1 = (TextureRegion) player1.getAnimation().getKeyFrame(timeElapsed,true);
         TextureRegion frame2 = (TextureRegion) player2.getAnimation().getKeyFrame(timeElapsed,true);
         boolean flip1 = (player1.getDirection() == -1);
         boolean flip2 = (player2.getDirection() == -1);
-        game.batch.draw(
+        IcyGame.getInstance().batch.draw(
                 frame1,
                 flip1 ?  player1.getPosition().x + player1.getSize().x :
                         player1.getPosition().x,
@@ -183,7 +164,7 @@ public class PlayScreen implements Screen {
                         player1.getSize().x,
                         player1.getSize().y
         );
-        game.batch.draw(
+        IcyGame.getInstance().batch.draw(
                 frame2,
                 flip2 ?  player2.getPosition().x + player2.getSize().x :
                         player2.getPosition().x,
@@ -192,7 +173,7 @@ public class PlayScreen implements Screen {
                         player2.getSize().x,
                 player2.getSize().y
         );
-        game.batch.end();
+        IcyGame.getInstance().batch.end();
 
     }
 
