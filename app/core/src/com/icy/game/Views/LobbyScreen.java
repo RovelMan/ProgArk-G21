@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.icy.game.Controller.Connection;
 import com.icy.game.IcyGame;
+import com.icy.game.Models.Opponent;
 import com.icy.game.Models.Player;
 
 import org.json.JSONException;
@@ -111,21 +112,17 @@ public class LobbyScreen implements Screen {
         if (players[0] != null && players[1] != null) {
             System.out.println("Both players joined. Lobby full");
 
-            Player player1 = new Player(new Vector2(0.07f,0.5f),"Players/running_animation/running_animation.atlas");
-            player1.setPlayerId(0);
-            player1.setUsername(players[0]);
+            Player player = Player.getInstance();
+            player.setPlayerId(playerId);
+            player.setUsername(players[playerId]);
 
-            Player player2 = new Player(new Vector2(0.07f,0.5f),"Players/player2_running/p2_run_anim.atlas");
-            player2.setPlayerId(1);
-            player2.setUsername(players[1]);
+            Opponent opponent = Opponent.getInstance();
+            opponent.setPlayerId(1-playerId);
+            opponent.setUsername(players[1-playerId]);
 
-            if (playerId == 1) {
-                IcyGame.getInstance().setScreen(new PlayScreen(player1, player2));
-            } else {
-                IcyGame.getInstance().setScreen(new PlayScreen(player2, player1));
-            }
+            IcyGame.getInstance().setScreen(new PlayScreen());
+
         }
-
         Gdx.gl.glClearColor(1, 0, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         IcyGame.getInstance().batch.begin();
