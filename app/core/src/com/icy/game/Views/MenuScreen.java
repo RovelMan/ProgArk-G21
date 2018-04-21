@@ -94,9 +94,9 @@ public class MenuScreen implements Screen {
         } else {
             move--;
         }
-        IcyGame.getInstance().batch.begin();
-        IcyGame.getInstance().batch.draw(background, 0, 0+move, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()*2);
-        IcyGame.getInstance().batch.end();
+        IcyGame.batch.begin();
+        IcyGame.batch.draw(background, 0, 0 + move, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()*2);
+        IcyGame.batch.end();
 
         stage.draw();
     }

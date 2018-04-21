@@ -49,10 +49,6 @@ public class LobbyScreen implements Screen {
         System.out.println("Player joined " + playerId + " " + player);
     }
 
-    private void leaveLobby() throws JSONException {
-        Connection.getInstance().leaveLobby(playerId, players[playerId], room);
-    }
-
     private void updateLobby(String playerTwo) {
         System.out.println("UPDATED: " + playerTwo);
 
@@ -95,11 +91,11 @@ public class LobbyScreen implements Screen {
         players[1] = username;
     }
 
-    public void reset() {
-        this.playerId = -1;
-        this.players[0] = null;
-        this.players[1] = null;
-        this.room = null;
+    private void reset() {
+        playerId = -1;
+        players[0] = null;
+        players[1] = null;
+        room = null;
     }
 
     @Override
@@ -125,9 +121,9 @@ public class LobbyScreen implements Screen {
         }
         Gdx.gl.glClearColor(1, 0, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        IcyGame.getInstance().batch.begin();
-        IcyGame.getInstance().batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        IcyGame.getInstance().batch.end();
+        IcyGame.batch.begin();
+        IcyGame.batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        IcyGame.batch.end();
         stage.draw();
     }
 
