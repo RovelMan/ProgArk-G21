@@ -11,7 +11,6 @@ import com.icy.game.Views.CreateScreen;
 import com.icy.game.Views.JoinScreen;
 import com.icy.game.Views.LobbyScreen;
 import com.icy.game.Views.MenuScreen;
-import com.icy.game.Views.SettingsScreen;
 import com.icy.game.Views.TutorialScreen;
 
 import org.json.JSONException;
@@ -47,9 +46,6 @@ public class Button {
                         break;
                     case "HELP":
                         IcyGame.getInstance().setScreen(new TutorialScreen());
-                        break;
-                    case "SETTINGS":
-                        IcyGame.getInstance().setScreen(new SettingsScreen());
                         break;
                     case "BACK":
                         IcyGame.getInstance().setScreen(new MenuScreen());
