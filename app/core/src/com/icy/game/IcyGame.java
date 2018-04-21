@@ -9,14 +9,14 @@ import com.icy.game.Views.MenuScreen;
 public class IcyGame extends Game {
 	private static IcyGame INSTANCE;
 	//Change this to "true" to use keyboard controls
-	public static final boolean USEDEBUG = true;
+	public static final boolean USEDEBUG = false;
 	public static final String TITLE = "2IcyBoiis";
 	public static int HEIGHT = 800;
 	public static int WIDTH = 448;
 	// Use this as volume for all sounds
 	public static float VOLUME = 1.0f;
 	public static SpriteBatch batch;
-	public static final String URL = "http://192.168.1.2:7676";
+	public static final String URL = "http://77.66.48.113:7676";
 
 	public static IcyGame getInstance() {
 		return INSTANCE;

@@ -105,7 +105,7 @@ public class PlayScreen implements Screen {
         player2.getVelocity().y = Connection.getInstance().getOpponentVel().y;
 
         if (timeElapsed > 2) {
-            //cam.position.y += 1;
+            cam.position.y += 1;
         }
         cam.update();
         renderer.setView(cam);
