@@ -49,9 +49,6 @@ public class EndScreen implements Screen {
         Map<String, Button> buttons = new HashMap<>();
 
         for (String type : button_types) {
-            if (type.equals("QUIT")) {
-                buttons.put(type, new Button(type, Integer.toString(winner)));
-            }
             buttons.put(type, new Button(type));
         }
 

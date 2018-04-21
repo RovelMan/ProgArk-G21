@@ -84,11 +84,7 @@ public class Button {
                             Player.getInstance().resetProperties();
                             Opponent.getInstance().resetIdentity();
                             Opponent.getInstance().resetProperties();
-                            if (opt[0].equals("1")) {
-                                Connection.getInstance().gameOver(roomname, Player.getInstance().getUsername());
-                            } else {
-                                Connection.getInstance().gameOver(roomname, Opponent.getInstance().getUsername());
-                            }
+                            Connection.getInstance().gameOver(roomname);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

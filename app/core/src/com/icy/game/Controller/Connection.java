@@ -212,10 +212,9 @@ public class Connection {
         socket.emit("rematch", game);
     }
 
-    public void gameOver(final String roomName, final String winner) throws JSONException {
+    public void gameOver(final String roomName) throws JSONException {
         JSONObject game = new JSONObject();
         game.put("room", roomName);
-        game.put("winner", winner);
         socket.emit("gameOver", game);
     }
 
