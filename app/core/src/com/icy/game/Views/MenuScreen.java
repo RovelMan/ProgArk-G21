@@ -30,7 +30,7 @@ public class MenuScreen implements Screen {
         background = new Texture("Backgrounds/menu_background.png");
         move = 0;
 
-        Image logo = new Image(new Texture("Logos/2ICYBOIIS_logo_pixelated.png"));
+        Image logo = new Image(new Texture("Logos/2ICYBOIIS_logo_pixelated_v2.png"));
 
         //Buttons are easily added to this array
         String[] button_types = {"JOIN", "CREATE", "HELP", "SETTINGS"};
