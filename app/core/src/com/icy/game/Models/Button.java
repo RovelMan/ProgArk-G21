@@ -9,6 +9,7 @@ import com.icy.game.Controller.Connection;
 import com.icy.game.IcyGame;
 import com.icy.game.Views.CreateScreen;
 import com.icy.game.Views.JoinScreen;
+import com.icy.game.Views.LobbyScreen;
 import com.icy.game.Views.MenuScreen;
 import com.icy.game.Views.SettingsScreen;
 import com.icy.game.Views.TutorialScreen;
@@ -75,6 +76,7 @@ public class Button {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+                        IcyGame.getInstance().setScreen(new LobbyScreen(Player.getInstance().getPlayerId(), Player.getInstance().getUsername(), Opponent.getInstance().getUsername(), Connection.getInstance().getRoomName()));
                         break;
                     case "QUIT":
                         try {
