@@ -1,0 +1,32 @@
+playerOne_running.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+PNG/p1_walkleft1
+  rotate: false
+  xy: 1, 1
+  size: 16, 17
+  orig: 16, 17
+  offset: 0, 0
+  index: -1
+PNG/p1_walkleft2
+  rotate: false
+  xy: 16, 1
+  size: 16, 17
+  orig: 16, 17
+  offset: 0, 0
+  index: -1
+PNG/p1_walkleft3
+  rotate: false
+  xy: 32, 1
+  size: 16, 17
+  orig: 16, 17
+  offset: 0, 0
+  index: -1
+PNG/p1_walkleft4
+  rotate: false
+  xy: 48, 1
+  size: 16, 17
+  orig: 16, 17
+  offset: 0, 0
+  index: -1

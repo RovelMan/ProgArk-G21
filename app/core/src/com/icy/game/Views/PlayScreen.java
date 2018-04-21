@@ -98,7 +98,7 @@ public class PlayScreen implements Screen {
             IcyGame.getInstance().setScreen(new EndScreen(1));
         }
         if (timeElapsed > 2) {
-            cam.position.y += 0;
+            cam.position.y += 1;
         }
         cam.update();
         renderer.setView(cam);
@@ -144,7 +144,7 @@ public class PlayScreen implements Screen {
         IcyGame.getInstance().batch.setProjectionMatrix(cam.combined);
         TextureRegion frame1 = (TextureRegion) player.getAnimation().getKeyFrame(timeElapsed,true);
         TextureRegion frame2 = (TextureRegion) opponent.getAnimation().getKeyFrame(timeElapsed,true);
-        boolean flip1 = (player.getDirection() == -1);
+        boolean flip1 = (player.getDirection() == 1);
         IcyGame.getInstance().batch.begin();
         IcyGame.getInstance().batch.draw(
                 frame1,

@@ -19,7 +19,7 @@ public class Opponent extends AnimationHolder {
     }
 
     private Opponent() {
-        super(new Vector2(0.07f,0.5f),"player2_running/p2_run_anim.atlas");
+        super(new Vector2(0.5f,1f),"playerTwo_running/playerTwo_running.atlas");
         velocity = new Vector2(0,0);
         position = new Vector2(0,33);
     }
