@@ -152,6 +152,8 @@ public class Connection {
                                 e.printStackTrace();
                             }
                             socket.emit("gameOver", room);
+                            Player.getInstance().resetProperties();
+                            Opponent.getInstance().resetProperties();
                             IcyGame.getInstance().setScreen(new MenuScreen());
                         }
                     });

@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.icy.game.Controller.SoundController;
 import com.icy.game.IcyGame;
 
 import static java.lang.Math.round;
@@ -30,6 +31,8 @@ public class MenuScreen implements Screen {
         Image createBtn = new Image(new Texture("Buttons/CREATE.png"));
         Image settingsBtn = new Image(new Texture("Buttons/SETTINGS.png"));
         Image helpBtn = new Image(new Texture("Buttons/HELP.png"));
+        Image audioOn = new Image(new Texture("Buttons/audio_on.png"));
+        Image audioOff = new Image(new Texture("Buttons/audio_off.png"));
 
         //Buttons are easily added to this array
         Image[] buttons = {joinBtn, createBtn, helpBtn, settingsBtn};
@@ -61,10 +64,31 @@ public class MenuScreen implements Screen {
             });
         }
 
+        audioOn.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                System.out.println("Audio on");
+                IcyGame.VOLUME = 1.0f;
+                System.out.println(IcyGame.VOLUME);
+                return true;
+            }
+        });
+        audioOff.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                System.out.println("Audio off");
+                IcyGame.VOLUME = 0;
+                SoundController.getInstance().stopMusic("music");
+                System.out.println(IcyGame.VOLUME);
+                return true;
+            }
+        });
+
         int width = Gdx.graphics.getWidth();
         int height = Gdx.graphics.getHeight();
 
         Table table = new Table();
+        Table audioButtons = new Table();
         table.center();
         table.setFillParent(true);
         table.add(logo).expandX().size(width, height/6).padBottom(20);
@@ -75,7 +99,9 @@ public class MenuScreen implements Screen {
         table.row();
         table.add(helpBtn).expandX().size(width/3, height/8).padBottom(10);
         table.row();
-        table.add(settingsBtn).expandX().size(width/6, height/8);
+        audioButtons.add(audioOn);
+        audioButtons.add(audioOff);
+        table.add(audioButtons).expandX().size(width/2, height/8);
         table.pack();
         stage.addActor(table);
     }
