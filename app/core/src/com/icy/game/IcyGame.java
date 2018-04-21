@@ -16,7 +16,7 @@ public class IcyGame extends Game {
 	// Use this as volume for all sounds
 	public static float VOLUME = 1.0f;
 	public static SpriteBatch batch;
-	public static final String URL = "http://10.22.11.117:7676";
+	public static final String URL = "http://77.66.48.113:7676";
 
 	public static IcyGame getInstance() {
 		return INSTANCE;

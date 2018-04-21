@@ -6,16 +6,13 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.icy.game.Controller.Connection;
 import com.icy.game.IcyGame;
 import com.icy.game.Models.Opponent;
 import com.icy.game.Models.Player;
 
-import org.json.JSONException;
 
 public class LobbyScreen implements Screen {
 

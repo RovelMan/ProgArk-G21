@@ -15,9 +15,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.icy.game.Controller.SoundController;
 import com.icy.game.IcyGame;
 
-/**
- * Created by jotde on 13.03.2018.
- */
 
 public class SettingsScreen implements Screen {
 

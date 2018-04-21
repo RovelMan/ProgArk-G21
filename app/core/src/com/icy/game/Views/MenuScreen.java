@@ -10,8 +10,13 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.icy.game.IcyGame;
+import com.icy.game.Models.Button;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static java.lang.Math.round;
+
 
 public class MenuScreen implements Screen {
 
@@ -26,39 +31,14 @@ public class MenuScreen implements Screen {
         move = 0;
 
         Image logo = new Image(new Texture("Logos/2ICYBOIIS_logo_pixelated.png"));
-        Image joinBtn = new Image(new Texture("Buttons/JOIN.png"));
-        Image createBtn = new Image(new Texture("Buttons/CREATE.png"));
-        Image settingsBtn = new Image(new Texture("Buttons/SETTINGS.png"));
-        Image helpBtn = new Image(new Texture("Buttons/HELP.png"));
 
         //Buttons are easily added to this array
-        Image[] buttons = {joinBtn, createBtn, helpBtn, settingsBtn};
+        String[] button_types = {"JOIN", "CREATE", "HELP", "SETTINGS"};
 
-        for (int i = 0; i < buttons.length; i++) {
-            final int j = i;
-            buttons[i].addListener(new InputListener() {
-                @Override
-                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                    if (j == 0) {
-                        System.out.println("Join button pressed");
-                        IcyGame.getInstance().setScreen(new JoinScreen());
-                        dispose();
-                    } else if (j == 1) {
-                        System.out.println("Create button pressed");
-                        IcyGame.getInstance().setScreen(new CreateScreen());
-                        dispose();
-                    } else if (j == 2) {
-                        System.out.println("Help button pressed");
-                        IcyGame.getInstance().setScreen(new TutorialScreen());
-                        dispose();
-                    } else if (j == 3) {
-                        System.out.println("Settings button pressed");
-                        IcyGame.getInstance().setScreen(new SettingsScreen());
-                        dispose();
-                    }
-                    return false;
-                }
-            });
+        Map<String, Button> buttons = new HashMap<>();
+
+        for (String type : button_types) {
+            buttons.put(type, new Button(type));
         }
 
         int width = Gdx.graphics.getWidth();
@@ -69,13 +49,13 @@ public class MenuScreen implements Screen {
         table.setFillParent(true);
         table.add(logo).expandX().size(width, height/6).padBottom(20);
         table.row();
-        table.add(joinBtn).expandX().size(width/3, height/8);
+        table.add(buttons.get("JOIN").img).expandX().size(width/3, height/8);
         table.row();
-        table.add(createBtn).expandX().size(width/2, height/8);
+        table.add(buttons.get("CREATE").img).expandX().size(width/2, height/8);
         table.row();
-        table.add(helpBtn).expandX().size(width/3, height/8).padBottom(10);
+        table.add(buttons.get("HELP").img).expandX().size(width/3, height/8).padBottom(10);
         table.row();
-        table.add(settingsBtn).expandX().size(width/6, height/8);
+        table.add(buttons.get("SETTINGS").img).expandX().size(width/6, height/8);
         table.pack();
         stage.addActor(table);
     }

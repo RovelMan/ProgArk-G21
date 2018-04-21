@@ -6,19 +6,18 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.icy.game.Controller.Connection;
 import com.icy.game.IcyGame;
+import com.icy.game.Models.Button;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class CreateScreen implements Screen {
 
-    private TextField userInput, roomInput;
     private Stage stage;
     private Texture background;
 
@@ -35,36 +34,21 @@ public class CreateScreen implements Screen {
         style.fontColor = Color.WHITE;
         style.font = font;
         Label userInputTxt = new Label("Username: ", new Label.LabelStyle(font, Color.WHITE));
-        userInput = new TextField("Creator", style);
+        TextField userInput = new TextField("Creator", style);
         Label roomInputTxt = new Label("Room name: ", new Label.LabelStyle(font, Color.WHITE));
-        roomInput = new TextField("DefaultRoom2", style);
-
-        Image backBtn = new Image(new Texture("Buttons/BACK.png"));
-        Image createBtn = new Image(new Texture("Buttons/CREATE.png"));
+        TextField roomInput = new TextField("DefaultRoom2", style);
 
         //Buttons are easily added to this array
-        Image[] buttons = {backBtn, createBtn};
+        String[] button_types = {"BACK", "CREATELOBBY"};
 
-        for (int i = 0; i < buttons.length; i++) {
-            final int j = i;
-            buttons[i].addListener(new InputListener() {
-                @Override
-                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                    if (j == 0) {
-                        System.out.println("Back button pressed");
-                        IcyGame.getInstance().setScreen(new MenuScreen());
-                        dispose();
-                    } else if (j == 1) {
-                        try {
-                            Connection.getInstance().createLobby(userInput.getText(), roomInput.getText());
-                            dispose();
-                        } catch (Exception e) {
-                            System.out.println("Could not create a lobby: " + e);
-                        }
-                    }
-                    return false;
-                }
-            });
+        Map<String, Button> buttons = new HashMap<>();
+
+        for (String type : button_types) {
+            if (type.equals("CREATELOBBY")) {
+                buttons.put(type, new Button(type, userInput.getText(), roomInput.getText()));
+            } else {
+                buttons.put(type, new Button(type));
+            }
         }
 
         int width = Gdx.graphics.getWidth();
@@ -81,9 +65,9 @@ public class CreateScreen implements Screen {
         table.row();
         table.add(roomInput).expandX().padBottom(20).size(width/2, height/8);
         table.row();
-        table.add(createBtn).expandX().padBottom(10).size(width/2, height/8);
+        table.add(buttons.get("CREATELOBBY").img).expandX().padBottom(10).size(width/2, height/8);
         table.row();
-        table.add(backBtn).expandX().size(width/2, height/8);
+        table.add(buttons.get("BACK").img).expandX().size(width/2, height/8);
         table.pack();
         stage.addActor(table);
     }
@@ -125,7 +109,6 @@ public class CreateScreen implements Screen {
 
     @Override
     public void dispose() {
-        background.dispose();
-        stage.dispose();
+
     }
 }

@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 public class PlayScreen implements Screen {
 
     private Player player = Player.getInstance();
