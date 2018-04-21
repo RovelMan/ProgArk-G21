@@ -214,15 +214,13 @@ public class Connection {
         socket.emit("rematch", game);
     }
 
-    public void gameOver(final String roomName, final String winner) throws JSONException {
+    public void gameOver(final String roomName) throws JSONException {
         JSONObject game = new JSONObject();
         game.put("room", roomName);
-        game.put("winner", winner);
         socket.emit("gameOver", game);
     }
 
     public void sendPosition(final String roomName, final int playerId, final Vector2 pos, final Vector2 vel) throws JSONException{
-        System.out.println("Player ID: "+playerId);
         JSONObject player = new JSONObject();
         player.put("room", roomName);
         player.put("id", playerId);

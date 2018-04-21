@@ -6,16 +6,13 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.icy.game.Controller.Connection;
 import com.icy.game.IcyGame;
 import com.icy.game.Models.Opponent;
 import com.icy.game.Models.Player;
 
-import org.json.JSONException;
 
 public class LobbyScreen implements Screen {
 
@@ -49,15 +46,10 @@ public class LobbyScreen implements Screen {
         System.out.println("Player joined " + playerId + " " + player);
     }
 
-    private void leaveLobby() throws JSONException {
-        Connection.getInstance().leaveLobby(playerId, players[playerId], room);
-    }
-
     private void updateLobby(String playerTwo) {
         System.out.println("UPDATED: " + playerTwo);
 
-        BitmapFont font = new BitmapFont();
-        font.getData().setScale(4);
+        BitmapFont font = IcyGame.font;
 
         Label lobbyTxt = new Label("Welcome to room: " + room, new Label.LabelStyle(font, Color.WHITE));
         Label hostName = new Label("Host: " + players[0], new Label.LabelStyle(font, Color.WHITE));
@@ -95,11 +87,11 @@ public class LobbyScreen implements Screen {
         players[1] = username;
     }
 
-    public void reset() {
-        this.playerId = -1;
-        this.players[0] = null;
-        this.players[1] = null;
-        this.room = null;
+    private void reset() {
+        playerId = -1;
+        players[0] = null;
+        players[1] = null;
+        room = null;
     }
 
     @Override
@@ -125,9 +117,9 @@ public class LobbyScreen implements Screen {
         }
         Gdx.gl.glClearColor(1, 0, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        IcyGame.getInstance().batch.begin();
-        IcyGame.getInstance().batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        IcyGame.getInstance().batch.end();
+        IcyGame.batch.begin();
+        IcyGame.batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        IcyGame.batch.end();
         stage.draw();
     }
 
@@ -153,6 +145,7 @@ public class LobbyScreen implements Screen {
 
     @Override
     public void dispose() {
-
+        background.dispose();
+        stage.dispose();
     }
 }

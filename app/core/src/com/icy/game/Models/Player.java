@@ -174,7 +174,6 @@ public class Player extends AnimationHolder {
                 if(type.equals("jump")){
                     SoundController.getInstance().playEffect("coin");
                     this.powerJump = true;
-                    System.out.println(this.powerJump);
                 }
 
                 return powerups.indexOf(powerup);

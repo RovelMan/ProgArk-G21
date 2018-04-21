@@ -15,14 +15,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.icy.game.Controller.SoundController;
 import com.icy.game.IcyGame;
 
-/**
- * Created by jotde on 13.03.2018.
- */
 
 public class SettingsScreen implements Screen {
 
     private Stage stage;
-    private Image audioOn, audioOff;
 
     public SettingsScreen() {
         stage = new Stage();
@@ -31,7 +27,7 @@ public class SettingsScreen implements Screen {
         font.getData().setScale(4);
         Label audioLabel = new Label("Audio", new Label.LabelStyle(font, Color.WHITE));
 
-        audioOn = new Image(new Texture("Buttons/audio_on.png"));
+        Image audioOn = new Image(new Texture("Buttons/audio_on.png"));
         audioOn.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -41,7 +37,7 @@ public class SettingsScreen implements Screen {
                 return true;
             }
         });
-        audioOff = new Image(new Texture("Buttons/audio_off.png"));
+        Image audioOff = new Image(new Texture("Buttons/audio_off.png"));
         audioOff.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -113,6 +109,6 @@ public class SettingsScreen implements Screen {
 
     @Override
     public void dispose() {
-
+        stage.dispose();
     }
 }

@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 public class PlayScreen implements Screen {
 
     private Player player = Player.getInstance();
@@ -145,12 +146,12 @@ public class PlayScreen implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         renderer.render();
-        IcyGame.getInstance().batch.setProjectionMatrix(cam.combined);
+        IcyGame.batch.setProjectionMatrix(cam.combined);
         TextureRegion frame1 = (TextureRegion) player.getAnimation().getKeyFrame(timeElapsed,true);
         TextureRegion frame2 = (TextureRegion) opponent.getAnimation().getKeyFrame(timeElapsed,true);
         boolean flip1 = (player.getDirection() == 1);
-        IcyGame.getInstance().batch.begin();
-        IcyGame.getInstance().batch.draw(
+        IcyGame.batch.begin();
+        IcyGame.batch.draw(
                 frame1,
                 flip1 ?  player.getPosition().x + player.getSize().x :
                         player.getPosition().x,
@@ -159,12 +160,12 @@ public class PlayScreen implements Screen {
                         player.getSize().x,
                 player.getSize().y
         );
-        IcyGame.getInstance().batch.draw(frame2,
+        IcyGame.batch.draw(frame2,
                 opponent.getPosition().x,
                 opponent.getPosition().y,
                 opponent.getSize().x,
                 opponent.getSize().y);
-        IcyGame.getInstance().batch.end();
+        IcyGame.batch.end();
 
     }
 

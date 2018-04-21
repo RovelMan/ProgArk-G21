@@ -6,23 +6,19 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.icy.game.Controller.Connection;
 import com.icy.game.IcyGame;
+import com.icy.game.Models.Button;
 
-/**
- * Created by jotde on 13.03.2018.
- */
+import java.util.HashMap;
+import java.util.Map;
+
 
 public class JoinScreen implements Screen {
 
-    private TextField userInput, roomInput;
     private Stage stage;
     private Texture background;
 
@@ -32,43 +28,21 @@ public class JoinScreen implements Screen {
 
         background = new Texture("Backgrounds/default_background.png");
 
-        BitmapFont font = new BitmapFont();
-        font.getData().setScale(4);
-
-        TextField.TextFieldStyle style = new TextField.TextFieldStyle();
-        style.fontColor = Color.WHITE;
-        style.font = font;
-        Label userInputTxt = new Label(String.format("Username: "), new Label.LabelStyle(font, Color.WHITE));
-        userInput = new TextField("Joiner", style);
-        Label roomInputTxt = new Label(String.format("Room name: "), new Label.LabelStyle(font, Color.WHITE));
-        roomInput = new TextField("DefaultRoom2", style);
-
-        Image backBtn = new Image(new Texture("Buttons/BACK.png"));
-        Image joinBtn = new Image(new Texture("Buttons/JOIN.png"));
+        Label userInputTxt = new Label("Username: ", new Label.LabelStyle(IcyGame.font, Color.WHITE));
+        TextField userInput = new TextField("Joiner", IcyGame.style);
+        Label roomInputTxt = new Label("Room name: ", new Label.LabelStyle(IcyGame.font, Color.WHITE));
+        TextField roomInput = new TextField("DefaultRoom2", IcyGame.style);
 
         //Buttons are easily added to this array
-        Image[] buttons = {backBtn, joinBtn};
+        String[] button_types = {"BACK", "JOINLOBBY"};
+        Map<String, Button> buttons = new HashMap<>();
 
-        for (int i = 0; i < buttons.length; i++) {
-            final int j = i;
-            buttons[i].addListener(new InputListener() {
-                @Override
-                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                    if (j == 0) {
-                        System.out.println("Back button pressed");
-                        IcyGame.getInstance().setScreen(new MenuScreen());
-                        dispose();
-                    } else if (j == 1) {
-                        try {
-                            Connection.getInstance().joinLobby(userInput.getText(), roomInput.getText());
-                            dispose();
-                        } catch (Exception e) {
-                            System.out.println("Could not join a game: " + e);
-                        }
-                    }
-                    return false;
-                }
-            });
+        for (String type : button_types) {
+            if (type.equals("JOINLOBBY")) {
+                buttons.put(type, new Button(type, userInput.getText(), roomInput.getText()));
+            } else {
+                buttons.put(type, new Button(type));
+            }
         }
 
         int width = Gdx.graphics.getWidth();
@@ -85,9 +59,9 @@ public class JoinScreen implements Screen {
         table.row();
         table.add(roomInput).expandX().padBottom(20).size(width/2, height/8);
         table.row();
-        table.add(joinBtn).expandX().padBottom(10).size(width/2, height/8);
+        table.add(buttons.get("JOINLOBBY").img).expandX().padBottom(10).size(width/2, height/8);
         table.row();
-        table.add(backBtn).expandX().size(width/2, height/8);
+        table.add(buttons.get("BACK").img).expandX().size(width/2, height/8);
         table.pack();
         stage.addActor(table);
     }
@@ -101,9 +75,9 @@ public class JoinScreen implements Screen {
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 1, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        IcyGame.getInstance().batch.begin();
-        IcyGame.getInstance().batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        IcyGame.getInstance().batch.end();
+        IcyGame.batch.begin();
+        IcyGame.batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        IcyGame.batch.end();
         stage.draw();
     }
 
@@ -129,6 +103,7 @@ public class JoinScreen implements Screen {
 
     @Override
     public void dispose() {
-
+        background.dispose();
+        stage.dispose();
     }
 }
