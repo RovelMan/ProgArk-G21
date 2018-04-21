@@ -219,7 +219,6 @@ public class Connection {
     }
 
     public void sendPosition(final String roomName, final int playerId, final Vector2 pos, final Vector2 vel) throws JSONException{
-        System.out.println("Player ID: "+playerId);
         JSONObject player = new JSONObject();
         player.put("room", roomName);
         player.put("id", playerId);
