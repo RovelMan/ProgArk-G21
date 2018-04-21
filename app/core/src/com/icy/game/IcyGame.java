@@ -18,7 +18,7 @@ public class IcyGame extends Game {
 	public static int WIDTH = 448;
 	// Use this as volume for all sounds
 	public static float VOLUME = 1.0f;
-	public static BitmapFont font = new BitmapFont();
+	public static BitmapFont font;
 	public static TextField.TextFieldStyle style = new TextField.TextFieldStyle();
 	public static SpriteBatch batch;
 	public static final String URL = "http://77.66.48.113:7676";
@@ -30,6 +30,7 @@ public class IcyGame extends Game {
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
+		font = new BitmapFont();
 		font.getData().setScale(4);
 		style.fontColor = Color.WHITE;
 		style.font = font;
