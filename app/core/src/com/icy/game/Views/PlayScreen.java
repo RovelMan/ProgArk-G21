@@ -92,9 +92,13 @@ public class PlayScreen implements Screen {
         handlePowerup(tileLayers.get("jumpPower"), "jumpPowerHitbox", removeID);
 
         if(player.getPosition().y + player.getSize().y < cam.position.y-cam.viewportHeight/2 ){
+            // Resetting cam position
+            cam.position.y = 0+cam.viewportHeight/2;
             IcyGame.getInstance().setScreen(new EndScreen(2));
         }
         if(opponent.getPosition().y + opponent.getSize().y < cam.position.y-cam.viewportHeight/2 ){
+            // Resetting cam position
+            cam.position.y = 0+cam.viewportHeight/2 ;
             IcyGame.getInstance().setScreen(new EndScreen(1));
         }
         if (timeElapsed > 2) {
