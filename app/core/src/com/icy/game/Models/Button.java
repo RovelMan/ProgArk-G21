@@ -70,9 +70,7 @@ public class Button {
                         break;
                     case "REMATCH":
                         try {
-                            Player.getInstance().resetProperties();
-                            Opponent.getInstance().resetProperties();
-                            Connection.getInstance().rematch(Player.getInstance().getPlayerId(), Player.getInstance().getUsername(), Opponent.getInstance().getUsername(), Connection.getInstance().getRoomName());
+                            Connection.getInstance().rematch(Connection.getInstance().getRoomName(),Player.getInstance().getPlayerId());
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

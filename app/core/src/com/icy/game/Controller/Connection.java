@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.icy.game.IcyGame;
 import com.icy.game.Models.Opponent;
 import com.icy.game.Models.Player;
+import com.icy.game.Views.EndScreen;
 import com.icy.game.Views.LobbyScreen;
 import com.icy.game.Views.MenuScreen;
 import org.json.JSONException;
@@ -13,6 +14,8 @@ import org.json.JSONObject;
 import io.socket.client.Socket;
 import io.socket.client.IO;
 import io.socket.emitter.Emitter;
+
+import static com.icy.game.IcyGame.cam;
 
 public class Connection {
     private static final Connection INSTANCE = new Connection(IcyGame.URL);
@@ -107,28 +110,26 @@ public class Connection {
                     }
                 }
             }).on("rematchRes", new Emitter.Listener() {
-                int player1Id;
-                String player1Username, player2Username, roomName;
                 @Override
                 public void call(Object... args) {
                     System.out.println("Rematch");
                     JSONObject data = (JSONObject) args[0];
                     try {
-                        player1Id = data.getInt("id");
-                        player1Username = data.getString("username1");
-                        player2Username = data.getString("username2");
-                        roomName = data.getString("room");
-                        Player.getInstance().resetProperties();
+                        if(data.getBoolean("rematch")){
+                            Gdx.app.postRunnable(new Runnable() {
+                                @Override
+                                public void run() {
+                                    IcyGame.getInstance().setScreen(new LobbyScreen(Player.getInstance().getPlayerId(),
+                                            Connection.getInstance().getRoomHost(),
+                                            Opponent.getInstance().getUsername(),
+                                            Connection.getInstance().getRoomName()
+                                    ));
+                                }
+                            });
+                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-
-                    Gdx.app.postRunnable(new Runnable() {
-                        @Override
-                        public void run() {
-                            IcyGame.getInstance().setScreen(new LobbyScreen(player1Id, player1Username, player2Username, roomName));
-                        }
-                    });
                 }
             }).on("playerLeftRes", new Emitter.Listener() {
                 String roomName;
@@ -164,6 +165,25 @@ public class Connection {
                     JSONObject data = (JSONObject) args[0];
                     try {
                         removeTileId = data.getInt("tileId");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).on("deathStatusRes", new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    JSONObject data = (JSONObject) args[0];
+                    try {
+                        if(data.getBoolean("opponentDead")){
+                            cam.position.y = cam.viewportHeight/2;
+                            Player.getInstance().resetProperties();
+                            Gdx.app.postRunnable(new Runnable() {
+                                @Override
+                                public void run() {
+                                    IcyGame.getInstance().setScreen(new EndScreen(Player.getInstance().getUsername()));
+                                }
+                            });
+                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -205,13 +225,11 @@ public class Connection {
         socket.emit("leave", game);
     }
 
-    public void rematch(final int playerId, final String playerOneUsername, final String playerTwoUsername, final String roomName) throws JSONException {
-        JSONObject game = new JSONObject();
-        game.put("id", playerId);
-        game.put("username1", playerOneUsername);
-        game.put("username2", playerTwoUsername);
-        game.put("room", roomName);
-        socket.emit("rematch", game);
+    public void rematch(final String roomName, final int playerId) throws JSONException {
+        JSONObject rematch = new JSONObject();
+        rematch.put("id", playerId);
+        rematch.put("room", roomName);
+        socket.emit("rematch", rematch);
     }
 
     public void gameOver(final String roomName) throws JSONException {
@@ -237,6 +255,11 @@ public class Connection {
         tile.put("id", playerId);
         tile.put("tileId",tileId);
         socket.emit("powerupPickup", tile);
+    }
+    public void sendDeathStatus(final String roomName) throws JSONException{
+        JSONObject status = new JSONObject();
+        status.put("room", roomName);
+        socket.emit("deathStatus",status);
     }
 
     public int getPlayerId() {
