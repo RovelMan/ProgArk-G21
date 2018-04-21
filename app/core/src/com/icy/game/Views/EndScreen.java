@@ -63,7 +63,9 @@ public class EndScreen implements Screen {
                         System.out.println("Rematch button pressed");
                         //RESET GAME AND REMEMBER VALUES
                         try {
+                            player.resetIdentity();
                             player.resetProperties();
+                            opponent.resetIdentity();
                             opponent.resetProperties();
                             Connection.getInstance().rematch(player.getPlayerId(), player.getUsername(), opponent.getUsername(), Connection.getInstance().getRoomName());
                         } catch (JSONException e) {
