@@ -42,12 +42,10 @@ public class PlayScreen implements Screen {
     private OrthogonalTiledMapRenderer renderer;
     private Map<String,ArrayList<Rectangle>> hitboxes;
     private Map<String,TiledMapTileLayer> tileLayers;
-    private static final List<String> validHitboxes =
-            Collections.unmodifiableList(Arrays.asList("platformsHitbox", "logPlatformsHitbox","jumpPowerHitbox"));
-    private static final List<String> validTileLayers =
-            Collections.unmodifiableList(Arrays.asList("platforms", "logPlatforms","jumpPower"));
 
     PlayScreen() {
+        List<String> validTileLayers = Collections.unmodifiableList(Arrays.asList("platforms", "logPlatforms", "jumpPower"));
+        List<String> validHitboxes = Collections.unmodifiableList(Arrays.asList("platformsHitbox", "logPlatformsHitbox", "jumpPowerHitbox"));
         removedTiles = new ArrayList<>();
         TmxMapLoader mapLoader = new TmxMapLoader();
         TiledMap map = mapLoader.load("Maps/map_1.tmx");

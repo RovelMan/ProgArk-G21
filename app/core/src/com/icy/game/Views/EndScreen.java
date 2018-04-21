@@ -17,21 +17,30 @@ import com.icy.game.Models.Player;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.icy.game.IcyGame.cam;
+
 
 public class EndScreen implements Screen {
 
     private Stage stage;
     private Texture background;
 
-    public EndScreen(String winner) {
+    public EndScreen(Boolean youWon) {
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
-
+        String status;
+        if(youWon){
+            status = "won";
+        }else{
+            status = "lost";
+        }
+        cam.position.y = cam.viewportHeight/2;
+        cam.update();
         background = new Texture("Backgrounds/default_background.png");
 
         Label gameOverTxt = new Label("Game over", new Label.LabelStyle(IcyGame.font, Color.WHITE));
 
-        Label playerWonTxt = new Label("Player " + winner + " won!", new Label.LabelStyle(IcyGame.font, Color.WHITE));
+        Label playerWonTxt = new Label("You " + status +"!", new Label.LabelStyle(IcyGame.font, Color.WHITE));
 
         //Buttons are easily added to this array
         String[] button_types = {"REMATCH", "QUIT"};
@@ -65,6 +74,7 @@ public class EndScreen implements Screen {
 
     @Override
     public void render(float delta) {
+        IcyGame.batch.setProjectionMatrix(cam.combined);
         Gdx.gl.glClearColor(1, 1, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         IcyGame.batch.begin();

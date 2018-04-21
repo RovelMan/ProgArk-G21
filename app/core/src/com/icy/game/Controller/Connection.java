@@ -175,12 +175,11 @@ public class Connection {
                     JSONObject data = (JSONObject) args[0];
                     try {
                         if(data.getBoolean("opponentDead")){
-                            cam.position.y = cam.viewportHeight/2;
                             Player.getInstance().resetProperties();
                             Gdx.app.postRunnable(new Runnable() {
                                 @Override
                                 public void run() {
-                                    IcyGame.getInstance().setScreen(new EndScreen(Player.getInstance().getUsername()));
+                                    IcyGame.getInstance().setScreen(new EndScreen(true));
                                 }
                             });
                         }
@@ -275,6 +274,10 @@ public class Connection {
         this.playerTwoUsername = null;
         this.roomHost = null;
         this.room = null;
+    }
+
+    public void setRemoveTileId(int removeTileId) {
+        this.removeTileId = removeTileId;
     }
 
     public String getRoomHost() {

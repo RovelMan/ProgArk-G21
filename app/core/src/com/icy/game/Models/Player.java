@@ -147,14 +147,13 @@ public class Player extends AnimationHolder {
 
     public void checkDeath(){
         if(getPosition().y + getSize().y < cam.position.y-cam.viewportHeight/2 ){
-            cam.position.y = cam.viewportHeight/2;
             try {
                 Connection.getInstance().sendDeathStatus(Connection.getInstance().getRoomName());
             }
             catch (JSONException e){
                 e.printStackTrace();
             }
-            IcyGame.getInstance().setScreen(new EndScreen(Opponent.getInstance().getUsername()));
+            IcyGame.getInstance().setScreen(new EndScreen(false));
         }
     }
 
