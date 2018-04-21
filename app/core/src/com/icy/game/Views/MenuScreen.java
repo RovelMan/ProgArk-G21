@@ -123,6 +123,7 @@ public class MenuScreen implements Screen {
 
     @Override
     public void dispose() {
-
+        background.dispose();
+        stage.dispose();
     }
 }

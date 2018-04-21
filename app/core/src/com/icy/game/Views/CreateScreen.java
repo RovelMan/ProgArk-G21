@@ -97,9 +97,9 @@ public class CreateScreen implements Screen {
     public void render(float delta) {
         Gdx.gl.glClearColor(1, 1, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        IcyGame.getInstance().batch.begin();
-        IcyGame.getInstance().batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        IcyGame.getInstance().batch.end();
+        IcyGame.batch.begin();
+        IcyGame.batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        IcyGame.batch.end();
         stage.draw();
     }
 
@@ -125,6 +125,7 @@ public class CreateScreen implements Screen {
 
     @Override
     public void dispose() {
-
+        background.dispose();
+        stage.dispose();
     }
 }
