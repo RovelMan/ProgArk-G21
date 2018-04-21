@@ -111,21 +111,18 @@ public class LobbyScreen implements Screen {
     public void render(float delta) {
         if (players[0] != null && players[1] != null) {
             System.out.println("Both players joined. Lobby full");
+
             Player player = Player.getInstance();
-            player.setPlayerId(0);
-            player.setUsername(players[0]);
+            player.setPlayerId(playerId);
+            player.setUsername(players[playerId]);
 
             Opponent opponent = Opponent.getInstance();
-            opponent.setPlayerId(1);
-            opponent.setUsername(players[1]);
+            opponent.setPlayerId(1-playerId);
+            opponent.setUsername(players[1-playerId]);
 
-            if (playerId == 1) {
-                IcyGame.getInstance().setScreen(new PlayScreen());
-            } else {
-                IcyGame.getInstance().setScreen(new PlayScreen());
-            }
+            IcyGame.getInstance().setScreen(new PlayScreen());
+
         }
-
         Gdx.gl.glClearColor(1, 0, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         IcyGame.getInstance().batch.begin();

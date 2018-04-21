@@ -141,12 +141,12 @@ public class PlayScreen implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         renderer.render();
-        IcyGame.batch.setProjectionMatrix(cam.combined);
+        IcyGame.getInstance().batch.setProjectionMatrix(cam.combined);
         TextureRegion frame1 = (TextureRegion) player.getAnimation().getKeyFrame(timeElapsed,true);
         TextureRegion frame2 = (TextureRegion) opponent.getAnimation().getKeyFrame(timeElapsed,true);
         boolean flip1 = (player.getDirection() == -1);
-        IcyGame.batch.begin();
-        IcyGame.batch.draw(
+        IcyGame.getInstance().batch.begin();
+        IcyGame.getInstance().batch.draw(
                 frame1,
                 flip1 ?  player.getPosition().x + player.getSize().x :
                         player.getPosition().x,
@@ -155,12 +155,12 @@ public class PlayScreen implements Screen {
                         player.getSize().x,
                         player.getSize().y
         );
-        IcyGame.batch.draw(frame2,
+        IcyGame.getInstance().batch.draw(frame2,
                 opponent.getPosition().x,
                 opponent.getPosition().y,
                 opponent.getSize().x,
                 opponent.getSize().y);
-        IcyGame.batch.end();
+        IcyGame.getInstance().batch.end();
 
     }
 
