@@ -34,8 +34,8 @@ public class PlayScreen implements Screen {
 
     private Player player = Player.getInstance();
     private Opponent opponent = Opponent.getInstance();
-    private OrthographicCamera cam;
-    private Viewport viewport;
+    private OrthographicCamera cam = IcyGame.cam;
+    private Viewport viewport = IcyGame.viewport;
     private float timeElapsed;
     private ArrayList<Integer> removedTiles;
     private OrthogonalTiledMapRenderer renderer;
@@ -48,12 +48,6 @@ public class PlayScreen implements Screen {
 
     PlayScreen() {
         removedTiles = new ArrayList<>();
-        cam = new OrthographicCamera();
-        //worldWidth and worldHeight is NOT the worlds width and height! They are just the size
-        //of your viewport...
-        viewport = new FitViewport(IcyGame.WIDTH,IcyGame.HEIGHT, cam);
-        cam.position.set(viewport.getWorldWidth()/2, viewport.getWorldHeight()/2, 0);
-
         TmxMapLoader mapLoader = new TmxMapLoader();
         TiledMap map = mapLoader.load("Maps/map_1.tmx");
         renderer = new OrthogonalTiledMapRenderer(map);
@@ -84,6 +78,7 @@ public class PlayScreen implements Screen {
         player.updateVelocity();
         player.updatePosition(deltaTime);
         player.checkPlatformCollision(hitboxes.get("platformsHitbox"));
+        player.checkDeath();
 
         int removeID = player.checkPowerupCollision(hitboxes.get("jumpPowerHitbox"),"jump");
         handlePowerup(tileLayers.get("jumpPower"), "jumpPowerHitbox", removeID);
@@ -91,12 +86,6 @@ public class PlayScreen implements Screen {
         removeID = Connection.getInstance().getRemoveTileId();
         handlePowerup(tileLayers.get("jumpPower"), "jumpPowerHitbox", removeID);
 
-        if(player.getPosition().y + player.getSize().y < cam.position.y-cam.viewportHeight/2 ){
-            IcyGame.getInstance().setScreen(new EndScreen(2));
-        }
-        if(opponent.getPosition().y + opponent.getSize().y < cam.position.y-cam.viewportHeight/2 ){
-            IcyGame.getInstance().setScreen(new EndScreen(1));
-        }
         if (timeElapsed > 2) {
             cam.position.y += 1;
         }

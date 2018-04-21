@@ -2,13 +2,20 @@ package com.icy.game.Models;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.icy.game.Controller.Connection;
 import com.icy.game.Controller.SoundController;
 import com.icy.game.IcyGame;
+import com.icy.game.Views.EndScreen;
+
+import org.json.JSONException;
 
 import java.util.ArrayList;
+
+import static com.icy.game.IcyGame.cam;
 
 /**
  * Created by havard on 19.04.18.
@@ -136,6 +143,19 @@ public class Player extends AnimationHolder {
 
     private void setDirection(int direction) {
         this.direction = direction;
+    }
+
+    public void checkDeath(){
+        if(getPosition().y + getSize().y < cam.position.y-cam.viewportHeight/2 ){
+            cam.position.y = cam.viewportHeight/2;
+            try {
+                Connection.getInstance().sendDeathStatus(Connection.getInstance().getRoomName());
+            }
+            catch (JSONException e){
+                e.printStackTrace();
+            }
+            IcyGame.getInstance().setScreen(new EndScreen(Opponent.getInstance().getUsername()));
+        }
     }
 
     public void updateVelocity(){

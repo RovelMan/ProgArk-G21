@@ -30,7 +30,7 @@ public class EndScreen implements Screen {
     private Player player = Player.getInstance();
     private Opponent opponent = Opponent.getInstance();
 
-    EndScreen(int winner) {
+    public EndScreen(String winner) {
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
 
@@ -40,13 +40,7 @@ public class EndScreen implements Screen {
         font.getData().setScale(4);
 
         Label gameOverTxt = new Label("Game over", new Label.LabelStyle(font, Color.WHITE));
-        String winnerName;
-        if (winner == 1) {
-            winnerName = player.getUsername();
-        } else {
-            winnerName = opponent.getUsername();
-        }
-        Label playerWonTxt = new Label("Player " + winnerName + " won!", new Label.LabelStyle(font, Color.WHITE));
+        Label playerWonTxt = new Label("Player " + winner + " won!", new Label.LabelStyle(font, Color.WHITE));
 
         Image rematchBtn = new Image(new Texture("Buttons/REMATCH.png"));
         Image quitBtn = new Image(new Texture("Buttons/QUIT.png"));
@@ -65,7 +59,8 @@ public class EndScreen implements Screen {
                         try {
                             player.resetProperties();
                             opponent.resetProperties();
-                            Connection.getInstance().rematch(player.getPlayerId(), player.getUsername(), opponent.getUsername(), Connection.getInstance().getRoomName());
+                            Connection.getInstance().rematch(Connection.getInstance().getRoomName(), player.getPlayerId());
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -81,11 +76,9 @@ public class EndScreen implements Screen {
                             player.resetProperties();
                             opponent.resetIdentity();
                             opponent.resetProperties();
-                            if (winner == 1) {
-                                Connection.getInstance().gameOver(roomname, player.getUsername());
-                            } else {
-                                Connection.getInstance().gameOver(roomname, opponent.getUsername());
-                            }
+
+                            Connection.getInstance().gameOver(roomname);
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

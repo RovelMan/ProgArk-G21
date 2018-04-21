@@ -1,7 +1,10 @@
 package com.icy.game;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.icy.game.Controller.Connection;
 import com.icy.game.Controller.SoundController;
 import com.icy.game.Views.MenuScreen;
@@ -16,7 +19,9 @@ public class IcyGame extends Game {
 	// Use this as volume for all sounds
 	public static float VOLUME = 1.0f;
 	public static SpriteBatch batch;
-	public static final String URL = "http://10.22.11.117:7676";
+	public static OrthographicCamera cam;
+	public static Viewport viewport;
+	public static final String URL = "http://10.22.5.242:7676";
 
 	public static IcyGame getInstance() {
 		return INSTANCE;
@@ -30,6 +35,11 @@ public class IcyGame extends Game {
 		soundController.addEffect("jump", "Sounds/effects/jump.mp3");
 		soundController.addEffect("coin", "Sounds/effects/coin.mp3");
 		soundController.addMusic("music", "Sounds/music/music.mp3");
+		cam = new OrthographicCamera();
+		//worldWidth and worldHeight is NOT the worlds width and height! They are just the size
+		//of your viewport...
+		viewport = new FitViewport(IcyGame.WIDTH,IcyGame.HEIGHT, cam);
+		cam.position.set(viewport.getWorldWidth()/2, viewport.getWorldHeight()/2, 0);
 		INSTANCE = this;
 	}
 

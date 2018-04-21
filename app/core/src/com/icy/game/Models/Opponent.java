@@ -1,7 +1,10 @@
 package com.icy.game.Models;
 
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.math.Vector2;
+import com.icy.game.IcyGame;
+import com.icy.game.Views.EndScreen;
 
 /**
  * Created by havard on 19.04.18.
@@ -13,6 +16,7 @@ public class Opponent extends AnimationHolder {
     private String username;
     private Vector2 position;
     private Vector2 velocity;
+    private OrthographicCamera cam = IcyGame.cam;
 
     public static Opponent getInstance() {
         return ourInstance;

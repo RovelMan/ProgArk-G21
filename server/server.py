@@ -65,7 +65,7 @@ def on_join(data):
 @socketio.on('rematch')
 def on_rematch(data):
     opponent = games[data['room']].players[1 - data['id']].sid
-    emit('rematchRes', {'id': 1-data['id'], 'username1': data['username1'], 'username2': data['username2'], 'room': data['room']}, room=opponent)
+    emit('rematchRes', {'rematch': True}, room=opponent)
 
 
 @socketio.on('leave')
@@ -82,8 +82,6 @@ def on_leave(data):
 @socketio.on('gameOver')
 def test(data):
     games.pop(data['room'])
-    print(games)
-    print('\nGame over! - Winner:', data['winner'])
 
 
 @socketio.on('test')
@@ -104,6 +102,15 @@ def pos(data):
 def powerupPickup(data):
     opponent = games[data['room']].players[1 - data['id']].sid
     emit('powerupPickupRes', {'tileId': data['tileId']}, room=opponent)
+
+
+@socketio.on('deathStatus')
+def deathStatus(data):
+    for player in games[data['room']].players:
+        if not player.sid == request.sid:
+            opponent = player.sid
+
+    emit('deathStatusRes', {'opponentDead': True}, room=opponent)
 
 
 if __name__ == '__main__':
