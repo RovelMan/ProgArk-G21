@@ -29,10 +29,7 @@ public class EndScreen implements Screen {
 
         background = new Texture("Backgrounds/default_background.png");
 
-        BitmapFont font = new BitmapFont();
-        font.getData().setScale(4);
-
-        Label gameOverTxt = new Label("Game over", new Label.LabelStyle(font, Color.WHITE));
+        Label gameOverTxt = new Label("Game over", new Label.LabelStyle(IcyGame.font, Color.WHITE));
         String winnerName;
         if (winner == 1) {
             Player player = Player.getInstance();
@@ -41,7 +38,7 @@ public class EndScreen implements Screen {
             Opponent opponent = Opponent.getInstance();
             winnerName = opponent.getUsername();
         }
-        Label playerWonTxt = new Label("Player " + winnerName + " won!", new Label.LabelStyle(font, Color.WHITE));
+        Label playerWonTxt = new Label("Player " + winnerName + " won!", new Label.LabelStyle(IcyGame.font, Color.WHITE));
 
         //Buttons are easily added to this array
         String[] button_types = {"REMATCH", "QUIT"};

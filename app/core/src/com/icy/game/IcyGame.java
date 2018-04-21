@@ -1,7 +1,10 @@
 package com.icy.game;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.icy.game.Controller.Connection;
 import com.icy.game.Controller.SoundController;
 import com.icy.game.Views.MenuScreen;
@@ -15,6 +18,8 @@ public class IcyGame extends Game {
 	public static int WIDTH = 448;
 	// Use this as volume for all sounds
 	public static float VOLUME = 1.0f;
+	public static BitmapFont font = new BitmapFont();
+	public static TextField.TextFieldStyle style = new TextField.TextFieldStyle();
 	public static SpriteBatch batch;
 	public static final String URL = "http://77.66.48.113:7676";
 
@@ -25,6 +30,9 @@ public class IcyGame extends Game {
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
+		font.getData().setScale(4);
+		style.fontColor = Color.WHITE;
+		style.font = font;
 		SoundController soundController = SoundController.getInstance();
 		this.setScreen(new MenuScreen());
 		soundController.addEffect("jump", "Sounds/effects/jump.mp3");

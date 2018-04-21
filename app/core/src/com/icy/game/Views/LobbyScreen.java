@@ -49,8 +49,7 @@ public class LobbyScreen implements Screen {
     private void updateLobby(String playerTwo) {
         System.out.println("UPDATED: " + playerTwo);
 
-        BitmapFont font = new BitmapFont();
-        font.getData().setScale(4);
+        BitmapFont font = IcyGame.font;
 
         Label lobbyTxt = new Label("Welcome to room: " + room, new Label.LabelStyle(font, Color.WHITE));
         Label hostName = new Label("Host: " + players[0], new Label.LabelStyle(font, Color.WHITE));

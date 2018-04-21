@@ -27,16 +27,10 @@ public class CreateScreen implements Screen {
 
         background = new Texture("Backgrounds/default_background.png");
 
-        BitmapFont font = new BitmapFont();
-        font.getData().setScale(4);
-
-        TextField.TextFieldStyle style = new TextField.TextFieldStyle();
-        style.fontColor = Color.WHITE;
-        style.font = font;
-        Label userInputTxt = new Label("Username: ", new Label.LabelStyle(font, Color.WHITE));
-        TextField userInput = new TextField("Creator", style);
-        Label roomInputTxt = new Label("Room name: ", new Label.LabelStyle(font, Color.WHITE));
-        TextField roomInput = new TextField("DefaultRoom2", style);
+        Label userInputTxt = new Label("Username: ", new Label.LabelStyle(IcyGame.font, Color.WHITE));
+        TextField userInput = new TextField("Creator", IcyGame.style);
+        Label roomInputTxt = new Label("Room name: ", new Label.LabelStyle(IcyGame.font, Color.WHITE));
+        TextField roomInput = new TextField("DefaultRoom2", IcyGame.style);
 
         //Buttons are easily added to this array
         String[] button_types = {"BACK", "CREATELOBBY"};
