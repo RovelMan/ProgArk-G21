@@ -56,6 +56,7 @@ public class MenuScreen implements Screen {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 System.out.println("Audio on");
                 IcyGame.VOLUME = 1.0f;
+                SoundController.getInstance().playMusic("menu_music");
                 System.out.println(IcyGame.VOLUME);
                 return true;
             }
@@ -65,7 +66,7 @@ public class MenuScreen implements Screen {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 System.out.println("Audio off");
                 IcyGame.VOLUME = 0;
-                SoundController.getInstance().stopMusic("music");
+                SoundController.getInstance().stopMusic("menu_music");
                 System.out.println(IcyGame.VOLUME);
                 return true;
             }
