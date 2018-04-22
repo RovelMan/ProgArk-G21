@@ -92,7 +92,9 @@ def tests(data):
 @socketio.on('pos')
 def pos(data):
     try:
-        opponent = games[data['room']].players[1 - data['id']].sid
+        for player in games[data['room']].players:
+            if not player.sid == request.sid:
+                opponent = player.sid
         emit('posRes', {'posX': data['posX'], 'posY': data['posY'], 'velX': data['velX'], 'velY': data['velY']}, room=opponent)
     except:
         pass  # Other player has allready left
