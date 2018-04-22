@@ -47,7 +47,7 @@ public class PlayScreen implements Screen {
         List<String> validHitboxes = Collections.unmodifiableList(Arrays.asList("platformsHitbox", "logPlatformsHitbox", "jumpPowerHitbox"));
         removedTiles = new ArrayList<>();
         TmxMapLoader mapLoader = new TmxMapLoader();
-        TiledMap map = mapLoader.load("Maps/map_1.tmx");
+        TiledMap map = mapLoader.load("Maps/map_2.tmx");
         renderer = new OrthogonalTiledMapRenderer(map);
         hitboxes = new HashMap<>();
         tileLayers = new HashMap<>();
