@@ -29,7 +29,7 @@ public class IcyGame extends Game {
 	public static SpriteBatch batch;
 	public static OrthographicCamera cam;
 	public static Viewport viewport;
-	public static final String URL = "http://10.22.43.128:7676";
+	public static final String URL = "http://77.66.48.113:7676";
 	
 	public static IcyGame getInstance() {
 		return INSTANCE;
@@ -47,13 +47,13 @@ public class IcyGame extends Game {
 		soundController.addEffect("coin", "Sounds/effects/coin.mp3");
 		soundController.addMusic("music", "Sounds/music/music.mp3");
 		soundController.addMusic("menu_music", "Sounds/music/menu_music.mp3");
-		this.setScreen(new MenuScreen());
 		cam = new OrthographicCamera();
 		//worldWidth and worldHeight is NOT the worlds width and height! They are just the size
 		//of your viewport...
 		viewport = new FitViewport(IcyGame.WIDTH,IcyGame.HEIGHT, cam);
 		cam.position.set(viewport.getWorldWidth()/2, viewport.getWorldHeight()/2, 0);
 		INSTANCE = this;
+        this.setScreen(MenuScreen.getInstance());
 	}
 
 	@Override

@@ -39,16 +39,16 @@ public class Button {
                 System.out.println(type + " button pressed");
                 switch (type) {
                     case "JOIN":
-                        IcyGame.getInstance().setScreen(new JoinScreen());
+                        IcyGame.getInstance().setScreen(JoinScreen.getInstance());
                         break;
                     case "CREATE":
-                        IcyGame.getInstance().setScreen(new CreateScreen());
+                        IcyGame.getInstance().setScreen(CreateScreen.getInstance());
                         break;
                     case "HELP":
-                        IcyGame.getInstance().setScreen(new TutorialScreen());
+                        IcyGame.getInstance().setScreen(TutorialScreen.getInstance());
                         break;
                     case "BACK":
-                        IcyGame.getInstance().setScreen(new MenuScreen());
+                        IcyGame.getInstance().setScreen(MenuScreen.getInstance());
                         break;
                     case "CREATELOBBY":
                         try {
@@ -70,7 +70,7 @@ public class Button {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        IcyGame.getInstance().setScreen(new LobbyScreen(Player.getInstance().getPlayerId(), Player.getInstance().getUsername(), Opponent.getInstance().getUsername(), Connection.getInstance().getRoomName()));
+                        IcyGame.getInstance().setScreen(LobbyScreen.getInstance());
                         break;
                     case "QUIT":
                         try {
@@ -84,7 +84,7 @@ public class Button {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        IcyGame.getInstance().setScreen(new MenuScreen());
+                        IcyGame.getInstance().setScreen(MenuScreen.getInstance());
                 }
                 return false;
             }

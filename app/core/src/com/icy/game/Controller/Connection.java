@@ -46,7 +46,7 @@ public class Connection {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                Gdx.app.postRunnable(() -> IcyGame.getInstance().setScreen(new LobbyScreen(getPlayerId(), getRoomHost(), null, getRoomName())));
+                Gdx.app.postRunnable(() -> IcyGame.getInstance().setScreen(LobbyScreen.getInstance()));
             }).on("opponentJoined", args -> {
                 JSONObject data = (JSONObject) args[0];
                 try {
@@ -69,9 +69,8 @@ public class Connection {
                     e.printStackTrace();
                 }
                 Gdx.app.postRunnable(() -> {
-                    LobbyScreen lobby = new LobbyScreen(getPlayerId(), getRoomHost(), getPlayerTwoUsername(), getRoomName());
-                    lobby.joinLobby(getPlayerId(), getPlayerTwoUsername());
-                    IcyGame.getInstance().setScreen(lobby);
+                    LobbyScreen.getInstance().joinLobby(getPlayerId(), getPlayerTwoUsername());
+                    IcyGame.getInstance().setScreen(LobbyScreen.getInstance());
                 });
             }).on("posRes", args -> {
                 JSONObject data = (JSONObject) args[0];
@@ -86,11 +85,7 @@ public class Connection {
                 JSONObject data = (JSONObject) args[0];
                 try {
                     if (data.getBoolean("rematch")) {
-                        Gdx.app.postRunnable(() -> IcyGame.getInstance().setScreen(new LobbyScreen(Player.getInstance().getPlayerId(),
-                                Connection.getInstance().getRoomHost(),
-                                Opponent.getInstance().getUsername(),
-                                Connection.getInstance().getRoomName()
-                        )));
+                        Gdx.app.postRunnable(() -> IcyGame.getInstance().setScreen(LobbyScreen.getInstance()));
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -118,7 +113,7 @@ public class Connection {
                         socket.emit("gameOver", room);
                         Player.getInstance().resetProperties();
                         Opponent.getInstance().resetProperties();
-                        IcyGame.getInstance().setScreen(new MenuScreen());
+                        IcyGame.getInstance().setScreen(MenuScreen.getInstance());
                     });
                 }
             }).on("powerupPickupRes", args -> {
@@ -133,7 +128,8 @@ public class Connection {
                 try {
                     if (data.getBoolean("opponentDead")) {
                         Player.getInstance().resetProperties();
-                        Gdx.app.postRunnable(() -> IcyGame.getInstance().setScreen(new EndScreen(true)));
+                        EndScreen.getInstance().setWinner(true);
+                        Gdx.app.postRunnable(() -> IcyGame.getInstance().setScreen(EndScreen.getInstance()));
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -213,7 +209,7 @@ public class Connection {
         socket.emit("deathStatus", status);
     }
 
-    private int getPlayerId() {
+    public int getPlayerId() {
         return playerId;
     }
 
@@ -232,7 +228,7 @@ public class Connection {
         this.removeTileId = removeTileId;
     }
 
-    private String getRoomHost() {
+    public String getRoomHost() {
         return roomHost;
     }
 

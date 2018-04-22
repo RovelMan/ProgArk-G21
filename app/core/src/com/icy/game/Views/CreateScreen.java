@@ -18,10 +18,20 @@ import java.util.Map;
 
 public class CreateScreen implements Screen {
 
+    private static final CreateScreen INSTANCE = new CreateScreen();
     private Stage stage;
     private Texture background;
 
-    public CreateScreen() {
+    public static CreateScreen getInstance() {
+        return INSTANCE;
+    }
+
+    private CreateScreen() {
+
+    }
+
+    @Override
+    public void show() {
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
 
@@ -64,11 +74,6 @@ public class CreateScreen implements Screen {
         table.add(buttons.get("BACK").img).expandX().size(width/2, height/8);
         table.pack();
         stage.addActor(table);
-    }
-
-    @Override
-    public void show() {
-
     }
 
     @Override

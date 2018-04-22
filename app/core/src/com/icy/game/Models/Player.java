@@ -154,7 +154,8 @@ public class Player extends AnimationHolder {
             catch (JSONException e){
                 e.printStackTrace();
             }
-            IcyGame.getInstance().setScreen(new EndScreen(false));
+            EndScreen.getInstance().setWinner(false);
+            IcyGame.getInstance().setScreen(EndScreen.getInstance());
         }
     }
 

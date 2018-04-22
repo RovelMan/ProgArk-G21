@@ -20,16 +20,22 @@ import static com.icy.game.IcyGame.cam;
 
 public class EndScreen implements Screen {
 
+    private static final EndScreen INSTANCE = new EndScreen();
+    private Boolean winner;
     private Stage stage;
     private Texture background;
 
-    public EndScreen(Boolean youWon) {
+    public static EndScreen getInstance() {
+        return INSTANCE;
+    }
+
+    private EndScreen() {
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
         String status;
-        if(youWon){
+        if (winner) {
             status = "won";
-        }else{
+        } else {
             status = "lost";
         }
         cam.position.y = cam.viewportHeight/2;
@@ -66,6 +72,11 @@ public class EndScreen implements Screen {
 
         SoundController.getInstance().stopMusic("music");
     }
+
+    public void setWinner(Boolean win) {
+        winner = win;
+    }
+
     @Override
     public void show() {
 

@@ -18,11 +18,21 @@ import java.util.Map;
 
 public class MenuScreen implements Screen {
 
+    private static final MenuScreen INSTANCE = new MenuScreen();
     private Stage stage;
     private Texture background;
     private int move;
 
-    public MenuScreen() {
+    public static MenuScreen getInstance() {
+        return INSTANCE;
+    }
+
+    private MenuScreen() {
+
+    }
+
+    @Override
+    public void show() {
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
         background = new Texture("Backgrounds/menu_background.png");
@@ -82,11 +92,6 @@ public class MenuScreen implements Screen {
         table.pack();
         stage.addActor(table);
         SoundController.getInstance().playMusic("menu_music");
-    }
-
-    @Override
-    public void show() {
-
     }
 
     @Override

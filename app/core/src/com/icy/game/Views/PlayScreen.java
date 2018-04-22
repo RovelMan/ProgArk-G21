@@ -33,6 +33,7 @@ import java.util.Map;
 
 public class PlayScreen implements Screen {
 
+    private  static final PlayScreen INSTANCE = new PlayScreen();
     private Player player = Player.getInstance();
     private Opponent opponent = Opponent.getInstance();
     private OrthographicCamera cam = IcyGame.cam;
@@ -43,28 +44,12 @@ public class PlayScreen implements Screen {
     private Map<String,ArrayList<Rectangle>> hitboxes;
     private Map<String,TiledMapTileLayer> tileLayers;
 
-    PlayScreen() {
-        List<String> validTileLayers = Collections.unmodifiableList(Arrays.asList("platforms", "logPlatforms", "jumpPower"));
-        List<String> validHitboxes = Collections.unmodifiableList(Arrays.asList("platformsHitbox", "logPlatformsHitbox", "jumpPowerHitbox"));
-        removedTiles = new ArrayList<>();
-        TmxMapLoader mapLoader = new TmxMapLoader();
-        TiledMap map = mapLoader.load("Maps/map_2.tmx");
-        renderer = new OrthogonalTiledMapRenderer(map);
-        hitboxes = new HashMap<>();
-        tileLayers = new HashMap<>();
-        for (MapLayer layer: map.getLayers()) {
-            if(validHitboxes.contains(layer.getName())){
-                hitboxes.put(layer.getName(),new ArrayList<>());
-                for (MapObject object : layer.getObjects().getByType(RectangleMapObject.class)){
-                    hitboxes.get(layer.getName()).add(((RectangleMapObject)object).getRectangle());
-                }
-            }
-            if(validTileLayers.contains(layer.getName())){
-                tileLayers.put(layer.getName(),(TiledMapTileLayer)layer);
-            }
-        }
-        SoundController.getInstance().stopMusic("menu_music");
-        SoundController.getInstance().playMusic("music");
+    public static PlayScreen getInstance() {
+        return INSTANCE;
+    }
+
+    private PlayScreen() {
+
     }
 
     @Override
@@ -159,7 +144,27 @@ public class PlayScreen implements Screen {
 
     @Override
     public void show() {
-
+        List<String> validTileLayers = Collections.unmodifiableList(Arrays.asList("platforms", "logPlatforms", "jumpPower"));
+        List<String> validHitboxes = Collections.unmodifiableList(Arrays.asList("platformsHitbox", "logPlatformsHitbox", "jumpPowerHitbox"));
+        removedTiles = new ArrayList<>();
+        TmxMapLoader mapLoader = new TmxMapLoader();
+        TiledMap map = mapLoader.load("Maps/map_2.tmx");
+        renderer = new OrthogonalTiledMapRenderer(map);
+        hitboxes = new HashMap<>();
+        tileLayers = new HashMap<>();
+        for (MapLayer layer: map.getLayers()) {
+            if(validHitboxes.contains(layer.getName())){
+                hitboxes.put(layer.getName(),new ArrayList<>());
+                for (MapObject object : layer.getObjects().getByType(RectangleMapObject.class)){
+                    hitboxes.get(layer.getName()).add(((RectangleMapObject)object).getRectangle());
+                }
+            }
+            if(validTileLayers.contains(layer.getName())){
+                tileLayers.put(layer.getName(),(TiledMapTileLayer)layer);
+            }
+        }
+        SoundController.getInstance().stopMusic("menu_music");
+        SoundController.getInstance().playMusic("music");
     }
 
     @Override

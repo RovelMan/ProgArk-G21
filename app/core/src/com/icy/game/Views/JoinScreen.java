@@ -18,10 +18,20 @@ import java.util.Map;
 
 public class JoinScreen implements Screen {
 
+    private static final JoinScreen INSTANCE = new JoinScreen();
     private Stage stage;
     private Texture background;
 
-    public JoinScreen() {
+    public static JoinScreen getInstance() {
+        return INSTANCE;
+    }
+
+    private JoinScreen() {
+
+    }
+
+    @Override
+    public void show() {
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
 
@@ -63,11 +73,6 @@ public class JoinScreen implements Screen {
         table.add(buttons.get("BACK").img).expandX().size(width/2, height/8);
         table.pack();
         stage.addActor(table);
-    }
-
-    @Override
-    public void show() {
-
     }
 
     @Override

@@ -10,6 +10,7 @@ import com.icy.game.IcyGame;
 
 public class TutorialScreen implements Screen {
 
+    private static final TutorialScreen INSTANCE = new TutorialScreen();
     private int page_counter;
     private Stage stage;
     private SpriteBatch batch;
@@ -21,7 +22,11 @@ public class TutorialScreen implements Screen {
             new Texture("TutorialScreens/tutorial_5.png")
     };
 
-    public TutorialScreen() {
+    public static TutorialScreen getInstance() {
+        return INSTANCE;
+    }
+
+    private TutorialScreen() {
         page_counter = -1;
         stage = new Stage();
         batch = new SpriteBatch();
@@ -39,7 +44,7 @@ public class TutorialScreen implements Screen {
         }
         if (page_counter == tutorial_screens.length) {
             page_counter = 0;
-            IcyGame.getInstance().setScreen(new MenuScreen());
+            IcyGame.getInstance().setScreen(MenuScreen.getInstance());
             dispose();
         }
     }

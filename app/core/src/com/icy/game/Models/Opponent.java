@@ -13,7 +13,7 @@ import com.icy.game.Views.EndScreen;
 public class Opponent extends AnimationHolder {
     private static final Opponent ourInstance = new Opponent();
     private int playerId;
-    private String username;
+    private String username = null;
     private Vector2 position;
     private Vector2 velocity;
     private OrthographicCamera cam = IcyGame.cam;

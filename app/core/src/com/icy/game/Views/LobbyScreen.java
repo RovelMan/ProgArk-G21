@@ -17,31 +17,23 @@ import com.icy.game.Models.Player;
 
 public class LobbyScreen implements Screen {
 
+    private static final LobbyScreen INSTANCE = new LobbyScreen();
     private static int playerId;
     private static String[] players = {null, null};
     private static String room;
+    private static String host;
+    private static String opponent;
     private Texture background;
     private float savedDelta = -1;
     private float timeElapsed;
-
     private static Stage stage;
 
-    public LobbyScreen(int newPlayerId, String host, String playerTwo, String roomName) {
-        System.out.println("LOBBY: " + newPlayerId + " " + host + " " + playerTwo + " " + roomName + " " + players[0] + " " + players[1]);
-        reset();
-        playerId = newPlayerId;
-        players[0] = host;
-        Gdx.input.setInputProcessor(stage);
-        if (playerTwo != null) {
-            addPlayerTwo(playerTwo);
-        }
-        System.out.println(playerId + 1 + " PLAYERS IN ROOM " + players[0] + " " + players[1]);
-        room = roomName;
+    public static LobbyScreen getInstance() {
+        return INSTANCE;
+    }
 
-        background = new Texture("Backgrounds/default_background.png");
+    private LobbyScreen() {
 
-        stage = new Stage();
-        updateLobby(playerTwo);
     }
 
     public void joinLobby(int playerId, String player) {
@@ -100,7 +92,27 @@ public class LobbyScreen implements Screen {
 
     @Override
     public void show() {
+        Connection conn = Connection.getInstance();
+        room = conn.getRoomName();
+        host = conn.getRoomHost();
+        playerId = conn.getPlayerId();
+        opponent = Opponent.getInstance().getUsername();
 
+        System.out.println("LOBBY: player: " + playerId + " host: " + host + " opponent: " + opponent + " room: " + room + " players: " + players[0] + " " + players[1]);
+        reset();
+        players[0] = host;
+        Gdx.input.setInputProcessor(stage);
+
+        if (opponent != null) {
+            addPlayerTwo(opponent);
+        }
+
+        System.out.println(playerId + 1 + " PLAYERS IN ROOM " + players[0] + " " + players[1]);
+
+        background = new Texture("Backgrounds/default_background.png");
+
+        stage = new Stage();
+        updateLobby(opponent);
     }
 
     @Override
@@ -120,9 +132,8 @@ public class LobbyScreen implements Screen {
             opponent.setPlayerId(1-playerId);
             opponent.setUsername(players[1-playerId]);
 
-
             if (timeElapsed-savedDelta > 3) {
-                IcyGame.getInstance().setScreen(new PlayScreen());
+                IcyGame.getInstance().setScreen(PlayScreen.getInstance());
             }
         }
         Gdx.gl.glClearColor(1, 0, 1, 1);
