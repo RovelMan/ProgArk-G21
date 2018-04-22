@@ -69,6 +69,7 @@ public class Connection {
             }).on("posRes", args -> {
                 JSONObject data = (JSONObject) args[0];
                 try {
+                    System.out.println(data.getDouble("posX"));
                     Opponent.getInstance().setPosition(new Vector2((float) data.getDouble("posX"), (float) data.getDouble("posY")));
                     Opponent.getInstance().setVelocity(new Vector2((float) data.getDouble("velX"), (float) data.getDouble("velY")));
                 } catch (JSONException e) {

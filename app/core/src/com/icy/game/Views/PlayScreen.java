@@ -71,11 +71,11 @@ public class PlayScreen implements Screen {
         handlePowerup(tileLayers.get("jumpPower"), "jumpPowerHitbox", removeID);
 
         if (player.getPosition().y > cam.position.y+(cam.viewportHeight/2)-200 || Opponent.getInstance().getPosition().y > cam.position.y+(cam.viewportHeight/2)-200) {
-            cam.position.y += 4;
+            // cam.position.y += 4;
         }
 
         if (timeElapsed > 3) {
-            cam.position.y += 2;
+            // cam.position.y += 2;
         }
         cam.update();
         renderer.setView(cam);
@@ -95,8 +95,8 @@ public class PlayScreen implements Screen {
     private void sendGameInfo(final int removeId){
         try {
             Connection.getInstance().sendPosition(
-                    player.getPosition(),
-                    player.getVelocity()
+                    Player.getInstance().getPosition(),
+                    Player.getInstance().getVelocity()
             );
             if(removeId != -1){
                 Connection.getInstance().sendPowerupPickup(removeId);
