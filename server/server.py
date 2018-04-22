@@ -62,8 +62,11 @@ def on_join(data):
     username = data['username']
     room = data['room']
 
-    player.join(username, games[room])
+    if (not games[room]):
+        emit('joinRes', {'pid': -1, 'room': "0", 'host': "0", 'username': "0"}, room=request.sid)
+        return
 
+    player.join(username, games[room])
     join_room(room)
     print("Player joined:", username, room)
     host = games[data['room']].getHost().sid
