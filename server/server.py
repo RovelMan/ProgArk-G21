@@ -95,7 +95,7 @@ def pos(data):
         for player in games[data['room']].players:
             if not player.sid == request.sid:
                 opponent = player.sid
-        print(": ", data['posX'], "y: ", data['posY'])
+                break
         emit('posRes', {'posX': data['posX'], 'posY': data['posY'], 'velX': data['velX'], 'velY': data['velY']}, room=opponent)
     except:
         pass  # Other player has allready left
