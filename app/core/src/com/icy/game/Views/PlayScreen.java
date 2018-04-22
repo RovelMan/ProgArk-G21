@@ -85,8 +85,12 @@ public class PlayScreen implements Screen {
         removeID = Connection.getInstance().getRemoveTileId();
         handlePowerup(tileLayers.get("jumpPower"), "jumpPowerHitbox", removeID);
 
-        if (timeElapsed > 2) {
-            cam.position.y += 1;
+        if (player.getPosition().y > cam.position.y+(cam.viewportHeight/2)-200 || opponent.getPosition().y > cam.position.y+(cam.viewportHeight/2)-200) {
+            cam.position.y += 4;
+        }
+
+        if (timeElapsed > 3) {
+            cam.position.y += 2;
         }
         cam.update();
         renderer.setView(cam);
