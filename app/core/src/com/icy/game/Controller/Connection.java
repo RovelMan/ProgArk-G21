@@ -30,102 +30,156 @@ public class Connection {
     private Connection(String address) {
         try {
             socket = IO.socket(address);
-            socket.on(Socket.EVENT_CONNECT, args ->
-                System.out.println("Connected to server")
-            ).on(Socket.EVENT_DISCONNECT, args ->
-                    System.out.println("Connection lost, you are now disconnected")
-            ).on("createRes", args -> {
-                JSONObject data = (JSONObject) args[0];
-                try {
-                    Player.getInstance().setPlayerId(Integer.parseInt(data.getString("pid")));
-                    room = data.getString("room");
-                    System.out.println("Lobby created! Your ID: " + Player.getInstance().getPlayerId() + "\tRoom name: " + data.getString("room"));
-                    // game.setScreen(new LobbyScreen(game, getPlayerId(), getRoomHost(), null, getRoomName()));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                Gdx.app.postRunnable(() -> IcyGame.getInstance().setScreen(LobbyScreen.getInstance()));
-            }).on("opponentJoined", args -> {
-                JSONObject data = (JSONObject) args[0];
-                try {
-                    String res = data.getString("data");
-                    System.out.println(res + " joined the lobby!");
-                    opponent.setUsername(res);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }).on("joinRes", args -> {
-                Gdx.app.postRunnable(() -> {
+            socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
+                        @Override
+                        public void call(Object... args) {
+                            System.out.println("Connected to server");
+                        }
+                    }
+            ).on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
+                        @Override
+                        public void call(Object... args){
+                            System.out.println("Connection lost, you are now disconnected");
+                        }
+                    }
+            ).on("createRes", new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
                     JSONObject data = (JSONObject) args[0];
                     try {
-                        if (data.getInt("pid") == -1) {
-                            IcyGame.getInstance().setScreen(MenuScreen.getInstance());
-                        } else {
-                            room = data.getString("room");
-                            opponent.setUsername(data.getString("host"));
-                            System.out.println("Lobby joined! Your ID: " + Player.getInstance().getPlayerId() + "\tRoom name: " + room + "\tHost: " + data.getString("host"));
+                        Player.getInstance().setPlayerId(Integer.parseInt(data.getString("pid")));
+                        room = data.getString("room");
+                        System.out.println("Lobby created! Your ID: " + Player.getInstance().getPlayerId() + "\tRoom name: " + data.getString("room"));
+                        // game.setScreen(new LobbyScreen(game, getPlayerId(), getRoomHost(), null, getRoomName()));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    Gdx.app.postRunnable(new Runnable() {
+                        @Override
+                        public void run() {
                             IcyGame.getInstance().setScreen(LobbyScreen.getInstance());
+                        }
+                    });
+                }
+            }).on("opponentJoined", new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    JSONObject data = (JSONObject) args[0];
+                    try {
+                        String res = data.getString("data");
+                        System.out.println(res + " joined the lobby!");
+                        opponent.setUsername(res);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).on("joinRes", new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    Gdx.app.postRunnable(new Runnable() {
+                        @Override
+                        public void run() {
+                            JSONObject data = (JSONObject) args[0];
+                            try {
+                                if (data.getInt("pid") == -1) {
+                                    IcyGame.getInstance().setScreen(MenuScreen.getInstance());
+                                } else {
+                                    room = data.getString("room");
+                                    opponent.setUsername(data.getString("host"));
+                                    System.out.println("Lobby joined! Your ID: " + Player.getInstance().getPlayerId() + "\tRoom name: " + room + "\tHost: " + data.getString("host"));
+                                    IcyGame.getInstance().setScreen(LobbyScreen.getInstance());
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                }
+            }).on("posRes", new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    JSONObject data = (JSONObject) args[0];
+                    try {
+                        Opponent.getInstance().setPosition(new Vector2((float) data.getDouble("posX"), (float) data.getDouble("posY")));
+                        Opponent.getInstance().setVelocity(new Vector2((float) data.getDouble("velX"), (float) data.getDouble("velY")));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).on("rematchRes", new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    System.out.println("Rematch");
+                    JSONObject data = (JSONObject) args[0];
+                    try {
+                        if (data.getBoolean("rematch")) {
+                            Player.getInstance().resetProperties();
+                            Opponent.getInstance().resetProperties();
+                            Gdx.app.postRunnable(new Runnable() {
+                                @Override
+                                public void run() {
+                                    IcyGame.getInstance().setScreen(LobbyScreen.getInstance());
+                                }
+                            });
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                });
-            }).on("posRes", args -> {
-                JSONObject data = (JSONObject) args[0];
-                try {
-                    Opponent.getInstance().setPosition(new Vector2((float) data.getDouble("posX"), (float) data.getDouble("posY")));
-                    Opponent.getInstance().setVelocity(new Vector2((float) data.getDouble("velX"), (float) data.getDouble("velY")));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }).on("rematchRes", args -> {
-                System.out.println("Rematch");
-                JSONObject data = (JSONObject) args[0];
-                try {
-                    if (data.getBoolean("rematch")) {
-                        Player.getInstance().resetProperties();
-                        Opponent.getInstance().resetProperties();
-                        Gdx.app.postRunnable(() -> IcyGame.getInstance().setScreen(LobbyScreen.getInstance()));
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
                 }
             }).on("playerLeftRes", new Emitter.Listener() {
 
                 @Override
                 public void call(Object... args) {
                     System.out.println("Player left. Returning to menu");
-
-                    Gdx.app.postRunnable(() -> {
-                        JSONObject room = new JSONObject();
-                        try {
-                            room.put("room", room);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        socket.emit("gameOver", room);
-                        Player.getInstance().resetProperties();
-                        Opponent.getInstance().resetProperties();
-                        IcyGame.getInstance().setScreen(MenuScreen.getInstance());
-                    });
+                    Gdx.app.postRunnable(new Runnable() {
+                        @Override
+                        public void run() {
+                            JSONObject room = new JSONObject();
+                            try {
+                                room.put("room", room);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            socket.emit("gameOver", room);
+                            Player.getInstance().resetProperties();
+                            Opponent.getInstance().resetProperties();
+                            IcyGame.getInstance().setScreen(MenuScreen.getInstance());
+                            }
+                        });
                 }
-            }).on("powerupPickupRes", args -> {
-                JSONObject data = (JSONObject) args[0];
-                try {
-                    removeTileId = data.getInt("tileId");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }).on("deathStatusRes", args -> {
-                JSONObject data = (JSONObject) args[0];
-                try {
-                    if (data.getBoolean("opponentDead")) {
-                        Gdx.app.postRunnable(() -> Player.getInstance().resetProperties());
-                        EndScreen.getInstance().setWinner(true);
-                        Gdx.app.postRunnable(() -> IcyGame.getInstance().setScreen(EndScreen.getInstance()));
+            }).on("powerupPickupRes", new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    JSONObject data = (JSONObject) args[0];
+                    try {
+                        removeTileId = data.getInt("tileId");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                }
+            }).on("deathStatusRes", new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    JSONObject data = (JSONObject) args[0];
+                    try {
+                        if (data.getBoolean("opponentDead")) {
+                            Gdx.app.postRunnable(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Player.getInstance().resetProperties();
+                                }
+                            });
+                            EndScreen.getInstance().setWinner(true);
+                            Gdx.app.postRunnable(new Runnable() {
+                                @Override
+                                public void run() {
+                                    IcyGame.getInstance().setScreen(EndScreen.getInstance());
+                                }
+                            });
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             });
             socket.connect();
