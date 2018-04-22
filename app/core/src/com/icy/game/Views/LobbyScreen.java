@@ -110,7 +110,6 @@ public class LobbyScreen implements Screen {
             if (savedDelta == -1) {
                 savedDelta = timeElapsed;
             }
-            System.out.println("Both players joined. Lobby full");
             Connection.getInstance().setRemoveTileId(-1);
             Player player = Player.getInstance();
             player.setPlayerId(playerId);
@@ -119,7 +118,6 @@ public class LobbyScreen implements Screen {
             Opponent opponent = Opponent.getInstance();
             opponent.setPlayerId(1-playerId);
             opponent.setUsername(players[1-playerId]);
-
 
             if (timeElapsed-savedDelta > 3) {
                 IcyGame.getInstance().setScreen(new PlayScreen());

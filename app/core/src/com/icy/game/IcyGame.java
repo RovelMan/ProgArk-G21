@@ -18,7 +18,7 @@ import com.icy.game.Views.MenuScreen;
 public class IcyGame extends Game {
 	private static IcyGame INSTANCE;
 	//Change this to "true" to use keyboard controls
-	public static final boolean USEDEBUG = false;
+	public static final boolean USEDEBUG = true;
 	public static final String TITLE = "2IcyBoiis";
 	public static int HEIGHT = 800;
 	public static int WIDTH = 448;

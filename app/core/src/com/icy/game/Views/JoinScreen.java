@@ -20,6 +20,8 @@ public class JoinScreen implements Screen {
 
     private Stage stage;
     private Texture background;
+    public static TextField userInput;
+    public static TextField roomInput;
 
     public JoinScreen() {
         stage = new Stage();
@@ -28,9 +30,9 @@ public class JoinScreen implements Screen {
         background = new Texture("Backgrounds/default_background.png");
 
         Label userInputTxt = new Label("Username: ", new Label.LabelStyle(IcyGame.font, Color.WHITE));
-        TextField userInput = new TextField("Joiner", IcyGame.style);
+        userInput = new TextField("Joiner", IcyGame.style);
         Label roomInputTxt = new Label("Room name: ", new Label.LabelStyle(IcyGame.font, Color.WHITE));
-        TextField roomInput = new TextField("DefaultRoom2", IcyGame.style);
+        roomInput = new TextField("DefaultRoom2", IcyGame.style);
 
         //Buttons are easily added to this array
         String[] button_types = {"BACK", "JOINLOBBY"};

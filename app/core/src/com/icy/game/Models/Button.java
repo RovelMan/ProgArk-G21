@@ -52,14 +52,14 @@ public class Button {
                         break;
                     case "CREATELOBBY":
                         try {
-                            Connection.getInstance().createLobby(opt[0], opt[1]);
+                            Connection.getInstance().createLobby(CreateScreen.userInput.getText(), CreateScreen.roomInput.getText());
                         } catch (Exception e) {
                             System.out.println("Could not create a lobby: " + e);
                         }
                         break;
                     case "JOINLOBBY":
                         try {
-                            Connection.getInstance().joinLobby(opt[0], opt[1]);
+                            Connection.getInstance().joinLobby(JoinScreen.userInput.getText(), JoinScreen.roomInput.getText());
                         } catch (Exception e) {
                             System.out.println("Could not join a game: " + e);
                         }
