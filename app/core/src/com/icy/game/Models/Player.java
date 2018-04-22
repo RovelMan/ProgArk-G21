@@ -149,6 +149,7 @@ public class Player extends AnimationHolder {
         if(getPosition().y + getSize().y < cam.position.y-cam.viewportHeight/2 ){
             try {
                 Connection.getInstance().sendDeathStatus(Connection.getInstance().getRoomName());
+                Player.getInstance().resetProperties();
             }
             catch (JSONException e){
                 e.printStackTrace();

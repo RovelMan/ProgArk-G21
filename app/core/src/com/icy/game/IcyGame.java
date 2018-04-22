@@ -29,7 +29,7 @@ public class IcyGame extends Game {
 	public static SpriteBatch batch;
 	public static OrthographicCamera cam;
 	public static Viewport viewport;
-	public static final String URL = "http://10.22.38.168:7676";
+	public static final String URL = "http://10.22.43.128:7676";
 	
 	public static IcyGame getInstance() {
 		return INSTANCE;
