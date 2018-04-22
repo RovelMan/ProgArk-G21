@@ -68,25 +68,17 @@ def on_rematch(data):
     emit('rematchRes', {'rematch': True}, room=opponent)
 
 
-@socketio.on('leave')
-def on_leave(data):
-    username = data['username']
-    room = data['room']
-    leave_room(room)
-    send(username + ' has left the room.', room=room)
-    print("Player left:", username, room)
-    opponent = games[data['room']].players[1 - data['id']].sid
-    emit('playerLeftRes', {'room': data['room']}, room=opponent)
-
-
 @socketio.on('gameOver')
-def test(data):
-    games.pop(data['room'])
-
-
-@socketio.on('test')
-def tests(data):
-    print('\nTest message received: ', data, '\n SID: ', request.sid)
+def end_game(data):
+    for player in games[data['room']].players:
+            if not player.sid == request.sid:
+                opponent = player.sid
+                emit('playerLeftRes', {'room': data['room']}, room=opponent)
+                try:
+                    games.pop(data['room'])
+                except:
+                    pass  # room allready deleted by opponent
+                break
 
 
 @socketio.on('pos')
@@ -95,8 +87,8 @@ def pos(data):
         for player in games[data['room']].players:
             if not player.sid == request.sid:
                 opponent = player.sid
+                emit('posRes', {'posX': data['posX'], 'posY': data['posY'], 'velX': data['velX'], 'velY': data['velY']}, room=opponent)
                 break
-        emit('posRes', {'posX': data['posX'], 'posY': data['posY'], 'velX': data['velX'], 'velY': data['velY']}, room=opponent)
     except:
         pass  # Other player has allready left
 
@@ -112,7 +104,8 @@ def deathStatus(data):
     for player in games[data['room']].players:
         if not player.sid == request.sid:
             opponent = player.sid
-    emit('deathStatusRes', {'opponentDead': True}, room=opponent)
+            emit('deathStatusRes', {'opponentDead': True}, room=opponent)
+            break
 
 
 if __name__ == '__main__':
