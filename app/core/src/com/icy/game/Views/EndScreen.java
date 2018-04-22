@@ -17,55 +17,56 @@ import com.icy.game.Models.Player;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.icy.game.IcyGame.cam;
+
 
 public class EndScreen implements Screen {
 
     private Stage stage;
     private Texture background;
 
-    EndScreen(int winner) {
+    public EndScreen(Boolean youWon) {
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
-
+        String status;
+        if(youWon){
+            status = "won";
+        }else{
+            status = "lost";
+        }
+        cam.position.y = cam.viewportHeight/2;
+        cam.update();
         background = new Texture("Backgrounds/default_background.png");
 
         Label gameOverTxt = new Label("Game over", new Label.LabelStyle(IcyGame.font, Color.WHITE));
-        String winnerName;
-        if (winner == 1) {
-            Player player = Player.getInstance();
-            winnerName = player.getUsername();
-        } else {
-            Opponent opponent = Opponent.getInstance();
-            winnerName = opponent.getUsername();
-        }
-        Label playerWonTxt = new Label("Player " + winnerName + " won!", new Label.LabelStyle(IcyGame.font, Color.WHITE));
+
+        Label playerWonTxt = new Label("You " + status +"!", new Label.LabelStyle(IcyGame.font, Color.WHITE));
 
         //Buttons are easily added to this array
         String[] button_types = {"REMATCH", "QUIT"};
 
         Map<String, Button> buttons = new HashMap<>();
 
-        for (String type : button_types) {
+        for (String type : button_types)
             buttons.put(type, new Button(type));
-        }
 
-        int width = Gdx.graphics.getWidth();
-        int height = Gdx.graphics.getHeight();
+            int width = Gdx.graphics.getWidth();
+            int height = Gdx.graphics.getHeight();
 
-        Table table = new Table();
-        table.center();
-        table.setFillParent(true);
-        table.add(gameOverTxt).expandX().size(width/2, height/6);
-        table.row();
-        table.add(playerWonTxt).expandX().padBottom(10).size(width/2, height/8);
-        table.row();
-        table.add(buttons.get("REMATCH").img).expandX().padBottom(10).size(width/2, height/8);
-        table.row();
-        table.add(buttons.get("QUIT").img).expandX().size(width/3, height/8);
-        table.pack();
-        stage.addActor(table);
+            Table table = new Table();
+            table.center();
+            table.setFillParent(true);
+            table.add(gameOverTxt).expandX().size(width / 2, height / 6);
+            table.row();
+            table.add(playerWonTxt).expandX().padBottom(10).size(width / 2, height / 8);
+            table.row();
+            table.add(buttons.get("REMATCH").img).expandX().padBottom(10).size(width / 2, height / 8);
+            table.row();
+            table.add(buttons.get("QUIT").img).expandX().size(width / 3, height / 8);
+            table.pack();
+            stage.addActor(table);
+
     }
-
     @Override
     public void show() {
 
@@ -73,6 +74,7 @@ public class EndScreen implements Screen {
 
     @Override
     public void render(float delta) {
+        IcyGame.batch.setProjectionMatrix(cam.combined);
         Gdx.gl.glClearColor(1, 1, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         IcyGame.batch.begin();

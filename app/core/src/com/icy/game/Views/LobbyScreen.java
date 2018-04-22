@@ -9,9 +9,12 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.icy.game.Controller.Connection;
 import com.icy.game.IcyGame;
 import com.icy.game.Models.Opponent;
 import com.icy.game.Models.Player;
+
+import static com.icy.game.IcyGame.cam;
 
 
 public class LobbyScreen implements Screen {
@@ -103,7 +106,7 @@ public class LobbyScreen implements Screen {
     public void render(float delta) {
         if (players[0] != null && players[1] != null) {
             System.out.println("Both players joined. Lobby full");
-
+            Connection.getInstance().setRemoveTileId(-1);
             Player player = Player.getInstance();
             player.setPlayerId(playerId);
             player.setUsername(players[playerId]);
