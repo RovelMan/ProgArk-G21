@@ -14,8 +14,6 @@ import com.icy.game.IcyGame;
 import com.icy.game.Models.Opponent;
 import com.icy.game.Models.Player;
 
-import static com.icy.game.IcyGame.cam;
-
 
 public class LobbyScreen implements Screen {
 

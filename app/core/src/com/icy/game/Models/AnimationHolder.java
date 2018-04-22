@@ -11,7 +11,7 @@ public abstract class AnimationHolder {
 
     AnimationHolder(Vector2 scale, String path){
         TextureAtlas animationAtlas = new TextureAtlas(Gdx.files.internal(path));
-        animation = new Animation<TextureRegion>(0.2f, animationAtlas.getRegions());
+        animation = new Animation<>(0.2f, animationAtlas.getRegions());
         float width = animationAtlas.getTextures().first().getWidth();
         float height = animationAtlas.getTextures().first().getHeight();
         size = new Vector2(width * scale.x, height * scale.y);

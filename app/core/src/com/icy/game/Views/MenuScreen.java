@@ -16,9 +16,6 @@ import com.icy.game.Models.Button;
 import java.util.HashMap;
 import java.util.Map;
 
-import static java.lang.Math.round;
-
-
 public class MenuScreen implements Screen {
 
     private Stage stage;

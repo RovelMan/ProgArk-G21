@@ -5,13 +5,8 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.icy.game.IcyGame;
-
-/**
- * Created by jotde on 13.03.2018.
- */
 
 public class TutorialScreen implements Screen {
 
