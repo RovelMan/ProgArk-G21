@@ -62,7 +62,7 @@ def on_join(data):
     username = data['username']
     room = data['room']
 
-    if (not games[room]):
+    if (not room in games):
         emit('joinRes', {'pid': -1, 'room': "0", 'host': "0", 'username': "0"}, room=request.sid)
         return
 
