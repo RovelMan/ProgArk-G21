@@ -23,7 +23,6 @@ def connect():
 @socketio.on('disconnect')
 def disconnect():
     sid = request.sid
-    players.pop(sid)
     for player in players[request.sid].game.players:
         if not player.sid == request.sid:
             opponent = player.sid
@@ -33,6 +32,7 @@ def disconnect():
             except:
                 pass  # room allready deleted by opponent
             break
+    players.pop(sid)
     print("Device disconnected - SID:", sid)
 
 
