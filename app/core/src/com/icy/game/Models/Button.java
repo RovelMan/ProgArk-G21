@@ -52,18 +52,18 @@ public class Button {
                         break;
                     case "CREATELOBBY":
                         try {
-                            Player.getInstance().setUsername(opt[0]);
+                            Player.getInstance().setUsername(CreateScreen.userInput.getText());
                             Player.getInstance().setPlayerId(0);
-                            Connection.getInstance().createLobby(opt[0], opt[1]);
+                            Connection.getInstance().createLobby(CreateScreen.userInput.getText(), CreateScreen.roomInput.getText());
                         } catch (Exception e) {
                             System.out.println("Could not create a lobby: " + e);
                         }
                         break;
                     case "JOINLOBBY":
                         try {
-                            Player.getInstance().setUsername(opt[0]);
+                            Player.getInstance().setUsername(JoinScreen.userInput.getText());
                             Player.getInstance().setPlayerId(1);
-                            Connection.getInstance().joinLobby(opt[0], opt[1]);
+                            Connection.getInstance().joinLobby(JoinScreen.userInput.getText(), JoinScreen.roomInput.getText());
                         } catch (Exception e) {
                             System.out.println("Could not join a game: " + e);
                         }
