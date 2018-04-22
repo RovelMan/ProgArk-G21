@@ -11,15 +11,15 @@ import com.icy.game.Views.EndScreen;
  */
 
 public class Opponent extends AnimationHolder {
-    private static final Opponent ourInstance = new Opponent();
+    private static final Opponent INSTANCE = new Opponent();
     private int playerId;
     private String username = null;
-    private Vector2 position;
-    private Vector2 velocity;
+    private static Vector2 position;
+    private static Vector2 velocity;
     private OrthographicCamera cam = IcyGame.cam;
 
     public static Opponent getInstance() {
-        return ourInstance;
+        return INSTANCE;
     }
 
     private Opponent() {
@@ -37,11 +37,11 @@ public class Opponent extends AnimationHolder {
     }
 
     public void setVelocity(Vector2 velocity) {
-        this.velocity = velocity;
+        velocity = velocity;
     }
 
     public void setPosition(Vector2 position) {
-        this.position = position;
+        position = position;
     }
 
     public Vector2 getPosition() {
@@ -62,8 +62,8 @@ public class Opponent extends AnimationHolder {
     }
 
     public void resetProperties(){
-        this.velocity = new Vector2(0,0);
-        this.position = new Vector2(0,40);
+        velocity = new Vector2(0,0);
+        position = new Vector2(0,40);
     }
 
     @Override

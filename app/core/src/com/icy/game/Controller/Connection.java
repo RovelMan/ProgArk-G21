@@ -19,8 +19,7 @@ import io.socket.emitter.Emitter;
 public class Connection {
     private static final Connection INSTANCE = new Connection(IcyGame.URL);
     private Socket socket;
-    private int playerId = -1;
-    private String playerTwoUsername, roomHost, room;
+    private String room;
     private Opponent opponent = Opponent.getInstance();
     private int removeTileId = -1;
 
@@ -38,10 +37,9 @@ public class Connection {
             ).on("createRes", args -> {
                 JSONObject data = (JSONObject) args[0];
                 try {
-                    playerId = Integer.parseInt(data.getString("pid"));
-                    roomHost = data.getString("host");
+                    Player.getInstance().setPlayerId(Integer.parseInt(data.getString("pid")));
                     room = data.getString("room");
-                    System.out.println("Lobby created! Your ID: " + playerId + "\tRoom name: " + data.getString("room"));
+                    System.out.println("Lobby created! Your ID: " + Player.getInstance().getPlayerId() + "\tRoom name: " + data.getString("room"));
                     // game.setScreen(new LobbyScreen(game, getPlayerId(), getRoomHost(), null, getRoomName()));
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -52,31 +50,27 @@ public class Connection {
                 try {
                     String res = data.getString("data");
                     System.out.println(res + " joined the lobby!");
-                    playerTwoUsername = res;
-                    LobbyScreen.addPlayerTwo(playerTwoUsername);
+                    opponent.setUsername(res);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }).on("joinRes", args -> {
-                JSONObject data = (JSONObject) args[0];
-                try {
-                    playerId = Integer.parseInt(data.getString("pid"));
-                    roomHost = data.getString("host");
-                    room = data.getString("room");
-                    playerTwoUsername = data.getString("username");
-                    System.out.println("Lobby joined! Your ID: " + playerId + "\tRoom name: " + room + "\tHost: " + roomHost);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
                 Gdx.app.postRunnable(() -> {
-                    LobbyScreen.getInstance().joinLobby(getPlayerId(), getPlayerTwoUsername());
-                    IcyGame.getInstance().setScreen(LobbyScreen.getInstance());
+                    JSONObject data = (JSONObject) args[0];
+                    try {
+                        room = data.getString("room");
+                        opponent.setUsername(data.getString("host"));
+                        System.out.println("Lobby joined! Your ID: " + Player.getInstance().getPlayerId() + "\tRoom name: " + room + "\tHost: " + data.getString("host"));
+                        IcyGame.getInstance().setScreen(LobbyScreen.getInstance());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 });
             }).on("posRes", args -> {
                 JSONObject data = (JSONObject) args[0];
                 try {
-                    opponent.setPosition(new Vector2((float) data.getDouble("posX"), (float) data.getDouble("posY")));
-                    opponent.setVelocity(new Vector2((float) data.getDouble("velX"), (float) data.getDouble("velY")));
+                    Opponent.getInstance().setPosition(new Vector2((float) data.getDouble("posX"), (float) data.getDouble("posY")));
+                    Opponent.getInstance().setVelocity(new Vector2((float) data.getDouble("velX"), (float) data.getDouble("velY")));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -127,7 +121,7 @@ public class Connection {
                 JSONObject data = (JSONObject) args[0];
                 try {
                     if (data.getBoolean("opponentDead")) {
-                        Player.getInstance().resetProperties();
+                        Gdx.app.postRunnable(() -> Player.getInstance().resetProperties());
                         EndScreen.getInstance().setWinner(true);
                         Gdx.app.postRunnable(() -> IcyGame.getInstance().setScreen(EndScreen.getInstance()));
                     }
@@ -184,10 +178,10 @@ public class Connection {
         socket.emit("gameOver", game);
     }
 
-    public void sendPosition(final String roomName, final int playerId, final Vector2 pos, final Vector2 vel) throws JSONException {
+    public void sendPosition(final Vector2 pos, final Vector2 vel) throws JSONException {
         JSONObject player = new JSONObject();
-        player.put("room", roomName);
-        player.put("id", playerId);
+        player.put("room", room);
+        player.put("id", Player.getInstance().getPlayerId());
         player.put("posX", (double) pos.x);
         player.put("posY", (double) pos.y);
         player.put("velX", (double) vel.x);
@@ -195,10 +189,10 @@ public class Connection {
         socket.emit("pos", player);
     }
 
-    public void sendPowerupPickup(final String roomName, final int playerId, final int tileId) throws JSONException {
+    public void sendPowerupPickup(final int tileId) throws JSONException {
         JSONObject tile = new JSONObject();
-        tile.put("room", roomName);
-        tile.put("id", playerId);
+        tile.put("room", room);
+        tile.put("id", Player.getInstance().getPlayerId());
         tile.put("tileId", tileId);
         socket.emit("powerupPickup", tile);
     }
@@ -209,27 +203,13 @@ public class Connection {
         socket.emit("deathStatus", status);
     }
 
-    public int getPlayerId() {
-        return playerId;
-    }
-
-    private String getPlayerTwoUsername() {
-        return playerTwoUsername;
-    }
-
     private void reset() {
-        this.playerId = -1;
-        this.playerTwoUsername = null;
-        this.roomHost = null;
+        Player.getInstance().setPlayerId(-1);
         this.room = null;
     }
 
     public void setRemoveTileId(int removeTileId) {
         this.removeTileId = removeTileId;
-    }
-
-    public String getRoomHost() {
-        return roomHost;
     }
 
     public String getRoomName() {

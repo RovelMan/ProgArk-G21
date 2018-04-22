@@ -30,20 +30,30 @@ public class EndScreen implements Screen {
     }
 
     private EndScreen() {
+
+    }
+
+    public void setWinner(Boolean win) {
+        winner = win;
+    }
+
+    @Override
+    public void show() {
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
+        background = new Texture("Backgrounds/default_background.png");
+
         String status;
         if (winner) {
             status = "won";
         } else {
             status = "lost";
         }
+
         cam.position.y = cam.viewportHeight/2;
         cam.update();
-        background = new Texture("Backgrounds/default_background.png");
 
         Label gameOverTxt = new Label("Game over", new Label.LabelStyle(IcyGame.font, Color.WHITE));
-
         Label playerWonTxt = new Label("You " + status +"!", new Label.LabelStyle(IcyGame.font, Color.WHITE));
 
         //Buttons are easily added to this array
@@ -54,32 +64,23 @@ public class EndScreen implements Screen {
         for (String type : button_types)
             buttons.put(type, new Button(type));
 
-            int width = Gdx.graphics.getWidth();
-            int height = Gdx.graphics.getHeight();
+        int width = Gdx.graphics.getWidth();
+        int height = Gdx.graphics.getHeight();
 
-            Table table = new Table();
-            table.center();
-            table.setFillParent(true);
-            table.add(gameOverTxt).expandX().size(width / 2, height / 6);
-            table.row();
-            table.add(playerWonTxt).expandX().padBottom(10).size(width / 2, height / 8);
-            table.row();
-            table.add(buttons.get("REMATCH").img).expandX().padBottom(10).size(width / 2, height / 8);
-            table.row();
-            table.add(buttons.get("QUIT").img).expandX().size(width / 3, height / 8);
-            table.pack();
-            stage.addActor(table);
+        Table table = new Table();
+        table.center();
+        table.setFillParent(true);
+        table.add(gameOverTxt).expandX().size(width / 2, height / 6);
+        table.row();
+        table.add(playerWonTxt).expandX().padBottom(10).size(width / 2, height / 8);
+        table.row();
+        table.add(buttons.get("REMATCH").img).expandX().padBottom(10).size(width / 2, height / 8);
+        table.row();
+        table.add(buttons.get("QUIT").img).expandX().size(width / 3, height / 8);
+        table.pack();
+        stage.addActor(table);
 
         SoundController.getInstance().stopMusic("music");
-    }
-
-    public void setWinner(Boolean win) {
-        winner = win;
-    }
-
-    @Override
-    public void show() {
-
     }
 
     @Override

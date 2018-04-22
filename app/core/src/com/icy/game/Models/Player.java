@@ -17,14 +17,11 @@ import java.util.ArrayList;
 
 import static com.icy.game.IcyGame.cam;
 
-/**
- * Created by havard on 19.04.18.
- */
 
 public class Player extends AnimationHolder {
-    private static final Player ourInstance = new Player();
-    private Vector2 position;
-    private Vector2 velocity;
+    private static final Player INSTANCE = new Player();
+    private Vector2 position = new Vector2(0,33);;
+    private Vector2 velocity  = new Vector2(0,0);
     private Rectangle hitBox;
     private Rectangle standingOnPlatform;
     private float gravity;
@@ -33,17 +30,15 @@ public class Player extends AnimationHolder {
     private int direction;
     private boolean powerJump;
     private static final int MAXYVELOCITY = 800;
-    private int playerId;
+    private int playerId = -1;
     private String username;
 
     public static Player getInstance() {
-        return ourInstance;
+        return INSTANCE;
     }
 
     private Player() {
         super(new Vector2(0.4f,1.3f),"Players/playerOne_running/playerOne_running.atlas");
-        velocity = new Vector2(0,0);
-        position = new Vector2(0,33);
         hitBox = new Rectangle(position.x,position.y,size.x,size.y);
         gravity = -100f;
         jumpForce = 1500f;
@@ -75,8 +70,10 @@ public class Player extends AnimationHolder {
     }
 
     public void resetProperties(){
-        this.velocity = new Vector2(0,0);
-        this.position = new Vector2(0,40);
+        this.velocity.x = 0;
+        this.velocity.y = 0;
+        this.position.x = 0;
+        this.position.y = 40;
     }
 
     private float getJumpForce() {

@@ -27,15 +27,15 @@ public class TutorialScreen implements Screen {
     }
 
     private TutorialScreen() {
-        page_counter = -1;
-        stage = new Stage();
-        batch = new SpriteBatch();
-        Gdx.input.setInputProcessor(stage);
+
     }
 
     @Override
     public void show() {
-
+        page_counter = -1;
+        stage = new Stage();
+        batch = new SpriteBatch();
+        Gdx.input.setInputProcessor(stage);
     }
 
     private void handleInput(){
