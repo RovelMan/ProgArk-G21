@@ -50,11 +50,7 @@ public class CreateScreen implements Screen {
         Map<String, Button> buttons = new HashMap<>();
 
         for (String type : button_types) {
-            if (type.equals("CREATELOBBY")) {
-                buttons.put(type, new Button(type, userInput.getText(), roomInput.getText()));
-            } else {
-                buttons.put(type, new Button(type));
-            }
+            buttons.put(type, new Button(type));
         }
 
         int width = Gdx.graphics.getWidth();
