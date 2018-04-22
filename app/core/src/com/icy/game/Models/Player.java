@@ -41,7 +41,7 @@ public class Player extends AnimationHolder {
     }
 
     private Player() {
-        super(new Vector2(0.5f,1f),"Players/playerOne_running/playerOne_running.atlas");
+        super(new Vector2(0.4f,1.3f),"Players/playerOne_running/playerOne_running.atlas");
         velocity = new Vector2(0,0);
         position = new Vector2(0,33);
         hitBox = new Rectangle(position.x,position.y,size.x,size.y);
