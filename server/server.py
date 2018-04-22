@@ -27,7 +27,7 @@ def disconnect():
     for player in players[request.sid].game.players:
         if not player.sid == request.sid:
             opponent = player.sid
-            emit('playerLeftRes', {'room': data['room']}, room=opponent)
+            emit('playerLeftRes', {'d': true}, room=opponent)
             try:
                 games.pop(player.game.room)
             except:
