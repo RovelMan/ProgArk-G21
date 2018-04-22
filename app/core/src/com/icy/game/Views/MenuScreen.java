@@ -76,8 +76,8 @@ public class MenuScreen implements Screen {
         table.row();
         table.add(buttons.get("HELP").img).expandX().size(width/3, height/8).padBottom(10);
         table.row();
-        audioButtons.add(audioOn);
-        audioButtons.add(audioOff);
+        audioButtons.add(audioOn).size(width/6, height/10);
+        audioButtons.add(audioOff).size(width/6, height/10);
         table.add(audioButtons).expandX().size(width/2, height/8);
         table.pack();
         stage.addActor(table);
