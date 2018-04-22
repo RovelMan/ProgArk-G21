@@ -21,6 +21,8 @@ public class LobbyScreen implements Screen {
     private static String[] players = {null, null};
     private static String room;
     private Texture background;
+    private float savedDelta = -1;
+    private float timeElapsed;
 
     private static Stage stage;
 
@@ -52,7 +54,7 @@ public class LobbyScreen implements Screen {
 
         BitmapFont font = IcyGame.font;
 
-        Label lobbyTxt = new Label("Welcome to room: " + room, new Label.LabelStyle(font, Color.WHITE));
+        Label lobbyTxt = new Label("Room name: " + room, new Label.LabelStyle(font, Color.WHITE));
         Label hostName = new Label("Host: " + players[0], new Label.LabelStyle(font, Color.WHITE));
         Label playerName;
         Label info;
@@ -66,6 +68,7 @@ public class LobbyScreen implements Screen {
             playerName = new Label("You: " + players[0], new Label.LabelStyle(font, Color.WHITE));
             info = new Label("Opponent: " + playerTwo, new Label.LabelStyle(font, Color.WHITE));
         }
+
 
         int width = Gdx.graphics.getWidth();
 
@@ -102,7 +105,11 @@ public class LobbyScreen implements Screen {
 
     @Override
     public void render(float delta) {
+        timeElapsed += delta;
         if (players[0] != null && players[1] != null) {
+            if (savedDelta == -1) {
+                savedDelta = timeElapsed;
+            }
             System.out.println("Both players joined. Lobby full");
             Connection.getInstance().setRemoveTileId(-1);
             Player player = Player.getInstance();
@@ -113,8 +120,10 @@ public class LobbyScreen implements Screen {
             opponent.setPlayerId(1-playerId);
             opponent.setUsername(players[1-playerId]);
 
-            IcyGame.getInstance().setScreen(new PlayScreen());
 
+            if (timeElapsed-savedDelta > 3) {
+                IcyGame.getInstance().setScreen(new PlayScreen());
+            }
         }
         Gdx.gl.glClearColor(1, 0, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);

@@ -18,7 +18,7 @@ import com.icy.game.Views.MenuScreen;
 public class IcyGame extends Game {
 	private static IcyGame INSTANCE;
 	//Change this to "true" to use keyboard controls
-	public static final boolean USEDEBUG = true;
+	public static final boolean USEDEBUG = false;
 	public static final String TITLE = "2IcyBoiis";
 	public static int HEIGHT = 800;
 	public static int WIDTH = 448;
@@ -43,10 +43,11 @@ public class IcyGame extends Game {
 		style.fontColor = Color.WHITE;
 		style.font = font;
 		SoundController soundController = SoundController.getInstance();
-		this.setScreen(new MenuScreen());
 		soundController.addEffect("jump", "Sounds/effects/jump.mp3");
 		soundController.addEffect("coin", "Sounds/effects/coin.mp3");
 		soundController.addMusic("music", "Sounds/music/music.mp3");
+		soundController.addMusic("menu_music", "Sounds/music/menu_music.mp3");
+		this.setScreen(new MenuScreen());
 		cam = new OrthographicCamera();
 		//worldWidth and worldHeight is NOT the worlds width and height! They are just the size
 		//of your viewport...

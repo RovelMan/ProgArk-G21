@@ -81,6 +81,7 @@ public class MenuScreen implements Screen {
         table.add(audioButtons).expandX().size(width/2, height/8);
         table.pack();
         stage.addActor(table);
+        SoundController.getInstance().playMusic("menu_music");
     }
 
     @Override

@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.icy.game.Controller.SoundController;
 import com.icy.game.IcyGame;
 import com.icy.game.Models.Button;
 
@@ -63,6 +64,7 @@ public class EndScreen implements Screen {
             table.pack();
             stage.addActor(table);
 
+        SoundController.getInstance().stopMusic("music");
     }
     @Override
     public void show() {
