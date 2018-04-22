@@ -54,7 +54,6 @@ public class Button {
                         try {
                             Player.getInstance().setUsername(opt[0]);
                             Player.getInstance().setPlayerId(0);
-                            Opponent.getInstance().setPlayerId(1);
                             Connection.getInstance().createLobby(opt[0], opt[1]);
                         } catch (Exception e) {
                             System.out.println("Could not create a lobby: " + e);
@@ -64,7 +63,6 @@ public class Button {
                         try {
                             Player.getInstance().setUsername(opt[0]);
                             Player.getInstance().setPlayerId(1);
-                            Opponent.getInstance().setPlayerId(0);
                             Connection.getInstance().joinLobby(opt[0], opt[1]);
                         } catch (Exception e) {
                             System.out.println("Could not join a game: " + e);
@@ -73,6 +71,8 @@ public class Button {
                     case "REMATCH":
                         try {
                             Connection.getInstance().rematch(Connection.getInstance().getRoomName(),Player.getInstance().getPlayerId());
+                            Player.getInstance().resetProperties();
+                            Opponent.getInstance().resetProperties();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -81,7 +81,7 @@ public class Button {
                     case "QUIT":
                         try {
                             String roomname = Connection.getInstance().getRoomName();
-                            Connection.getInstance().leaveLobby(Player.getInstance().getPlayerId(), Player.getInstance().getUsername(), roomname);
+                            Connection.getInstance().gameOver(roomname);
                             Player.getInstance().resetIdentity();
                             Player.getInstance().resetProperties();
                             Opponent.getInstance().resetIdentity();

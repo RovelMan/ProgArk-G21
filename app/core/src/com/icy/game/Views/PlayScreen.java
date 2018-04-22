@@ -38,6 +38,7 @@ public class PlayScreen implements Screen {
     private OrthographicCamera cam = IcyGame.cam;
     private Viewport viewport = IcyGame.viewport;
     private float timeElapsed;
+    private float pre = 0;
     private ArrayList<Integer> removedTiles;
     private OrthogonalTiledMapRenderer renderer;
     private Map<String,ArrayList<Rectangle>> hitboxes;
@@ -66,16 +67,21 @@ public class PlayScreen implements Screen {
 
         int removeID = player.checkPowerupCollision(hitboxes.get("jumpPowerHitbox"),"jump");
         handlePowerup(tileLayers.get("jumpPower"), "jumpPowerHitbox", removeID);
-        sendGameInfo(removeID);
+
+        if (timeElapsed - pre > 0.033) {
+            sendGameInfo(removeID);
+            pre = timeElapsed;
+        }
+
         removeID = Connection.getInstance().getRemoveTileId();
         handlePowerup(tileLayers.get("jumpPower"), "jumpPowerHitbox", removeID);
 
         if (player.getPosition().y > cam.position.y+(cam.viewportHeight/2)-200 || Opponent.getInstance().getPosition().y > cam.position.y+(cam.viewportHeight/2)-200) {
-            // cam.position.y += 4;
+            cam.position.y += 4;
         }
 
         if (timeElapsed > 3) {
-            // cam.position.y += 2;
+            cam.position.y += 2;
         }
         cam.update();
         renderer.setView(cam);
@@ -115,7 +121,9 @@ public class PlayScreen implements Screen {
         IcyGame.batch.setProjectionMatrix(cam.combined);
         TextureRegion frame1 = (TextureRegion) player.getAnimation().getKeyFrame(timeElapsed,true);
         TextureRegion frame2 = (TextureRegion) Opponent.getInstance().getAnimation().getKeyFrame(timeElapsed,true);
+
         boolean flip1 = (player.getDirection() == 1);
+
         IcyGame.batch.begin();
         IcyGame.batch.draw(
                 frame1,
@@ -137,6 +145,8 @@ public class PlayScreen implements Screen {
 
     @Override
     public void show() {
+        timeElapsed = 0;
+        pre = 0;
         List<String> validTileLayers = Collections.unmodifiableList(Arrays.asList("platforms", "logPlatforms", "jumpPower"));
         List<String> validHitboxes = Collections.unmodifiableList(Arrays.asList("platformsHitbox", "logPlatformsHitbox", "jumpPowerHitbox"));
         removedTiles = new ArrayList<>();

@@ -6,13 +6,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.icy.game.IcyGame;
 import com.icy.game.Views.EndScreen;
 
-/**
- * Created by havard on 19.04.18.
- */
-
 public class Opponent extends AnimationHolder {
     private static final Opponent INSTANCE = new Opponent();
-    private int playerId;
     private String username = null;
     private static Vector2 position;
     private static Vector2 velocity;
@@ -36,29 +31,20 @@ public class Opponent extends AnimationHolder {
         return username;
     }
 
-    public void setVelocity(Vector2 velocity) {
-        velocity = velocity;
+    public void setVelocity(Vector2 vel) {
+        velocity = vel;
     }
 
-    public void setPosition(Vector2 position) {
-        position = position;
+    public void setPosition(Vector2 pos) {
+        position = pos;
     }
 
     public Vector2 getPosition() {
         return position;
     }
 
-    public void setPlayerId(int playerId) {
-        this.playerId = playerId;
-    }
-
-    public int getPlayerId() {
-        return playerId;
-    }
-
     public void resetIdentity() {
-        this.playerId = -1;
-        this.username = "";
+        this.username = null;
     }
 
     public void resetProperties(){

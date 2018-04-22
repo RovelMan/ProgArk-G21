@@ -19,7 +19,7 @@ public class LobbyScreen implements Screen {
 
     private static final LobbyScreen INSTANCE = new LobbyScreen();
     private Texture background;
-    private float savedDelta = -1;
+    private float savedDelta;
     private float timeElapsed;
     private static Stage stage;
     private String room;
@@ -71,6 +71,8 @@ public class LobbyScreen implements Screen {
 
         Connection conn = Connection.getInstance();
         room = conn.getRoomName();
+        savedDelta = -1;
+        timeElapsed = 0;
 
         Gdx.input.setInputProcessor(stage);
 
@@ -87,9 +89,8 @@ public class LobbyScreen implements Screen {
             if (savedDelta == -1) {
                 savedDelta = timeElapsed;
             }
-            System.out.println("Both players joined. Lobby full");
             Connection.getInstance().setRemoveTileId(-1);
-            if (timeElapsed-savedDelta > 1.5) {
+            if (timeElapsed-savedDelta > 0.5) {
                 IcyGame.getInstance().setScreen(PlayScreen.getInstance());
             }
         }

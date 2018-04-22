@@ -58,10 +58,14 @@ public class Connection {
                 Gdx.app.postRunnable(() -> {
                     JSONObject data = (JSONObject) args[0];
                     try {
-                        room = data.getString("room");
-                        opponent.setUsername(data.getString("host"));
-                        System.out.println("Lobby joined! Your ID: " + Player.getInstance().getPlayerId() + "\tRoom name: " + room + "\tHost: " + data.getString("host"));
-                        IcyGame.getInstance().setScreen(LobbyScreen.getInstance());
+                        if (data.getInt("pid") == -1) {
+                            IcyGame.getInstance().setScreen(MenuScreen.getInstance());
+                        } else {
+                            room = data.getString("room");
+                            opponent.setUsername(data.getString("host"));
+                            System.out.println("Lobby joined! Your ID: " + Player.getInstance().getPlayerId() + "\tRoom name: " + room + "\tHost: " + data.getString("host"));
+                            IcyGame.getInstance().setScreen(LobbyScreen.getInstance());
+                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -69,7 +73,6 @@ public class Connection {
             }).on("posRes", args -> {
                 JSONObject data = (JSONObject) args[0];
                 try {
-                    System.out.println(data.getDouble("posX"));
                     Opponent.getInstance().setPosition(new Vector2((float) data.getDouble("posX"), (float) data.getDouble("posY")));
                     Opponent.getInstance().setVelocity(new Vector2((float) data.getDouble("velX"), (float) data.getDouble("velY")));
                 } catch (JSONException e) {
@@ -80,28 +83,23 @@ public class Connection {
                 JSONObject data = (JSONObject) args[0];
                 try {
                     if (data.getBoolean("rematch")) {
+                        Player.getInstance().resetProperties();
+                        Opponent.getInstance().resetProperties();
                         Gdx.app.postRunnable(() -> IcyGame.getInstance().setScreen(LobbyScreen.getInstance()));
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }).on("playerLeftRes", new Emitter.Listener() {
-                String roomName;
 
                 @Override
                 public void call(Object... args) {
                     System.out.println("Player left. Returning to menu");
-                    JSONObject data = (JSONObject) args[0];
-                    try {
-                        roomName = data.getString("room");
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
 
                     Gdx.app.postRunnable(() -> {
                         JSONObject room = new JSONObject();
                         try {
-                            room.put("room", roomName);
+                            room.put("room", room);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -157,15 +155,6 @@ public class Connection {
         socket.emit("join", game);
     }
 
-    public void leaveLobby(final int playerId, final String username, final String roomName) throws JSONException {
-        JSONObject game = new JSONObject();
-        game.put("id", playerId);
-        game.put("username", username);
-        game.put("room", roomName);
-        reset();
-        socket.emit("leave", game);
-    }
-
     public void rematch(final String roomName, final int playerId) throws JSONException {
         JSONObject rematch = new JSONObject();
         rematch.put("id", playerId);
@@ -204,10 +193,6 @@ public class Connection {
         socket.emit("deathStatus", status);
     }
 
-    private void reset() {
-        Player.getInstance().setPlayerId(-1);
-        this.room = null;
-    }
 
     public void setRemoveTileId(int removeTileId) {
         this.removeTileId = removeTileId;

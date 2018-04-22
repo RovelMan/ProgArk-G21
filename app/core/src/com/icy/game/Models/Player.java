@@ -30,7 +30,7 @@ public class Player extends AnimationHolder {
     private int direction;
     private boolean powerJump;
     private static final int MAXYVELOCITY = 800;
-    private int playerId = -1;
+    private int playerId;
     private String username;
 
     public static Player getInstance() {
